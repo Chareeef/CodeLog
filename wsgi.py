@@ -2,6 +2,7 @@
 """Our production launchpad!
 """
 from main import create_app
+from config import Config
 
 
 # Create and run app in production environment
