@@ -3,6 +3,7 @@
 """
 from flask import Flask
 from config import Config
+from routes import home_bp
 
 
 def create_app(config=Config):
@@ -13,10 +14,16 @@ def create_app(config=Config):
     # Set configuration
     app.config.from_object(Config)
 
+    # Disable strict slashes
+    app.url_map.strict_slashes = False
+
+    # Register blueprints
+    app.register_blueprint(home_bp)
+
     return app
 
 
 # Create and run app for developement purpose
 if __name__ == '__main__':
     app = create_app()
-    app.run(debug=True)
+    app.run(debug=True, host=Config.HOST, port=Config.PORT)

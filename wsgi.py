@@ -7,4 +7,4 @@ from main import create_app
 # Create and run app in production environment
 if __name__ == '__main__':
     app = create_app()
-    app.run()
+    app.run(host=Config.HOST, port=Config.PORT)
