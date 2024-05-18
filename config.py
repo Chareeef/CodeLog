@@ -15,3 +15,9 @@ class Config:
     SECRET_KEY = os.getenv('FLASK_SECRET_KEY', secrets.token_hex(16))
     HOST = os.getenv('FLASK_HOST', '0.0.0.0')
     PORT = os.getenv('FLASK_PORT', '5000')
+
+
+class TestConfig(Config):
+    """Testing configuration for our app
+    """
+    TESTING = True

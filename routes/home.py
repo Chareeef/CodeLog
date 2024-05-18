@@ -3,12 +3,13 @@
 """
 from flask import Blueprint, jsonify, render_template, request
 from datetime import datetime
-
+from db import db
 
 # Create home Blueprint
 home_bp = Blueprint('home_bp', __name__)
 
 # NOTE: These routes will have @login_required when Auth is set
+
 
 @home_bp.route('/')
 def home():
@@ -27,13 +28,20 @@ def log():
 
     # Retrieve the entry's infos
     entry = {
+        'userId': 'unujj',  # TODO: current_user.id
         'title': data.get('title'),
         'content': data.get('content'),
-        'date': datetime.utcnow(),
-        'isPublic': data.get('isPublic', False)
+        'isPublic': data.get('isPublic', False),
+        'datePosted': datetime.utcnow()
     }
 
+    if not entry['title']:
+        return jsonify({'error': 'Missing title'}), 400
+    elif not entry['content']:
+        return jsonify({'error': 'Missing content'}), 400
+
     # Store this log in MongoDB
+    db.insert_post(entry)
 
     # Update user's current streak
 
@@ -44,4 +52,6 @@ def log():
     # Recreate block entries token for this user in Redis for 20h
 
     # Return data
-    return jsonify(entry)
+    entry['datePosted'] = entry['datePosted'].strftime('%Y/%m/%d %H:%M:%S')
+    entry['_id'] = str(entry['_id'])
+    return jsonify(entry), 201
