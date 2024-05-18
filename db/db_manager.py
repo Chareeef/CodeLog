@@ -41,7 +41,6 @@ class DBStorage:
             self._client.admin.command('ismaster')
             print(f"Connected to MongoDB successfully on port: {db_port}")
         except ConnectionFailure as err:
-
             print(f"Connection failed: {err}")
             raise
 
