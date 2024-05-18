@@ -3,20 +3,30 @@
 """
 from flask import Blueprint, jsonify, request
 from datetime import datetime
-from db import db
+from db import db, redis_client as rc
 
 # Create profile Blueprint
 profile_bp = Blueprint('profile_bp', __name__)
 
-# NOTE: These routes will have @login_required when Auth is set
+# NOTE: These routes will maybe have @login_required when Auth is set
 
 
-@profile_bp.route('/posts', methods=['POST'])
+@profile_bp.route('/posts')
 def get_posts():
     """Get the user's posts
     """
-    userId = request.get_json().get('userId')
-    if not db.find_user(userId):
+
+    # Search Authentication token in Redis, and get userId
+    auth_token = request.headers.get('x-token')
+    userId = rc.get(auth_token)
+    if not userId:
         return jsonify({'error': 'Unauthorized'}), 404
 
-    return db.find_user_posts(userId)
+    # Return posts
+    posts = db.find_user_posts(userId.decode('utf-8'))
+    for p in posts:
+        del p['_id']
+        del p['userId']
+        p['datePosted'] = p['datePosted'].strftime('%Y/%m/%d %H:%M:%S')
+
+    return jsonify(posts)

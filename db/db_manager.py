@@ -87,6 +87,7 @@ class DBStorage:
             user_posts = posts.find({'userId': ObjectId(userId)})
             return list(user_posts)
         except Exception as e:
+            print(e)
             return None
 
     def update_user_info(
