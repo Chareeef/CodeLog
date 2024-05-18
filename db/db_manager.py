@@ -82,6 +82,15 @@ class DBStorage:
         except Exception as e:
             return None
 
+    def find_post(self, info: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """ Return a post document """
+        posts = self._db['posts']
+        try:
+            post = posts.find_one(info)
+            return post
+        except Exception as e:
+            return None
+
     def update_user_info(
             self,
             user_id: str,
@@ -106,7 +115,7 @@ class DBStorage:
             user_id: str,
             new_password: str,
             old_password: str
-    ) -> ObjectId | None:
+    ) -> Optional[ObjectId]:
         """ Update the user's password as hash """
         users = self._db['users']
         user = users.find_one({'_id': ObjectId(user_id)})
