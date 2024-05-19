@@ -43,7 +43,7 @@ class TestCreateLog(unittest.TestCase):
         # Verify response
         self.assertEqual(response.status_code, 201)
         self.assertIn('_id', data)
-        self.assertIn('userId', data)
+        self.assertIn('user_id', data)
         self.assertEqual(data.get('title'), 'My post')
         self.assertEqual(data.get('content'), 'Here is my post')
         self.assertEqual(data.get('isPublic'), False)
@@ -54,7 +54,7 @@ class TestCreateLog(unittest.TestCase):
         post = db.find_post({'_id': ObjectId(data.get('_id'))})
 
         # TODO: Use ObjectId
-        self.assertEqual(post.get('userId'), data['userId'])
+        self.assertEqual(post.get('user_id'), data['user_id'])
         self.assertEqual(post.get('title'), data['title'])
         self.assertEqual(post.get('content'), data['content'])
         self.assertEqual(post.get('isPublic'), data['isPublic'])
@@ -74,7 +74,7 @@ class TestCreateLog(unittest.TestCase):
         # Verify response
         self.assertEqual(response.status_code, 201)
         self.assertIn('_id', data)
-        self.assertIn('userId', data)
+        self.assertIn('user_id', data)
         self.assertEqual(data.get('title'), 'My post')
         self.assertEqual(data.get('content'), 'Here is my post')
         self.assertEqual(data.get('isPublic'), True)
@@ -85,7 +85,7 @@ class TestCreateLog(unittest.TestCase):
         post = db.find_post({'_id': ObjectId(data.get('_id'))})
 
         # TODO: Use ObjectId
-        self.assertEqual(post.get('userId'), data['userId'])
+        self.assertEqual(post.get('user_id'), data['user_id'])
         self.assertEqual(post.get('title'), data['title'])
         self.assertEqual(post.get('content'), data['content'])
         self.assertEqual(post.get('isPublic'), data['isPublic'])

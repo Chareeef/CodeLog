@@ -28,7 +28,7 @@ def log():
 
     # Retrieve the entry's infos
     entry = {
-        'userId': 'unujj',  # TODO: current_user.id
+        'user_id': 'unujj',  # TODO: current_user.id
         'title': data.get('title'),
         'content': data.get('content'),
         'isPublic': data.get('isPublic', False),
