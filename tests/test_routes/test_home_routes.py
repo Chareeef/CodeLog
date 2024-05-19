@@ -28,8 +28,7 @@ class TestCreateLog(unittest.TestCase):
     def tearDownClass(cls):
         """Clear database
         """
-        db._db['users'].delete_many({})
-        db._db['posts'].delete_many({})
+        db.clear_db()
 
     def test_create_private_log(self):
         """Test posting a private entry

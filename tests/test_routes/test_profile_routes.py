@@ -35,7 +35,7 @@ class TestGetPosts(unittest.TestCase):
             'current_streak': 0,
             'longest_streak': 0
         }
-        user_id = db.insert_user(infos).inserted_id
+        user_id = db.insert_user(infos)
 
         # Create Authentication token
         data_to_encode = 'dummy@yummy.choc:gumbledore'
@@ -79,8 +79,7 @@ class TestGetPosts(unittest.TestCase):
     def tearDownClass(cls):
         """Clear database
         """
-        db._db['users'].delete_many({})
-        db._db['posts'].delete_many({})
+        db.clear_db()
 
     def test_get_posts(self):
         """Test successefully getting posts

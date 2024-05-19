@@ -40,7 +40,7 @@ class TestRegister(unittest.TestCase):
     def tearDownClass(cls):
         """Clear database
         """
-        db._db['users'].delete_many({})
+        db.clear_db()
 
     def test_register_success(self):
         """Test successefully registering a user
@@ -70,7 +70,7 @@ class TestRegister(unittest.TestCase):
                          datetime.utcnow().strftime('%Y/%m/%d %H:%M:%S'))
 
         hashed_pwd = db.get_hash(infos['email'])
-        self.assertTrue(check_hash_password(infos['password'], hashed_pwd))
+        self.assertTrue(check_hash_password(hashed_pwd, infos['password']))
 
     def test_register_with_missing_email(self):
         """Test registering a user with missing email
