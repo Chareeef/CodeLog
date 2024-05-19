@@ -44,7 +44,10 @@ def register():
     doc = {
         'email': email,
         'username': username,
-        'password': password
+        'password': password,
+        'created_at': datetime.utcnow(),
+        'current_streak': 0,
+        'longest_streak': 0
     }
     db.insert_user(doc)
 
