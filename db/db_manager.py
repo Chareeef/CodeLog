@@ -19,12 +19,9 @@ def hash_pass(password: str) -> bytes:
     return hash_password
 
 
-def check_hash_password(hashed_password: str, password: str) -> bool:
+def check_hash_password(hashed_password: bytes, password: str) -> bool:
     """ check if hashed value of two string are the same """
-    hash_password = hash_pass(password)
-    is_ok = bcrypt.checkpw(hashed_password, hash_password)
-
-    return is_ok
+    return bcrypt.checkpw(password.encode('utf-8'), hashed_password)
 
 
 class DBStorage:
@@ -52,14 +49,14 @@ class DBStorage:
         document['password'] = hash_pass(password)
         users = self._db['users']
         new_user = users.insert_one(document)
-        return new_user
+        return new_user.inserted_id
 
     def insert_post(self, document: Dict[str, Any]) -> InsertOneResult:
         """ Create a new post document """
         posts = self._db['posts']
         new_post = posts.insert_one(document)
 
-        return new_post
+        return new_post.inserted_id
 
     def find_user(self, info: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """ Return a user document """
@@ -172,3 +169,10 @@ class DBStorage:
         """ Returns all posts in the db """
         posts = self._db['posts']
         return list(posts.find())
+
+    def clear_db(self):
+        """
+        THIS METHOD SHOULD BE USED ONLY FOR TESTING.
+        """
+        self._db.drop_collection('users')
+        self._db.drop_collection('posts')
