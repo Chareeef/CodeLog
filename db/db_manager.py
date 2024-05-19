@@ -19,10 +19,9 @@ def hash_pass(password: str) -> bytes:
     return hash_password
 
 
-def check_hash_password(hashed_password: str, password: str) -> bool:
+def check_hash_password(password: str, original_hash: bytes) -> bool:
     """ check if hashed value of two string are the same """
-    hash_password = hash_pass(password)
-    is_ok = bcrypt.checkpw(hashed_password, hash_password)
+    is_ok = bcrypt.checkpw(password.encode('utf-8'), original_hash)
 
     return is_ok
 
@@ -68,6 +67,15 @@ class DBStorage:
             user = users.find_one(info)
             user.pop('password', None)
             return user
+        except Exception as e:
+            return None
+
+    def get_hash(self, email: str) -> Optional[Dict[str, Any]]:
+        """ Return a user's hashed password """
+        users = self._db['users']
+        try:
+            user = users.find_one({'email': email})
+            return user['password']
         except Exception as e:
             return None
 

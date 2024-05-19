@@ -29,9 +29,9 @@ class TestGetPosts(unittest.TestCase):
 
         # Create dummy user
         infos = {
+            'username': 'albushog99',
             'email': 'dummy@yummy.choc',
             'password': 'gumbledore',
-            'full_name': 'Albus Dumbledore',
             'current_streak': 0,
             'longest_streak': 0
         }
