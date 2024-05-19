@@ -3,7 +3,7 @@
 """
 from flask import Flask
 from config import Config
-from routes import home_bp, profile_bp
+from routes import auth_bp, home_bp, profile_bp
 
 
 def create_app(config=Config):
@@ -18,6 +18,7 @@ def create_app(config=Config):
     app.url_map.strict_slashes = False
 
     # Register blueprints
+    app.register_blueprint(auth_bp)
     app.register_blueprint(home_bp)
     app.register_blueprint(profile_bp, url_prefix='/user')
 

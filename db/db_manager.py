@@ -68,6 +68,15 @@ class DBStorage:
         except Exception as e:
             return None
 
+    def get_hash(self, email: str) -> Optional[Dict[str, Any]]:
+        """ Return a user's hashed password """
+        users = self._db['users']
+        try:
+            user = users.find_one({'email': email})
+            return user['password']
+        except Exception as e:
+            return None
+
     def find_user_posts(self, user_id: str) -> Optional[List[Dict[str, Any]]]:
         """ Return a posts documents created by a user. """
         posts = self._db['posts']

@@ -29,13 +29,13 @@ class TestGetPosts(unittest.TestCase):
 
         # Create dummy user
         infos = {
+            'username': 'albushog99',
             'email': 'dummy@yummy.choc',
             'password': 'gumbledore',
-            'full_name': 'Albus Dumbledore',
             'current_streak': 0,
             'longest_streak': 0
         }
-        userId = db.insert_user(infos).inserted_id
+        user_id = db.insert_user(infos)
 
         # Create Authentication token
         data_to_encode = 'dummy@yummy.choc:gumbledore'
@@ -43,7 +43,7 @@ class TestGetPosts(unittest.TestCase):
         cls.token = 'auth_64' + b64_string
 
         # Store in redis for 5 seconds
-        rc.setex(cls.token, 5, str(userId))
+        rc.setex(cls.token, 5, str(user_id))
 
         # Create dummy posts
         cls.posts = []
@@ -65,7 +65,7 @@ class TestGetPosts(unittest.TestCase):
 
             cls.posts.append(post.copy())
 
-            post['userId'] = userId
+            post['user_id'] = user_id
             db.insert_post(post)
 
         # Sort cls.posts
@@ -79,8 +79,7 @@ class TestGetPosts(unittest.TestCase):
     def tearDownClass(cls):
         """Clear database
         """
-        db._db['users'].delete_many({})
-        db._db['posts'].delete_many({})
+        db.clear_db()
 
     def test_get_posts(self):
         """Test successefully getting posts

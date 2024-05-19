@@ -5,7 +5,7 @@ Module unittest for the db_manager.
 import unittest
 from unittest.mock import patch
 import mongomock
-from db import db_storage
+from db import db
 from bson import ObjectId
 from datetime import datetime
 
@@ -16,11 +16,11 @@ class TestDBStorage(unittest.TestCase):
     @patch('db.db_manager.MongoClient', new=mongomock.MongoClient)
     def setUp(self):
         """Set up a mock MongoDB client before each test."""
-        self.db_storage = db_storage
+        self.db = db
 
     def tearDown(self):
         """ Clean up the database after each test """
-        self.db_storage.clear_db()
+        self.db.clear_db()
 
     def test_insert_and_find_user(self):
         """Test inserting and finding a user document."""
@@ -32,9 +32,9 @@ class TestDBStorage(unittest.TestCase):
             'longest_streak': 0
 
         }
-        inserted_id = self.db_storage.insert_user(user_document)
+        inserted_id = self.db.insert_user(user_document)
         self.assertIsInstance(inserted_id, ObjectId)
-        inserted_doc = self.db_storage.find_user({'_id': inserted_id})
+        inserted_doc = self.db.find_user({'_id': inserted_id})
 
         self.assertIsNotNone(inserted_doc)
 
@@ -59,11 +59,11 @@ class TestDBStorage(unittest.TestCase):
             'current_streak': 2,
             'longest_streak': 2
         }
-        inserted_id = self.db_storage.insert_user(user_document)
+        inserted_id = self.db.insert_user(user_document)
         self.assertIsInstance(inserted_id, ObjectId)
 
-        self.db_storage.update_user_info(inserted_id, updated_info)
-        inserted_doc = self.db_storage.find_user({'_id': inserted_id})
+        self.db.update_user_info(inserted_id, updated_info)
+        inserted_doc = self.db.find_user({'_id': inserted_id})
 
         self.assertEqual(inserted_doc['email'], 'mohamed@example.com')
         self.assertEqual(inserted_doc['current_streak'], 2)
@@ -78,10 +78,10 @@ class TestDBStorage(unittest.TestCase):
             'current_streak': 0,
             'longest_streak': 0
         }
-        inserted_id = self.db_storage.insert_user(user_document)
+        inserted_id = self.db.insert_user(user_document)
         self.assertIsInstance(inserted_id, ObjectId)
 
-        result = self.db_storage.update_user_password(
+        result = self.db.update_user_password(
             inserted_id,
             'newpassword',
             'oldpassword'
@@ -98,10 +98,10 @@ class TestDBStorage(unittest.TestCase):
             'current_streak': 0,
             'longest_streak': 0
         }
-        inserted_id = self.db_storage.insert_user(user_document)
+        inserted_id = self.db.insert_user(user_document)
         self.assertIsInstance(inserted_id, ObjectId)
 
-        result = self.db_storage.update_user_password(
+        result = self.db.update_user_password(
             inserted_id,
             'newpassword',
             'wrongpassword'
@@ -117,7 +117,7 @@ class TestDBStorage(unittest.TestCase):
             'current_streak': 0,
             'longest_streak': 0
         }
-        inserted_user_id = self.db_storage.insert_user(user_document)
+        inserted_user_id = self.db.insert_user(user_document)
         self.assertIsInstance(inserted_user_id, ObjectId)
 
         post_document = {
@@ -127,10 +127,10 @@ class TestDBStorage(unittest.TestCase):
             'is_public': False,
             'date_posted': datetime.utcnow()
         }
-        inserted_post_id = self.db_storage.insert_post(post_document)
+        inserted_post_id = self.db.insert_post(post_document)
         self.assertIsInstance(inserted_post_id, ObjectId)
 
-        post = self.db_storage.find_post(
+        post = self.db.find_post(
             {
                 '_id': inserted_post_id,
                 'user_id': inserted_user_id
@@ -149,7 +149,7 @@ class TestDBStorage(unittest.TestCase):
             'current_streak': 0,
             'longest_streak': 0
         }
-        inserted_user_id = self.db_storage.insert_user(user_document)
+        inserted_user_id = self.db.insert_user(user_document)
         self.assertIsInstance(inserted_user_id, ObjectId)
 
         post_document = {
@@ -159,20 +159,20 @@ class TestDBStorage(unittest.TestCase):
             'is_public': False,
             'date_posted': datetime.utcnow()
         }
-        inserted_post_id = self.db_storage.insert_post(post_document)
+        inserted_post_id = self.db.insert_post(post_document)
         self.assertIsInstance(inserted_post_id, ObjectId)
         update_post = {
             'title': 'New title',
             'content': 'New content',
             'is_public': True
         }
-        self.db_storage.update_post(
+        self.db.update_post(
             inserted_post_id,
             inserted_user_id,
             update_post
         )
 
-        post = self.db_storage.find_post(
+        post = self.db.find_post(
             {
                 '_id': inserted_post_id,
                 'user_id': inserted_user_id
@@ -190,7 +190,7 @@ class TestDBStorage(unittest.TestCase):
             'current_streak': 0,
             'longest_streak': 0
         }
-        inserted_user_id = self.db_storage.insert_user(user_document)
+        inserted_user_id = self.db.insert_user(user_document)
         self.assertIsInstance(inserted_user_id, ObjectId)
 
         post_document = {
@@ -200,14 +200,14 @@ class TestDBStorage(unittest.TestCase):
             'is_public': False,
             'date_posted': datetime.utcnow()
         }
-        inserted_post_id = self.db_storage.insert_post(post_document)
+        inserted_post_id = self.db.insert_post(post_document)
         self.assertIsInstance(inserted_post_id, ObjectId)
-        deleted = self.db_storage.delete_post(
+        deleted = self.db.delete_post(
             inserted_post_id,
             inserted_user_id
         )
 
-        post = self.db_storage.find_post(
+        post = self.db.find_post(
             {
                 '_id': inserted_post_id,
                 'user_id': inserted_user_id
@@ -225,7 +225,7 @@ class TestDBStorage(unittest.TestCase):
             'current_streak': 0,
             'longest_streak': 0
         }
-        inserted_user_id = self.db_storage.insert_user(user_document)
+        inserted_user_id = self.db.insert_user(user_document)
         self.assertIsInstance(inserted_user_id, ObjectId)
 
         post_document_1 = {
@@ -249,17 +249,17 @@ class TestDBStorage(unittest.TestCase):
             'is_public': False,
             'date_posted': datetime.utcnow()
         }
-        inserted_post1_id = self.db_storage.insert_post(post_document_1)
-        inserted_post2_id = self.db_storage.insert_post(post_document_2)
-        inserted_post2_id = self.db_storage.insert_post(post_document_3)
+        inserted_post1_id = self.db.insert_post(post_document_1)
+        inserted_post2_id = self.db.insert_post(post_document_2)
+        inserted_post2_id = self.db.insert_post(post_document_3)
 
         self.assertIsInstance(inserted_post1_id, ObjectId)
         self.assertIsInstance(inserted_post2_id, ObjectId)
 
-        posts = self.db_storage.find_user_posts(inserted_user_id)
+        posts = self.db.find_user_posts(inserted_user_id)
 
         self.assertEqual(len(posts), 2)
-        self.assertEqual(len(self.db_storage.find_all_posts()), 3)
+        self.assertEqual(len(self.db.find_all_posts()), 3)
         self.assertEqual(posts[0]['user_id'], inserted_user_id)
         self.assertEqual(posts[1]['user_id'], inserted_user_id)
 
