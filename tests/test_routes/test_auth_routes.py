@@ -57,7 +57,7 @@ class TestRegister(unittest.TestCase):
                          {
                              'Created user': infos['username'],
                              'email': infos['email']
-                         })
+        })
 
         # Check stored user
         user = db.find_user({'email': infos['email']})
