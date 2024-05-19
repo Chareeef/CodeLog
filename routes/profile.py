@@ -16,17 +16,17 @@ def get_posts():
     """Get the user's posts
     """
 
-    # Search Authentication token in Redis, and get userId
+    # Search Authentication token in Redis, and get user_id
     auth_token = request.headers.get('x-token')
-    userId = rc.get(auth_token)
-    if not userId:
+    user_id = rc.get(auth_token)
+    if not user_id:
         return jsonify({'error': 'Unauthorized'}), 404
 
     # Return posts
-    posts = db.find_user_posts(userId.decode('utf-8'))
+    posts = db.find_user_posts(user_id.decode('utf-8'))
     for p in posts:
         del p['_id']
-        del p['userId']
+        del p['user_id']
         p['datePosted'] = p['datePosted'].strftime('%Y/%m/%d %H:%M:%S')
 
     return jsonify(posts)

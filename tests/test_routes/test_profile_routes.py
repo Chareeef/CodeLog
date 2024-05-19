@@ -35,7 +35,7 @@ class TestGetPosts(unittest.TestCase):
             'current_streak': 0,
             'longest_streak': 0
         }
-        userId = db.insert_user(infos).inserted_id
+        user_id = db.insert_user(infos).inserted_id
 
         # Create Authentication token
         data_to_encode = 'dummy@yummy.choc:gumbledore'
@@ -43,7 +43,7 @@ class TestGetPosts(unittest.TestCase):
         cls.token = 'auth_64' + b64_string
 
         # Store in redis for 5 seconds
-        rc.setex(cls.token, 5, str(userId))
+        rc.setex(cls.token, 5, str(user_id))
 
         # Create dummy posts
         cls.posts = []
@@ -65,7 +65,7 @@ class TestGetPosts(unittest.TestCase):
 
             cls.posts.append(post.copy())
 
-            post['userId'] = userId
+            post['user_id'] = user_id
             db.insert_post(post)
 
         # Sort cls.posts
