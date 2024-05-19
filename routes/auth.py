@@ -52,4 +52,4 @@ def register():
     db.insert_user(doc)
 
     # Return respose
-    return jsonify({'User created': username}), 201
+    return jsonify({'Created user': username, 'email': email}), 201
