@@ -66,6 +66,6 @@ def update_infos():
             return jsonify({'error': 'Update only email and/or username'}), 400
 
     # Update the user's infos
-    db.update_user_infos(user_id, data)
+    db.update_user_info(user_id, data)
 
     return jsonify({'success': 'user updated'}), 201
