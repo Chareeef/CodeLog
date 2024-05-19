@@ -3,7 +3,7 @@
 """
 from flask import Flask
 from config import Config
-from routes import home_bp
+from routes import home_bp, profile_bp
 
 
 def create_app(config=Config):
@@ -19,6 +19,7 @@ def create_app(config=Config):
 
     # Register blueprints
     app.register_blueprint(home_bp)
+    app.register_blueprint(profile_bp, url_prefix='/user')
 
     return app
 

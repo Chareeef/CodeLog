@@ -41,7 +41,6 @@ class DBStorage:
             self._client.admin.command('ismaster')
             print(f"Connected to MongoDB successfully on port: {db_port}")
         except ConnectionFailure as err:
-
             print(f"Connection failed: {err}")
             raise
 
@@ -63,7 +62,6 @@ class DBStorage:
         return new_post
 
     def find_user(self, info: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-
         """ Return a user document """
         users = self._db['users']
         try:
@@ -96,7 +94,6 @@ class DBStorage:
             user_id: str,
             update_fields: Dict[str, Any]
     ) -> Optional[Dict[str, Any]]:
-
         """ update and return a user document. """
         users = self._db['users']
         update_fields.pop('password', None)
