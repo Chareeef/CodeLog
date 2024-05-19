@@ -48,11 +48,16 @@ class TestRegister(unittest.TestCase):
         infos = {
             'email': 'leviosa@poud.com',
             'username': 'minervahog67',
-            'password': 'mcgonacat',
+            'password': 'mcgonacat'
         }
         response = self.client.post('/register', json=infos)
 
         self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.get_json(),
+                         {
+                             'Created user': infos['username'],
+                             'email': infos['email']
+                         })
 
         # Check stored user
         user = db.find_user({'email': infos['email']})
@@ -66,3 +71,66 @@ class TestRegister(unittest.TestCase):
 
         hashed_pwd = db.get_hash(infos['email'])
         self.assertTrue(check_hash_password(infos['password'], hashed_pwd))
+
+    def test_register_with_missing_email(self):
+        """Test registering a user with missing email
+        """
+        infos = {
+            'username': 'minervahog67',
+            'password': 'mcgonacat'
+        }
+        response = self.client.post('/register', json=infos)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.get_json(), {'error': 'Missing email'})
+
+    def test_register_with_missing_username(self):
+        """Test registering a user with missing username
+        """
+        infos = {
+            'email': 'leviosa@poud.com',
+            'password': 'mcgonacat',
+        }
+        response = self.client.post('/register', json=infos)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.get_json(), {'error': 'Missing username'})
+
+    def test_register_with_missing_password(self):
+        """Test registering a user with missing password
+        """
+        infos = {
+            'email': 'leviosa@poud.com',
+            'username': 'minervahog67'
+        }
+        response = self.client.post('/register', json=infos)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.get_json(), {'error': 'Missing password'})
+
+    def test_register_with_used_email(self):
+        """Test registering a user with already used email
+        """
+        infos = {
+            'email': 'lumos@poud.com',
+            'username': 'podalbus89',
+            'password': 'hog478',
+        }
+        response = self.client.post('/register', json=infos)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.get_json(), {'error': 'Email already used'})
+
+    def test_register_with_used_username(self):
+        """Test registering a user with already used username
+        """
+        infos = {
+            'email': 'revelio@poud.com',
+            'username': 'albushog99',
+            'password': 'hog478',
+        }
+        response = self.client.post('/register', json=infos)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.get_json(), {
+                         'error': 'Username already used'})
