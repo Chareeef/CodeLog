@@ -9,7 +9,7 @@ from pymongo import MongoClient
 from bson import ObjectId
 import os
 import bcrypt
-from typing import Any, Dict, List, Optional, Union
+from typing import Optional, Dict, Any, List
 
 
 def hash_pass(password: str) -> bytes:
@@ -71,6 +71,15 @@ class DBStorage:
         except Exception as e:
             return None
 
+    def find_user_posts(self, user_id: str) -> Optional[List[Dict[str, Any]]]:
+        """ Return a posts documents created by a user. """
+        posts = self._db['posts']
+        try:
+            user_posts = posts.find({'user_id': ObjectId(user_id)})
+            return list(user_posts)
+        except Exception as e:
+            return None
+
     def find_post(self, info: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """ Return a post document """
         posts = self._db['posts']
@@ -80,19 +89,9 @@ class DBStorage:
         except Exception as e:
             return None
 
-    def find_user_posts(self, userId: str) -> Optional[List[Dict[str, Any]]]:
-        """ Return a posts documents created by a user """
-        posts = self._db['posts']
-        try:
-            user_posts = posts.find({'userId': ObjectId(userId)})
-            return list(user_posts)
-        except Exception as e:
-            print(e)
-            return None
-
     def update_user_info(
             self,
-            userId: str,
+            user_id: str,
             update_fields: Dict[str, Any]
     ) -> Optional[Dict[str, Any]]:
         """ update and return a user document. """
@@ -100,7 +99,7 @@ class DBStorage:
         update_fields.pop('password', None)
         try:
             updated_user = users.find_one_and_update(
-                {'_id': ObjectId(userId)},
+                {'_id': ObjectId(user_id)},
                 {'$set': update_fields},
                 return_document=ReturnDocument.AFTER
             )
@@ -110,13 +109,13 @@ class DBStorage:
 
     def update_user_password(
             self,
-            userId: str,
+            user_id: str,
             new_password: str,
             old_password: str
-    ) -> Union[ObjectId, None]:
+    ) -> Optional[ObjectId]:
         """ Update the user's password as hash """
         users = self._db['users']
-        user = users.find_one({'_id': ObjectId(userId)})
+        user = users.find_one({'_id': ObjectId(user_id)})
 
         if not user:
             return None
@@ -127,24 +126,24 @@ class DBStorage:
         new_hashed_password = hash_pass(new_password)
         try:
             users.find_one_and_update(
-                {'_id': ObjectId(userId)},
+                {'_id': ObjectId(user_id)},
                 {'$set': {'password': new_hashed_password}}
             )
-            return userId
+            return user_id
         except Exception as e:
             return None
 
     def update_post(
             self,
-            postId: str,
-            userId: str,
+            post_id: str,
+            user_id: str,
             update_fields: Dict[str, Any]
     ) -> Optional[Dict[str, Any]]:
         """ update and return a post document. """
         posts = self._db['posts']
         try:
             updated_post = posts.find_one_and_update(
-                {'_id': ObjectId(postId), 'userId': ObjectId(userId)},
+                {'_id': ObjectId(post_id), 'user_id': ObjectId(user_id)},
                 {'$set': update_fields},
                 return_document=ReturnDocument.AFTER
             )
@@ -152,13 +151,13 @@ class DBStorage:
         except Exception as e:
             return None
 
-    def delete_post(self, postId: str, userId: str) -> bool:
+    def delete_post(self, post_id: str, user_id: str) -> bool:
         """ deletes a post ducoment from db """
         posts = self._db['posts']
         try:
             posts.delete_one({
-                '_id': ObjectId(postId),
-                'userId': ObjectId(userId)
+                '_id': ObjectId(post_id),
+                'user_id': ObjectId(user_id)
             })
             return True
         except Exception as e:
