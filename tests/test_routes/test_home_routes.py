@@ -7,6 +7,7 @@ from config import TestConfig
 from datetime import datetime
 from db import db, redis_client as rc
 from main import create_app
+from time import sleep
 import unittest
 
 
@@ -39,17 +40,18 @@ class TestCreateLog(unittest.TestCase):
         b64_string = base64.b64encode(data_to_encode.encode()).decode('utf-8')
         cls.token = 'auth_64' + b64_string
 
-        # Store in redis for 5 seconds
-        rc.setex(cls.token, 5, cls.user_id)
+        # Store token in redis
+        rc.set(cls.token, cls.user_id)
 
         # Define current streak ken in Redis
         cls.cs_key = 'albushog99_CS'
 
     @classmethod
     def tearDownClass(cls):
-        """Clear database
+        """Clear Mongo and Redis databases
         """
         db.clear_db()
+        rc.flushdb()
 
     def tearDown(self):
         """Delete current streak key from Redis after each test
@@ -190,11 +192,12 @@ class TestCreateLog(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(data, {'error': 'Missing content'})
 
-    def test_create_two_logs(self):
-        """Test posting twice in the same day
+    def test_create_two_logs_in_correct_interval(self):
+        """Test posting twice in different days
         """
         headers = {'X-Token': self.token}
 
+        # First log
         payload1 = {
             'title': 'My post 1',
             'content': 'Here is my post 1'
@@ -202,6 +205,46 @@ class TestCreateLog(unittest.TestCase):
 
         response1 = self.client.post('/log', headers=headers, json=payload1)
 
+        data1 = response1.get_json()
+
+        # Pass to the next day
+        sleep(2.1)
+
+        # Second log
+        payload2 = {
+            'title': 'My post 2',
+            'content': 'Here is my post 2'
+        }
+
+        response2 = self.client.post('/log', headers=headers, json=payload2)
+
+        data2 = response2.get_json()
+
+        # Verify responses
+        self.assertEqual(response1.status_code, 201)
+        self.assertEqual(response2.status_code, 201)
+
+        # Verify current streak
+        self.assertEqual(int(rc.get(self.cs_key).decode('utf-8')), 2)
+
+        # Verify longest streak
+        user = db.find_user({'_id': ObjectId(self.user_id)})
+        self.assertEqual(user['longest_streak'], 2)
+
+    def test_create_two_logs_in_wrong_interval(self):
+        """Test posting twice in the same day
+        """
+        headers = {'X-Token': self.token}
+
+        # First log
+        payload1 = {
+            'title': 'My post 1',
+            'content': 'Here is my post 1'
+        }
+
+        response1 = self.client.post('/log', headers=headers, json=payload1)
+
+        # Second log
         payload2 = {
             'title': 'My post 2',
             'content': 'Here is my post 2'
@@ -222,3 +265,61 @@ class TestCreateLog(unittest.TestCase):
         # Verify longest streak
         user = db.find_user({'_id': ObjectId(self.user_id)})
         self.assertEqual(user['longest_streak'], 1)
+
+    def test_loosing_current_streak(self):
+        """Test loosing current streak
+        """
+
+        # Cheating for testing is not cheating
+        db.update_user_info(self.user_id, {'longest_streak': 4})
+        rc.psetex(self.cs_key, 1900, 4)
+
+        headers = {'X-Token': self.token}
+
+        # First log
+        payload1 = {
+            'title': 'My post 1',
+            'content': 'Here is my post 1'
+        }
+
+        response1 = self.client.post('/log', headers=headers, json=payload1)
+
+        data1 = response1.get_json()
+
+        # Verify response
+        self.assertEqual(response1.status_code, 201)
+        self.assertEqual(data1.get('new_record'), True)
+
+        # Verify current streak
+        self.assertEqual(int(rc.get(self.cs_key).decode('utf-8')), 5)
+
+        # Verify longest streak
+        user = db.find_user({'_id': ObjectId(self.user_id)})
+        self.assertEqual(user['longest_streak'], 5)
+
+        # Skip a day
+        sleep(4.1)
+
+        # Ensure current streak is dead
+        self.assertIsNone(rc.get(self.cs_key))
+
+        # Second log
+        payload2 = {
+            'title': 'My post 2',
+            'content': 'Here is my post 2'
+        }
+
+        response2 = self.client.post('/log', headers=headers, json=payload2)
+
+        data2 = response2.get_json()
+
+        # Verify response
+        self.assertEqual(response2.status_code, 201)
+        self.assertEqual(data2.get('new_record'), False)
+
+        # Verify current streak
+        self.assertEqual(int(rc.get(self.cs_key).decode('utf-8')), 1)
+
+        # Verify longest streak
+        user = db.find_user({'_id': ObjectId(self.user_id)})
+        self.assertEqual(user['longest_streak'], 5)

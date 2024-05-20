@@ -43,6 +43,8 @@ def log():
         current_streak = 0
     elif rc.ttl(cs_key) > max_allowed_ttl:
         return jsonify({'error': 'Only one post per day is allowed'}), 400
+    else:
+        current_streak = int(current_streak.decode('utf-8'))
 
     # Get data
     data = request.get_json()
@@ -85,7 +87,7 @@ def log():
 
     db.update_user_info(user_id, {
         'current_streak': new_current_streak,
-        'longest_streak': new_current_streak
+        'longest_streak': new_longest_streak
     })
 
     # Reset user's current streak key in Redis for 28h (4 seconds if testing)

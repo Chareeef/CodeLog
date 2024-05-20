@@ -41,14 +41,15 @@ class TestUpdateInfos(unittest.TestCase):
         b64_string = base64.b64encode(data_to_encode.encode()).decode('utf-8')
         cls.token = 'auth_64' + b64_string
 
-        # Store in redis for 5 seconds
-        rc.setex(cls.token, 5, cls.user_id)
+        # Store the token in redis
+        rc.set(cls.token, cls.user_id)
 
     @classmethod
     def tearDownClass(cls):
-        """Clear database
+        """Clear Mongo and Redis databases
         """
         db.clear_db()
+        rc.flushdb()
 
     def test_update_infos_with_wrong_tokem(self):
         """Test updating user's  infos with wrong authentication
