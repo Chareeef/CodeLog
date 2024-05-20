@@ -32,7 +32,6 @@ class TestUpdateInfos(unittest.TestCase):
             'username': 'albushog99',
             'email': 'dummy@yummy.choc',
             'password': 'gumbledore',
-            'current_streak': 0,
             'longest_streak': 0
         }
         cls.user_id = str(db.insert_user(infos))
@@ -122,7 +121,6 @@ class TestGetPosts(unittest.TestCase):
             'username': 'albushog99',
             'email': 'dummy@yummy.choc',
             'password': 'gumbledore',
-            'current_streak': 0,
             'longest_streak': 0
         }
         user_id = db.insert_user(infos)

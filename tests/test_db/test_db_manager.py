@@ -28,7 +28,6 @@ class TestDBStorage(unittest.TestCase):
             'username': 'Mohamed',
             'email': 'mohamed@example.com',
             'password': 'password123',
-            'current_streak': 0,
             'longest_streak': 0
 
         }
@@ -40,7 +39,6 @@ class TestDBStorage(unittest.TestCase):
 
         self.assertEqual(inserted_doc['username'], 'Mohamed')
         self.assertEqual(inserted_doc['email'], 'mohamed@example.com')
-        self.assertEqual(inserted_doc['current_streak'], 0)
         self.assertEqual(inserted_doc['longest_streak'], 0)
 
         self.assertFalse('password' in inserted_doc)
@@ -51,12 +49,10 @@ class TestDBStorage(unittest.TestCase):
             'username': 'Mohamed',
             'email': 'mohamed@example.com',
             'password': 'password123',
-            'current_streak': 0,
             'longest_streak': 0
         }
         updated_info = {
             'username': 'Mohamed123',
-            'current_streak': 2,
             'longest_streak': 2
         }
         inserted_id = self.db.insert_user(user_document)
@@ -66,7 +62,6 @@ class TestDBStorage(unittest.TestCase):
         inserted_doc = self.db.find_user({'_id': inserted_id})
 
         self.assertEqual(inserted_doc['email'], 'mohamed@example.com')
-        self.assertEqual(inserted_doc['current_streak'], 2)
         self.assertEqual(inserted_doc['longest_streak'], 2)
 
     def test_update_user_password(self):
@@ -75,7 +70,6 @@ class TestDBStorage(unittest.TestCase):
             'username': 'Mohamed',
             'email': 'mohamed@example.com',
             'password': 'oldpassword',
-            'current_streak': 0,
             'longest_streak': 0
         }
         inserted_id = self.db.insert_user(user_document)
@@ -95,7 +89,6 @@ class TestDBStorage(unittest.TestCase):
             'username': 'Mohamed',
             'email': 'mohamed@example.com',
             'password': 'oldpassword',
-            'current_streak': 0,
             'longest_streak': 0
         }
         inserted_id = self.db.insert_user(user_document)
@@ -114,7 +107,6 @@ class TestDBStorage(unittest.TestCase):
             'username': 'Mohamed',
             'email': 'mohamed@example.com',
             'password': 'password123',
-            'current_streak': 0,
             'longest_streak': 0
         }
         inserted_user_id = self.db.insert_user(user_document)
@@ -146,7 +138,6 @@ class TestDBStorage(unittest.TestCase):
             'username': 'Mohamed',
             'email': 'mohamed@example.com',
             'password': 'password123',
-            'current_streak': 0,
             'longest_streak': 0
         }
         inserted_user_id = self.db.insert_user(user_document)
@@ -187,7 +178,6 @@ class TestDBStorage(unittest.TestCase):
             'username': 'Mohamed',
             'email': 'mohamed@example.com',
             'password': 'password123',
-            'current_streak': 0,
             'longest_streak': 0
         }
         inserted_user_id = self.db.insert_user(user_document)
@@ -222,7 +212,6 @@ class TestDBStorage(unittest.TestCase):
             'username': 'Mohamed',
             'email': 'mohamed@example.com',
             'password': 'password123',
-            'current_streak': 0,
             'longest_streak': 0
         }
         inserted_user_id = self.db.insert_user(user_document)

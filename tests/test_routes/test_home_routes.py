@@ -30,7 +30,6 @@ class TestCreateLog(unittest.TestCase):
             'username': 'albushog99',
             'email': 'dummy@yummy.choc',
             'password': 'gumbledore',
-            'current_streak': 0,
             'longest_streak': 0
         }
         cls.user_id = str(db.insert_user(infos))
@@ -43,11 +42,19 @@ class TestCreateLog(unittest.TestCase):
         # Store in redis for 5 seconds
         rc.setex(cls.token, 5, cls.user_id)
 
+        # Define current streak ken in Redis
+        cls.cs_key = 'albushog99_CS'
+
     @classmethod
     def tearDownClass(cls):
         """Clear database
         """
         db.clear_db()
+
+    def tearDown(self):
+        """Delete current streak key from Redis after each test
+        """
+        rc.delete(self.cs_key)
 
     def test_create_private_log(self):
         """Test posting a private entry
@@ -83,6 +90,13 @@ class TestCreateLog(unittest.TestCase):
         self.assertEqual(post.get('datePosted').strftime('%Y/%m/%d %H:%M:%S'),
                          data['datePosted'])
 
+        # Verify current streak
+        self.assertEqual(int(rc.get(self.cs_key).decode('utf-8')), 1)
+
+        # Verify longest streak
+        user = db.find_user({'_id': ObjectId(self.user_id)})
+        self.assertEqual(user['longest_streak'], 1)
+
     def test_create_public_log(self):
         """Test posting a public entry
         """
@@ -110,13 +124,19 @@ class TestCreateLog(unittest.TestCase):
         # Verify that the log was stored in MongoDB
         post = db.find_post({'_id': ObjectId(data.get('_id'))})
 
-        # TODO: Use ObjectId
         self.assertEqual(post.get('user_id'), data['user_id'])
         self.assertEqual(post.get('title'), data['title'])
         self.assertEqual(post.get('content'), data['content'])
         self.assertEqual(post.get('is_public'), data['is_public'])
         self.assertEqual(post.get('datePosted').strftime('%Y/%m/%d %H:%M:%S'),
                          data['datePosted'])
+
+        # Verify current streak
+        self.assertEqual(int(rc.get(self.cs_key).decode('utf-8')), 1)
+
+        # Verify longest streak
+        user = db.find_user({'_id': ObjectId(self.user_id)})
+        self.assertEqual(user['longest_streak'], 1)
 
     def test_with_wrong_auth(self):
         """Test with wrong authentication

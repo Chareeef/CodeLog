@@ -21,6 +21,19 @@ def log():
     if not user_id:
         return jsonify({'error': 'Unauthorized'}), 404
 
+    # First, only allow one post in a 20h interval
+
+    # Get the user
+    user = db.find_user({'_id': ObjectId(user_id)})
+
+    # Check current streak
+    cs_key = f"{user['username']}_CS"  # current streak key in Redis
+    current_streak = rc.get(cs_key)
+    if not current_streak:
+        current_streak = 0
+    elif rc.ttl(cs_key) > 8 * 3600:
+        return jsonify({'error': 'Only one post per day is allowed'}), 400
+
     # Get data
     data = request.get_json()
 
@@ -38,9 +51,6 @@ def log():
     elif not entry['content']:
         return jsonify({'error': 'Missing content'}), 400
 
-    # Get the user
-    user = db.find_user({'_id': ObjectId(user_id)})
-
     # Store this log in MongoDB
     db.insert_post(entry)
 
@@ -56,7 +66,8 @@ def log():
     response['new_record'] = False
 
     # Update user's current streak, and longest streak if applicable
-    new_current_streak = user['current_streak'] + 1
+    new_current_streak = current_streak + 1
+
     new_longest_streak = user['longest_streak']
     if new_current_streak > new_longest_streak:
         new_longest_streak = new_current_streak
@@ -68,8 +79,7 @@ def log():
     })
 
     # Reset user's current streak token in Redis for 28h
-
-    # Recreate block entries token for this user in Redis for 20h
+    rc.setex(cs_key, 28 * 3600, new_current_streak)
 
     # Return response
     return jsonify(response), 201

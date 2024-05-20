@@ -31,7 +31,6 @@ class TestRegister(unittest.TestCase):
             'email': 'lumos@poud.com',
             'username': 'albushog99',
             'password': 'gumbledore',
-            'current_streak': 0,
             'longest_streak': 0
         }
         db.insert_user(infos)
@@ -64,7 +63,6 @@ class TestRegister(unittest.TestCase):
 
         self.assertEqual(user.get('email'), infos['email'])
         self.assertEqual(user.get('username'), infos['username'])
-        self.assertEqual(user.get('current_streak'), 0)
         self.assertEqual(user.get('longest_streak'), 0)
 
         time_fmt = '%Y/%m/%d %H:%M:%S'
