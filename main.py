@@ -20,7 +20,7 @@ def create_app(config=Config):
     # Register blueprints
     app.register_blueprint(auth_bp)
     app.register_blueprint(home_bp)
-    app.register_blueprint(profile_bp, url_prefix='/user')
+    app.register_blueprint(profile_bp, url_prefix='/me')
 
     return app
 

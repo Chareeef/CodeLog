@@ -54,7 +54,7 @@ class TestUpdateInfos(unittest.TestCase):
     def test_update_infos_with_wrong_tokem(self):
         """Test updating user's  infos with wrong authentication
         """
-        response = self.client.put('/user/update_infos', headers={
+        response = self.client.put('/me/update_infos', headers={
             'X-Token': self.token + 'k'
         })
         data = response.get_json()
@@ -71,7 +71,7 @@ class TestUpdateInfos(unittest.TestCase):
                      'username': 'phoenix00',
                      'age': 348
                      }
-        response = self.client.put('/user/update_infos',
+        response = self.client.put('/me/update_infos',
                                    headers=headers,
                                    json=to_update)
 
@@ -86,7 +86,7 @@ class TestUpdateInfos(unittest.TestCase):
         """
         headers = {'X-Token': self.token}
         to_update = {'email': 'albus@poud.com', 'username': 'phoenix00'}
-        response = self.client.put('/user/update_infos',
+        response = self.client.put('/me/update_infos',
                                    headers=headers,
                                    json=to_update)
 
@@ -173,7 +173,7 @@ class TestGetPosts(unittest.TestCase):
     def test_get_posts_with_wrong_token(self):
         """Test getting posts with wrong authentication
         """
-        response = self.client.get('/user/posts', headers={
+        response = self.client.get('/me/posts', headers={
             'X-Token': self.token + 'k'
         })
         data = response.get_json()
@@ -185,7 +185,7 @@ class TestGetPosts(unittest.TestCase):
     def test_get_posts(self):
         """Test successefully getting posts
         """
-        response = self.client.get('/user/posts', headers={
+        response = self.client.get('/me/posts', headers={
             'X-Token': self.token
         })
         data = response.get_json()
