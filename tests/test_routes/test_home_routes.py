@@ -54,8 +54,10 @@ class TestCreateLog(unittest.TestCase):
         rc.flushdb()
 
     def tearDown(self):
-        """Delete current streak key from Redis after each test
+        """Reset streaks after each test
         """
+
+        # Delete current streak key from Redis
         rc.delete(self.cs_key)
 
         # Reset longest streak to 0
