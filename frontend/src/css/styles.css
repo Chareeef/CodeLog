@@ -1,20 +1,60 @@
-  :root{
-    --primary-bold-colour: #6e2cf4;
-    --primary-light-colour: #c8b5f0; 
-
-  }
-  body {
-    font-family: "Roboto", sans-serif;
-    background-color: #dadeee;
-    display: flex;
-    align-items: center;
-  }
-h1 {
-  color: var(--primary-bold-colour)
-  justify-content:  
+:root {
+  --primary-bold-colour: #6e2cf4;
+  --primary-light-colour: #c8b5f0;
 }
-.container {
+
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: #dadeee;
   display: flex;
   align-items: center;
-  padding: 25px;
+  justify-content: center;
+  height: 100vh;
+
+}
+
+h1 {
+  color: var(--primary-bold-colour);
+  text-align: center;
+}
+.signup-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: white;
+  padding: 100px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 150%;
+}
+
+.signup-form input {
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+button {
+  margin: 10px 0;
+  padding: 12px;
+  background-color: var(--primary-bold-colour);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 75%;
+}
+
+button:hover {
+  background-color: var(--primary-light-colour);
 }

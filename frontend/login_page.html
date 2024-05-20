@@ -13,29 +13,29 @@
     <link rel="stylesheet" href="src/css/styles.css" />
   </head>
   <body>
-    <div class="container" id="entire_container">
-      <div class="signup_container">
+    <div class="container" id="entire-container">
+      <div class="signup-container">
         <h1>Sign Up</h1>
-        <form class="signup_form">
-          <input type="text" placeholder="Username" />
-          <input type="text" placeholder="Email Address" />
+        <form class="signup-form">
+          <input type="text" placeholder="Username" class="username-input"/>
+          <input type="text" placeholder="Email Address" class="emailaddress-input" />
           <input
             type="text"
-            id="username"
-            name="username"
-            placeholder="Username"
-            pattern="[A-Za-z0-9_@./#&+-]{5,20}"
-            title="Username must be 5-20 characters long and can include letters, numbers, and _ @ . / # & + -"
-          />
-          <input
-            type="text"
-            id="password"
-            name="password"
+            id="inputpassword"
+            name="inputpassword"
             placeholder="Password"
             pattern="[A-Za-z0-9_@./#&+-]{5,20}"
-            title="Username must be 5-20 characters long and can include letters, numbers, and _ @ . / # & + -"
+            title="Password must be 5-20 characters long and can include letters, numbers, and _ @ . / # & + -"
+          class="password-input"/>
+          <input
+            type="text"
+            id="confirmpassword"
+            name="confirmpassword"
+            placeholder="Confirm Password"
+            pattern="[A-Za-z0-9_@./#&+-]{5,20}"
+            title="Password must be 5-20 characters long and can include letters, numbers, and _ @ . / # & + -"
             required
-          />
+          class="confirmpassword-input"/>
           <button>Sign Up</button>
         </form>
       </div>
