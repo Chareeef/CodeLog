@@ -8,6 +8,7 @@ from db import db
 # Create home Blueprint
 home_bp = Blueprint('home_bp', __name__)
 
+
 @home_bp.route('/log', methods=['POST'])
 def log():
     """Log a new entry
