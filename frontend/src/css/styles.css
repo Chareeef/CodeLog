@@ -1,6 +1,7 @@
 :root {
   --primary-bold-colour: #6e2cf4;
   --primary-light-colour: #c8b5f0;
+  --visted-links-colour: #838383;
 }
 
 body {
@@ -57,4 +58,19 @@ button {
 
 button:hover {
   background-color: var(--primary-light-colour);
+}
+
+a {
+  text-decoration: none;
+  color: var(--primary-bold-colour);
+  padding-top: 15px;
+  font-size: smaller;
+}
+
+a:hover {
+  color: var(--primary-light-colour);
+}
+
+a:visited {
+  color: 
 }
