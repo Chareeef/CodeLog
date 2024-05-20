@@ -12,3 +12,4 @@ else:
 
 # Create Redis client
 redis_client = redis.Redis(host='localhost', port=6379, db=db_num)
+print(f'Connected to Redis successfully on port: 6379, with db: {db_num}')

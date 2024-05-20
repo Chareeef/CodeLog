@@ -2,28 +2,12 @@
 """The routes for the user space management
 """
 from flask import Blueprint, jsonify, request
-from typing import Optional
 from datetime import datetime
-from db import db, redis_client as rc
+from db import db
+from routes.utils import get_user_id
 
 # Create profile Blueprint
 profile_bp = Blueprint('profile_bp', __name__)
-
-# NOTE: These routes will maybe have @login_required when Auth is set
-
-
-def get_user_id() -> Optional[str]:
-    """Get the user's id with authentictation token
-    """
-
-    # Search Authentication token in Redis, and get user_id
-    auth_token = request.headers.get('x-token')
-    user_id = rc.get(auth_token)
-
-    if user_id:
-        return user_id.decode('utf-8')
-    else:
-        return None
 
 
 @profile_bp.route('/posts')
