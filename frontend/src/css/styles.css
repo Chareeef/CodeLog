@@ -1,3 +1,20 @@
+  :root{
+    --primary-bold-colour: #6e2cf4;
+    --primary-light-colour: #c8b5f0; 
+
+  }
+  body {
+    font-family: "Roboto", sans-serif;
+    background-color: #dadeee;
+    display: flex;
+    align-items: center;
+  }
 h1 {
-  color: red;
+  color: var(--primary-bold-colour)
+  justify-content:  
+}
+.container {
+  display: flex;
+  align-items: center;
+  padding: 25px;
 }

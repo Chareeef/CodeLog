@@ -1,12 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SWE_Journal</title>
-    <link rel="stylesheet" href="src/css/styles.css">
-</head>
-<body>
-    <h1>Hello World</h1>
-</body>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="src/css/styles.css" />
+  </head>
+  <body>
+    <div class="container" id="entire_container">
+      <div class="signup_container">
+        <h1>Sign Up</h1>
+        <form class="signup_form">
+          <input type="text" placeholder="Username" />
+          <input type="text" placeholder="Email Address" />
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Username"
+            pattern="[A-Za-z0-9_@./#&+-]{5,20}"
+            title="Username must be 5-20 characters long and can include letters, numbers, and _ @ . / # & + -"
+          />
+          <input
+            type="text"
+            id="password"
+            name="password"
+            placeholder="Password"
+            pattern="[A-Za-z0-9_@./#&+-]{5,20}"
+            title="Username must be 5-20 characters long and can include letters, numbers, and _ @ . / # & + -"
+            required
+          />
+          <button>Sign Up</button>
+        </form>
+      </div>
+    </div>
+  </body>
 </html>
