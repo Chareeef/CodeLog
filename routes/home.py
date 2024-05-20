@@ -8,16 +8,6 @@ from db import db
 # Create home Blueprint
 home_bp = Blueprint('home_bp', __name__)
 
-# NOTE: These routes will maybe have @login_required when Auth is set
-
-
-@home_bp.route('/')
-def home():
-    """Display the home page
-    """
-    return render_template('home.html')
-
-
 @home_bp.route('/log', methods=['POST'])
 def log():
     """Log a new entry
