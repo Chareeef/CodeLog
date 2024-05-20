@@ -2,6 +2,7 @@
   --primary-bold-colour: #6e2cf4;
   --primary-light-colour: #c8b5f0;
   --visted-links-colour: #838383;
+  --hover-links-colour: #4f3b78;
 }
 
 body {
@@ -11,7 +12,6 @@ body {
   align-items: center;
   justify-content: center;
   height: 100vh;
-
 }
 
 h1 {
@@ -69,12 +69,12 @@ a {
 }
 
 a:hover {
-  color: var(--primary-light-colour);
+  color: var(--hover-links-colour);
 }
 
-a:visited {
+/*a:visited {
   color: var(--visted-links-colour);
-}
+}*/
 
 .signin-container {
   display: flex;
@@ -101,4 +101,27 @@ a:visited {
   padding: 12px;
   border: 1px solid #ccc;
   border-radius: 10px;
+}
+
+.navbar {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: left;
+}
+
+.logo-icon {
+  width: 50px;
+  height: 50px;
+}
+
+.nav-link {
+  color: var(--primary-bold-colour);
+}
+
+.navbar-brand {
+  color: var(--primary-bold-colour);
 }
