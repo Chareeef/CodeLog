@@ -63,7 +63,7 @@ def update_infos():
     accepted_fields = ['email', 'username']
     for field in data.keys():
         if field not in accepted_fields:
-            return jsonify({'error': 'Update only email and/or username'}), 400
+            return jsonify({'error': 'Only update email and/or username'}), 400
 
     # Update the user's infos
     db.update_user_info(user_id, data)

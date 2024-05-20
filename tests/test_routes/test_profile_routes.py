@@ -63,7 +63,25 @@ class TestUpdateInfos(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertEqual(data, {'error': 'Unauthorized'})
 
-    def test_update_infos(self):
+    def test_update_infos_with_wrong_field(self):
+        """Test updating a wrong field
+        """
+        headers = {'X-Token': self.token}
+        to_update = {'email': 'albus@poud.com',
+                     'username': 'phoenix00',
+                     'age': 348
+                     }
+        response = self.client.put('/user/update_infos',
+                                   headers=headers,
+                                   json=to_update)
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data, {'error': 'Only update email and/or username'})
+
+    def test_update_email_and_username(self):
         """Test successefully updating user's email and username
         """
         headers = {'X-Token': self.token}
