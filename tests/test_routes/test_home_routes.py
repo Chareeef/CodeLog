@@ -56,6 +56,9 @@ class TestCreateLog(unittest.TestCase):
         """
         rc.delete(self.cs_key)
 
+        # Reset longest streak to 0
+        db.update_user_info(self.user_id, {'longest_streak': 0})
+
     def test_create_private_log(self):
         """Test posting a private entry
         """
@@ -186,3 +189,36 @@ class TestCreateLog(unittest.TestCase):
         # Verify response
         self.assertEqual(response.status_code, 400)
         self.assertEqual(data, {'error': 'Missing content'})
+
+    def test_create_two_logs(self):
+        """Test posting twice in the same day
+        """
+        headers = {'X-Token': self.token}
+
+        payload1 = {
+            'title': 'My post 1',
+            'content': 'Here is my post 1'
+        }
+
+        response1 = self.client.post('/log', headers=headers, json=payload1)
+
+        payload2 = {
+            'title': 'My post 2',
+            'content': 'Here is my post 2'
+        }
+
+        response2 = self.client.post('/log', headers=headers, json=payload2)
+
+        data2 = response2.get_json()
+
+        # Verify responses
+        self.assertEqual(response1.status_code, 201)
+        self.assertEqual(response2.status_code, 400)
+        self.assertEqual(data2, {'error': 'Only one post per day is allowed'})
+
+        # Verify current streak
+        self.assertEqual(int(rc.get(self.cs_key).decode('utf-8')), 1)
+
+        # Verify longest streak
+        user = db.find_user({'_id': ObjectId(self.user_id)})
+        self.assertEqual(user['longest_streak'], 1)
