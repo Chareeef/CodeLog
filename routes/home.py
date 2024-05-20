@@ -6,6 +6,7 @@ from datetime import datetime
 from db import db, redis_client as rc
 from flask import Blueprint, jsonify, request
 from routes.utils import get_user_id
+import os
 
 # Create home Blueprint
 home_bp = Blueprint('home_bp', __name__)
@@ -26,12 +27,21 @@ def log():
     # Get the user
     user = db.find_user({'_id': ObjectId(user_id)})
 
+    # Current streak key in Redis
+    cs_key = f"{user['username']}_CS"
+
+    # Define 20h as the minimum interval between two entries (0 < ttl < 8h)
+    # or 2 seconds when testing
+    if os.getenv('MODE') == 'TEST':
+        max_allowed_ttl = 2
+    else:
+        max_allowed_ttl = 8 * 3600
+
     # Check current streak
-    cs_key = f"{user['username']}_CS"  # current streak key in Redis
     current_streak = rc.get(cs_key)
     if not current_streak:
         current_streak = 0
-    elif rc.ttl(cs_key) > 8 * 3600:
+    elif rc.ttl(cs_key) > max_allowed_ttl:
         return jsonify({'error': 'Only one post per day is allowed'}), 400
 
     # Get data
@@ -78,8 +88,11 @@ def log():
         'longest_streak': new_current_streak
     })
 
-    # Reset user's current streak token in Redis for 28h
-    rc.setex(cs_key, 28 * 3600, new_current_streak)
+    # Reset user's current streak key in Redis for 28h (4 seconds if testing)
+    if os.getenv('MODE') == 'TEST':
+        rc.setex(cs_key, 4, new_current_streak)
+    else:
+        rc.setex(cs_key, 28 * 3600, new_current_streak)
 
     # Return response
     return jsonify(response), 201
