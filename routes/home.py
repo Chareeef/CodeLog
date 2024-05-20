@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """The Home page routes
 """
-from flask import Blueprint, jsonify, render_template, request
+from bson import ObjectId
 from datetime import datetime
-from db import db
+from db import db, redis_client as rc
+from flask import Blueprint, jsonify, request
+from routes.utils import get_user_id
 
 # Create home Blueprint
 home_bp = Blueprint('home_bp', __name__)
@@ -14,15 +16,20 @@ def log():
     """Log a new entry
     """
 
+    # Get user_id
+    user_id = get_user_id()
+    if not user_id:
+        return jsonify({'error': 'Unauthorized'}), 404
+
     # Get data
     data = request.get_json()
 
     # Retrieve the entry's infos
     entry = {
-        'user_id': 'unujj',  # TODO: current_user.id
+        'user_id': user_id,
         'title': data.get('title'),
         'content': data.get('content'),
-        'isPublic': data.get('isPublic', False),
+        'is_public': data.get('is_public', False),
         'datePosted': datetime.utcnow()
     }
 
@@ -31,18 +38,38 @@ def log():
     elif not entry['content']:
         return jsonify({'error': 'Missing content'}), 400
 
+    # Get the user
+    user = db.find_user({'_id': ObjectId(user_id)})
+
     # Store this log in MongoDB
     db.insert_post(entry)
 
-    # Update user's current streak
+    # Make response
+    response = entry.copy()
+    response['_id'] = str(response['_id'])
+    response['user_id'] = str(response['user_id'])
 
-    # Update user's longest streak if applicable
+    time_fmt = '%Y/%m/%d %H:%M:%S'
+    response['datePosted'] = response['datePosted'].strftime(time_fmt)
+
+    # Response will return if the user marks a new longest streak
+    response['new_record'] = False
+
+    # Update user's current streak, and longest streak if applicable
+    new_current_streak = user['current_streak'] + 1
+    new_longest_streak = user['longest_streak']
+    if new_current_streak > new_longest_streak:
+        new_longest_streak = new_current_streak
+        response['new_record'] = True
+
+    db.update_user_info(user_id, {
+        'current_streak': new_current_streak,
+        'longest_streak': new_current_streak
+    })
 
     # Reset user's current streak token in Redis for 28h
 
     # Recreate block entries token for this user in Redis for 20h
 
-    # Return data
-    entry['datePosted'] = entry['datePosted'].strftime('%Y/%m/%d %H:%M:%S')
-    entry['_id'] = str(entry['_id'])
-    return jsonify(entry), 201
+    # Return response
+    return jsonify(response), 201

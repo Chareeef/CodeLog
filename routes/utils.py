@@ -12,6 +12,9 @@ def get_user_id() -> Optional[str]:
 
     # Search Authentication token in Redis, and get user_id
     auth_token = request.headers.get('x-token')
+    if not auth_token:
+        return None
+
     user_id = rc.get(auth_token)
 
     if user_id:
