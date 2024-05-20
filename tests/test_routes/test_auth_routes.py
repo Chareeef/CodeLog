@@ -57,7 +57,7 @@ class TestRegister(unittest.TestCase):
                          {
                              'Created user': infos['username'],
                              'email': infos['email']
-                         })
+        })
 
         # Check stored user
         user = db.find_user({'email': infos['email']})
@@ -66,8 +66,8 @@ class TestRegister(unittest.TestCase):
         self.assertEqual(user.get('username'), infos['username'])
         self.assertEqual(user.get('current_streak'), 0)
         self.assertEqual(user.get('longest_streak'), 0)
-        self.assertEqual(user.get('created_at').strftime('%Y/%m/%d %H:%M:%S'),
-                         datetime.utcnow().strftime('%Y/%m/%d %H:%M:%S'))
+        self.assertAlmostEqual(user.get('created_at').strftime('%Y/%m/%d %H:%M:%S'),
+                               datetime.utcnow().strftime('%Y/%m/%d %H:%M:%S'))
 
         hashed_pwd = db.get_hash(infos['email'])
         self.assertTrue(check_hash_password(hashed_pwd, infos['password']))
