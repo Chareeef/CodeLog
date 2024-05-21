@@ -4,6 +4,8 @@
 from flask import Blueprint, jsonify, render_template, request
 from datetime import datetime
 from db import db
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from routes.auth import verify_token_in_redis
 
 # Create home Blueprint
 home_bp = Blueprint('home_bp', __name__)
@@ -12,10 +14,14 @@ home_bp = Blueprint('home_bp', __name__)
 
 
 @home_bp.route('/')
+@jwt_required()
+@verify_token_in_redis
 def home():
     """Display the home page
     """
-    return render_template('home.html')
+    user = get_jwt_identity()
+    if user:
+        return jsonify({'success': f'logged in as {user}'}), 200
 
 
 @home_bp.route('/log', methods=['POST'])

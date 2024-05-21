@@ -84,7 +84,7 @@ def register():
     return jsonify({'Created user': username, 'email': email}), 201
 
 
-@auth_bp.route("/login", methods=['GET', "POST"])
+@auth_bp.route("/login", methods=["POST"])
 def login():
     login_details = request.get_json()
 
@@ -149,8 +149,11 @@ def refresh():
 
 @auth_bp.route('/logout', methods=['POST'])
 @jwt_required()
+@verify_token_in_redis
 def logout():
     """ Invalidate tokens by deleting them from Redis """
     current_user = get_jwt_identity()
     rc.delete(current_user)
     rc.delete(current_user + "_refresh")
+
+    return jsonify({}), 204
