@@ -12,6 +12,22 @@ from routes.auth import verify_token_in_redis
 profile_bp = Blueprint('profile_bp', __name__)
 
 
+@profile_bp.route('/get_infos')
+@jwt_required()
+@verify_token_in_redis
+def get_infos():
+    """Get user's email and username
+    """
+
+    # Get the user
+    user_id = get_jwt_identity()
+    user = db.find_user({'_id': ObjectId(user_id)})
+
+    # Return response
+    response = {'email': user['email'], 'username': user['username']}
+    return jsonify(response)
+
+
 @profile_bp.route('/streaks')
 @jwt_required()
 @verify_token_in_redis
