@@ -5,23 +5,22 @@ from bson import ObjectId
 from flask import Blueprint, jsonify, request
 from datetime import datetime
 from db import db, redis_client as rc
-from routes.utils import get_user_id
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from routes.auth import verify_token_in_redis
 
 # Create profile Blueprint
 profile_bp = Blueprint('profile_bp', __name__)
 
 
 @profile_bp.route('/streaks')
+@jwt_required()
+@verify_token_in_redis
 def get_streaks():
     """Get user's current and longest streaks
     """
 
-    # Get user_id
-    user_id = get_user_id()
-    if not user_id:
-        return jsonify({'error': 'Unauthorized'}), 404
-
-    # Get user
+    # Get the user
+    user_id = get_jwt_identity()
     user = db.find_user({'_id': ObjectId(user_id)})
 
     # Get longest streak
@@ -42,14 +41,14 @@ def get_streaks():
 
 
 @profile_bp.route('/posts')
+@jwt_required()
+@verify_token_in_redis
 def get_posts():
     """Get the user's posts
     """
 
-    # Get user_id
-    user_id = get_user_id()
-    if not user_id:
-        return jsonify({'error': 'Unauthorized'}), 404
+    # Get the user_id
+    user_id = get_jwt_identity()
 
     # Return posts
     posts = db.find_user_posts(user_id)
@@ -62,14 +61,14 @@ def get_posts():
 
 
 @profile_bp.route('/update_infos', methods=['PUT'])
+@jwt_required()
+@verify_token_in_redis
 def update_infos():
     """Update the user's infos
     """
 
-    # Get user_id
-    user_id = get_user_id()
-    if not user_id:
-        return jsonify({'error': 'Unauthorized'}), 404
+    # Get the user_id
+    user_id = get_jwt_identity()
 
     # Get the data to update
     data = request.get_json()
