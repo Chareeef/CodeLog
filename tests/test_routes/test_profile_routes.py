@@ -13,6 +13,90 @@ import random
 import unittest
 
 
+class TestGetInfos(unittest.TestCase):
+    """Tests for 'GET /me/get_infos' route
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        """Runs once before all tests
+        """
+
+        # Create app
+        cls.app = create_app(TestConfig)
+
+        # Create client
+        cls.client = cls.app.test_client()
+
+        # Create dummy user
+        infos = {
+            'username': 'albushog99',
+            'email': 'dummy@yummy.choc',
+            'password': 'gumbledore',
+            'longest_streak': 0
+        }
+        cls.user_id = str(db.insert_user(infos))
+
+        # Create JWT Access Token
+        with cls.app.app_context():
+            cls.access_token = create_access_token(
+                identity=cls.user_id
+            )
+
+        # Store JWT Access Token
+        store_token(
+            cls.user_id,
+            cls.access_token,
+            cls.app.config["JWT_ACCESS_TOKEN_EXPIRES"]
+        )
+
+    @classmethod
+    def tearDownClass(cls):
+        """Clear Mongo and Redis databases
+        """
+        db.clear_db()
+        rc.flushdb()
+
+    def test_get_infos_with_no_token(self):
+        """Test getting infos with no authentication
+        """
+        response = self.client.get('/me/get_infos')
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(data, {'error': 'Missing Authorization Header'})
+
+    def test_get_infos_with_wrong_token(self):
+        """Test getting user's infos with wrong authentication
+        """
+        headers = {'Authorization': 'Bearer ' + self.access_token[:-2] + 'o3'}
+        response = self.client.get('/me/get_infos', headers=headers)
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(
+            data, {'error': 'The token is invalid or has expired'})
+
+    def test_get_infos_initially(self):
+        """Test getting a fresh user's infos
+        """
+        response = self.client.get('/me/get_infos', headers={
+            'Authorization': 'Bearer ' + self.access_token
+        })
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data, {
+            'email': 'dummy@yummy.choc',
+            'username': 'albushog99'
+        })
+
+
 class TestGetStreaks(unittest.TestCase):
     """Tests for 'GET /me/streaks' route
     """
