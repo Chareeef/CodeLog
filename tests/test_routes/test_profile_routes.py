@@ -79,7 +79,7 @@ class TestGetStreaks(unittest.TestCase):
 
         # Verify response
         self.assertEqual(response.status_code, 401)
-        self.assertEqual(data, {'error': 'Missing or invalid token'})
+        self.assertEqual(data, {'error': 'Missing Authorization Header'})
 
     def test_get_streaks_with_wrong_token(self):
         """Test getting user's streaks with wrong authentication
@@ -90,8 +90,9 @@ class TestGetStreaks(unittest.TestCase):
         data = response.get_json()
 
         # Verify response
-        self.assertEqual(response.status_code, 422)
-        self.assertEqual(data, {'msg': 'Signature verification failed'})
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(
+            data, {'error': 'The token is invalid or has expired'})
 
     def test_get_streaks_initially(self):
         """Test getting a fresh user's streaks
@@ -175,7 +176,7 @@ class TestUpdateInfos(unittest.TestCase):
 
         # Verify response
         self.assertEqual(response.status_code, 401)
-        self.assertEqual(data, {'error': 'Missing or invalid token'})
+        self.assertEqual(data, {'error': 'Missing Authorization Header'})
 
     def test_update_infos_with_wrong_token(self):
         """Test updating user's infos with wrong authentication
@@ -186,8 +187,9 @@ class TestUpdateInfos(unittest.TestCase):
         data = response.get_json()
 
         # Verify response
-        self.assertEqual(response.status_code, 422)
-        self.assertEqual(data, {'msg': 'Signature verification failed'})
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(
+            data, {'error': 'The token is invalid or has expired'})
 
     def test_update_infos_with_wrong_field(self):
         """Test updating a wrong field
@@ -310,7 +312,7 @@ class TestGetPosts(unittest.TestCase):
 
         # Verify response
         self.assertEqual(response.status_code, 401)
-        self.assertEqual(data, {'error': 'Missing or invalid token'})
+        self.assertEqual(data, {'error': 'Missing Authorization Header'})
 
     def test_get_posts_with_wrong_token(self):
         """Test getting posts with wrong authentication
@@ -321,8 +323,9 @@ class TestGetPosts(unittest.TestCase):
         data = response.get_json()
 
         # Verify response
-        self.assertEqual(response.status_code, 422)
-        self.assertEqual(data, {'msg': 'Signature verification failed'})
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(
+            data, {'error': 'The token is invalid or has expired'})
 
     def test_get_posts(self):
         """Test successefully getting posts

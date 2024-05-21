@@ -27,7 +27,7 @@ def home():
     if user:
         return jsonify({'success': f'logged in as {user}'}), 200
 
-      
+
 @home_bp.route('/log', methods=['POST'])
 @jwt_required()
 @verify_token_in_redis

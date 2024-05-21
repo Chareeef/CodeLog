@@ -3,11 +3,11 @@
 """
 import os
 import secrets
-#from dotenv import load_dotenv
+from dotenv import load_dotenv
 import datetime
 
 # Load '.env' file
-#load_dotenv()
+load_dotenv()
 
 
 class Config:

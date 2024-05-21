@@ -165,7 +165,7 @@ class TestCreateLog(unittest.TestCase):
 
         # Verify response
         self.assertEqual(response.status_code, 401)
-        self.assertEqual(data, {'error': 'Missing or invalid token'})
+        self.assertEqual(data, {'error': 'Missing Authorization Header'})
 
     def test_with_wrong_auth(self):
         """Test with wrong authentication
@@ -181,8 +181,9 @@ class TestCreateLog(unittest.TestCase):
         data = response.get_json()
 
         # Verify response
-        self.assertEqual(response.status_code, 422)
-        self.assertEqual(data, {'msg': 'Signature verification failed'})
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(
+            data, {'error': 'The token is invalid or has expired'})
 
     def test_with_missing_title(self):
         """Test with missing title
