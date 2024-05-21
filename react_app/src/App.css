@@ -1,3 +1,9 @@
 div{
   font-family: Reem Kufi;
 }
+.container{
+  margin-top: 60px; /* Adjust this value to match the height of your navbar */
+    padding: 20px;
+
+}
+
