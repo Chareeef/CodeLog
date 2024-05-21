@@ -150,7 +150,7 @@ def login():
             ), 200
 
     # Return an error if credentials were wrong
-    return jsonify({'error': 'The username or password is incorrect'}), 401
+    return jsonify({'error': 'The email and/or password are incorrect'}), 401
 
 
 @auth_bp.route('/refresh', methods=['POST'])

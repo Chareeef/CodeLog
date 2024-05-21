@@ -186,7 +186,7 @@ class LoginTests(unittest.TestCase):
 
         self.assertEqual(res.status_code, 401)
         self.assertEqual(
-            data, {'error': 'The username or password is incorrect'}
+            data, {'error': 'The email and/or password are incorrect'}
         )
         self.assertNotIn('access_token', data)
         self.assertNotIn('refresh_token', data)
@@ -203,7 +203,7 @@ class LoginTests(unittest.TestCase):
 
         self.assertEqual(res.status_code, 401)
         self.assertEqual(
-            data, {'error': 'The username or password is incorrect'}
+            data, {'error': 'The email and/or password are incorrect'}
         )
         self.assertNotIn('access_token', data)
         self.assertNotIn('refresh_token', data)
