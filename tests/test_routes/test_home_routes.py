@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Module to test the home page routes
 """
-import base64
 from bson import ObjectId
 from config import TestConfig
 from datetime import datetime
 from db import db, redis_client as rc
+from flask_jwt_extended import create_access_token
+from routes.auth import store_token
 from main import create_app
 from time import sleep
 import unittest
@@ -35,13 +36,18 @@ class TestCreateLog(unittest.TestCase):
         }
         cls.user_id = str(db.insert_user(infos))
 
-        # Create Authentication token
-        data_to_encode = 'dummy@yummy.choc:gumbledore'
-        b64_string = base64.b64encode(data_to_encode.encode()).decode('utf-8')
-        cls.token = 'auth_64' + b64_string
+        # Create JWT Access Token
+        with cls.app.app_context():
+            cls.access_token = create_access_token(
+                identity=cls.user_id
+            )
 
-        # Store token in redis
-        rc.set(cls.token, cls.user_id)
+        # Store JWT Access Token
+        store_token(
+            cls.user_id,
+            cls.access_token,
+            cls.app.config["JWT_ACCESS_TOKEN_EXPIRES"]
+        )
 
         # Define current streak ken in Redis
         cls.cs_key = 'albushog99_CS'
@@ -66,7 +72,7 @@ class TestCreateLog(unittest.TestCase):
     def test_create_private_log(self):
         """Test posting a private entry
         """
-        headers = {'X-Token': self.token}
+        headers = {'Authorization': 'Bearer ' + self.access_token}
         payload = {
             'title': 'My post',
             'content': 'Here is my post'
@@ -107,7 +113,7 @@ class TestCreateLog(unittest.TestCase):
     def test_create_public_log(self):
         """Test posting a public entry
         """
-        headers = {'X-Token': self.token}
+        headers = {'Authorization': 'Bearer ' + self.access_token}
         payload = {
             'title': 'My post',
             'content': 'Here is my post',
@@ -145,10 +151,26 @@ class TestCreateLog(unittest.TestCase):
         user = db.find_user({'_id': ObjectId(self.user_id)})
         self.assertEqual(user['longest_streak'], 1)
 
+    def test_with_no_auth(self):
+        """Test with no authentication
+        """
+        payload = {
+            'title': 'My Post',
+            'content': 'Here is my post'
+        }
+
+        response = self.client.post('/log', json=payload)
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(data, {'error': 'Missing Authorization Header'})
+
     def test_with_wrong_auth(self):
         """Test with wrong authentication
         """
-        headers = {'X-Token': self.token + '123'}
+        headers = {'Authorization': 'Bearer ' + self.access_token[:-2] + 'o3'}
         payload = {
             'title': 'My Post',
             'content': 'Here is my post'
@@ -159,13 +181,14 @@ class TestCreateLog(unittest.TestCase):
         data = response.get_json()
 
         # Verify response
-        self.assertEqual(response.status_code, 404)
-        self.assertEqual(data, {'error': 'Unauthorized'})
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(
+            data, {'error': 'The token is invalid or has expired'})
 
     def test_with_missing_title(self):
         """Test with missing title
         """
-        headers = {'X-Token': self.token}
+        headers = {'Authorization': 'Bearer ' + self.access_token}
         payload = {
             'content': 'Here is my post'
         }
@@ -181,7 +204,7 @@ class TestCreateLog(unittest.TestCase):
     def test_with_missing_content(self):
         """Test with missing content
         """
-        headers = {'X-Token': self.token}
+        headers = {'Authorization': 'Bearer ' + self.access_token}
         payload = {
             'title': 'My post'
         }
@@ -197,7 +220,7 @@ class TestCreateLog(unittest.TestCase):
     def test_create_two_logs_in_correct_interval(self):
         """Test posting twice in different days
         """
-        headers = {'X-Token': self.token}
+        headers = {'Authorization': 'Bearer ' + self.access_token}
 
         # First log
         payload1 = {
@@ -236,7 +259,7 @@ class TestCreateLog(unittest.TestCase):
     def test_create_two_logs_in_wrong_interval(self):
         """Test posting twice in the same day
         """
-        headers = {'X-Token': self.token}
+        headers = {'Authorization': 'Bearer ' + self.access_token}
 
         # First log
         payload1 = {
@@ -276,7 +299,7 @@ class TestCreateLog(unittest.TestCase):
         db.update_user_info(self.user_id, {'longest_streak': 4})
         rc.psetex(self.cs_key, 1900, 4)
 
-        headers = {'X-Token': self.token}
+        headers = {'Authorization': 'Bearer ' + self.access_token}
 
         # First log
         payload1 = {

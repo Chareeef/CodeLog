@@ -7,7 +7,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from routes.auth import verify_token_in_redis
 from db import db, redis_client as rc
 from flask import Blueprint, jsonify, request
-from routes.utils import get_user_id
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from routes.auth import verify_token_in_redis
 import os
 
 # Create home Blueprint
@@ -26,21 +27,19 @@ def home():
     if user:
         return jsonify({'success': f'logged in as {user}'}), 200
 
-      
+
 @home_bp.route('/log', methods=['POST'])
+@jwt_required()
+@verify_token_in_redis
 def log():
     """Log a new entry
     """
 
-    # Get user_id
-    user_id = get_user_id()
-    if not user_id:
-        return jsonify({'error': 'Unauthorized'}), 404
+    # Get the user
+    user_id = get_jwt_identity()
+    user = db.find_user({'_id': ObjectId(user_id)})
 
     # First, only allow one post in a 20h interval
-
-    # Get the user
-    user = db.find_user({'_id': ObjectId(user_id)})
 
     # Current streak key in Redis
     cs_key = f"{user['username']}_CS"
@@ -92,24 +91,22 @@ def log():
     # Response will return if the user marks a new longest streak
     response['new_record'] = False
 
-    # Update user's current streak, and longest streak if applicable
+    # Reset user's current streak key in Redis for 28h (4 seconds if testing)
     new_current_streak = current_streak + 1
+    if os.getenv('MODE') == 'TEST':
+        rc.setex(cs_key, 4, new_current_streak)
+    else:
+        rc.setex(cs_key, 28 * 3600, new_current_streak)
 
+    # Update user's longest streak if applicable
     new_longest_streak = user['longest_streak']
     if new_current_streak > new_longest_streak:
         new_longest_streak = new_current_streak
         response['new_record'] = True
 
     db.update_user_info(user_id, {
-        'current_streak': new_current_streak,
         'longest_streak': new_longest_streak
     })
-
-    # Reset user's current streak key in Redis for 28h (4 seconds if testing)
-    if os.getenv('MODE') == 'TEST':
-        rc.setex(cs_key, 4, new_current_streak)
-    else:
-        rc.setex(cs_key, 28 * 3600, new_current_streak)
 
     # Return response
     return jsonify(response), 201

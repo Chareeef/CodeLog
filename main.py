@@ -16,7 +16,7 @@ def create_app(config=Config):
     jwt = JWTManager(app)
 
     # Set configuration
-    app.config.from_object(Config)
+    app.config.from_object(config)
 
     # Disable strict slashes
     app.url_map.strict_slashes = False
@@ -28,10 +28,14 @@ def create_app(config=Config):
 
     @jwt.invalid_token_loader
     def unauthorized_response(callback):
+        """Return an error if invalid JWT
+        """
         return jsonify({'error': 'The token is invalid or has expired'}), 401
 
     @jwt.unauthorized_loader
     def unauthorized_callback(error):
+        """Return an error if missing JWT
+        """
         return jsonify({'error': 'Missing Authorization Header'}), 401
 
     return app
