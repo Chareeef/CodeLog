@@ -28,11 +28,17 @@ def create_app(config=Config):
 
     @jwt.invalid_token_loader
     def unauthorized_response(callback):
+<<<<<<< HEAD
         return jsonify({'error': 'The token is invalid or has expired'}), 401
 
     @jwt.unauthorized_loader
     def unauthorized_callback(error):
         return jsonify({'error': 'Missing Authorization Header'}), 401
+=======
+        """Return an error if missing or invalid JWT
+        """
+        return jsonify({'error': 'Missing or invalid token'}), 401
+>>>>>>> fix: add comments for JWT
 
     return app
 
