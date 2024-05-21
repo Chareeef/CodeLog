@@ -7,7 +7,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from routes.auth import verify_token_in_redis
 from db import db, redis_client as rc
 from flask import Blueprint, jsonify, request
-from routes.utils import get_user_id
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from routes.auth import verify_token_in_redis
 import os
 
 # Create home Blueprint
@@ -28,19 +29,17 @@ def home():
 
       
 @home_bp.route('/log', methods=['POST'])
+@jwt_required()
+@verify_token_in_redis
 def log():
     """Log a new entry
     """
 
-    # Get user_id
-    user_id = get_user_id()
-    if not user_id:
-        return jsonify({'error': 'Unauthorized'}), 404
+    # Get the user
+    user_id = get_jwt_identity()
+    user = db.find_user({'_id': ObjectId(user_id)})
 
     # First, only allow one post in a 20h interval
-
-    # Get the user
-    user = db.find_user({'_id': ObjectId(user_id)})
 
     # Current streak key in Redis
     cs_key = f"{user['username']}_CS"
