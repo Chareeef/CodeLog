@@ -1,0 +1,127 @@
+:root {
+  --primary-bold-colour: #6e2cf4;
+  --primary-light-colour: #c8b5f0;
+  --visted-links-colour: #838383;
+  --hover-links-colour: #4f3b78;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: #dadeee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+h1 {
+  color: var(--primary-bold-colour);
+  text-align: center;
+}
+
+.signup-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: white;
+  padding: 100px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 150%;
+}
+
+.signup-form input {
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+button {
+  margin: 10px 0;
+  padding: 12px;
+  background-color: var(--primary-bold-colour);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 75%;
+}
+
+button:hover {
+  background-color: var(--primary-light-colour);
+}
+
+a {
+  text-decoration: none;
+  color: var(--primary-bold-colour);
+  padding-top: 15px;
+  font-size: smaller;
+}
+
+a:hover {
+  color: var(--hover-links-colour);
+}
+
+/*a:visited {
+  color: var(--visted-links-colour);
+}*/
+
+.signin-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: white;
+  padding: 100px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.signin-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 150%;
+}
+
+.signin-form input {
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.navbar {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: left;
+}
+
+.logo-icon {
+  width: 50px;
+  height: 50px;
+}
+
+.nav-link {
+  color: var(--primary-bold-colour);
+}
+
+.navbar-brand {
+  color: var(--primary-bold-colour);
+}
