@@ -3,6 +3,8 @@
 """
 from bson import ObjectId
 from datetime import datetime
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from routes.auth import verify_token_in_redis
 from db import db, redis_client as rc
 from flask import Blueprint, jsonify, request
 from routes.utils import get_user_id
@@ -11,7 +13,20 @@ import os
 # Create home Blueprint
 home_bp = Blueprint('home_bp', __name__)
 
+# NOTE: These routes will maybe have @login_required when Auth is set
 
+
+@home_bp.route('/')
+@jwt_required()
+@verify_token_in_redis
+def home():
+    """Display the home page
+    """
+    user = get_jwt_identity()
+    if user:
+        return jsonify({'success': f'logged in as {user}'}), 200
+
+      
 @home_bp.route('/log', methods=['POST'])
 def log():
     """Log a new entry

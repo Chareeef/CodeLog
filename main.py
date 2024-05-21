@@ -26,9 +26,13 @@ def create_app(config=Config):
     app.register_blueprint(home_bp)
     app.register_blueprint(profile_bp, url_prefix='/me')
 
-    @jwt.unauthorized_loader
+    @jwt.invalid_token_loader
     def unauthorized_response(callback):
-        return jsonify({'error': 'Missing or invalid token'}), 401
+        return jsonify({'error': 'The token is invalid or has expired'}), 401
+
+    @jwt.unauthorized_loader
+    def unauthorized_callback(error):
+        return jsonify({'error': 'Missing Authorization Header'}), 401
 
     return app
 
