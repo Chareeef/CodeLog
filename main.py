@@ -16,7 +16,7 @@ def create_app(config=Config):
     jwt = JWTManager(app)
 
     # Set configuration
-    app.config.from_object(Config)
+    app.config.from_object(config)
 
     # Disable strict slashes
     app.url_map.strict_slashes = False
