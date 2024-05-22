@@ -90,6 +90,7 @@ class TestCreateLog(unittest.TestCase):
         self.assertEqual(data.get('content'), 'Here is my post')
         self.assertEqual(data.get('is_public'), False)
         self.assertEqual(data.get('new_record'), True)
+        self.assertNotIn('number_of_likes', data)
         self.assertNotIn('likes', data)
         self.assertNotIn('comments', data)
         self.assertEqual(data.get('datePosted'),
@@ -102,7 +103,8 @@ class TestCreateLog(unittest.TestCase):
         self.assertEqual(post.get('title'), data['title'])
         self.assertEqual(post.get('content'), data['content'])
         self.assertEqual(post.get('is_public'), data['is_public'])
-        self.assertEqual(post.get('likes'), 0)
+        self.assertEqual(post.get('number_of_likes'), 0)
+        self.assertEqual(post.get('likes'), [])
         self.assertEqual(post.get('comments'), [])
         self.assertEqual(post.get('datePosted').strftime('%Y/%m/%d %H:%M:%S'),
                          data['datePosted'])
@@ -136,6 +138,7 @@ class TestCreateLog(unittest.TestCase):
         self.assertEqual(data.get('content'), 'Here is my post')
         self.assertEqual(data.get('is_public'), True)
         self.assertEqual(data.get('new_record'), True)
+        self.assertNotIn('number_of_likes', data)
         self.assertNotIn('likes', data)
         self.assertNotIn('comments', data)
         self.assertEqual(data.get('datePosted'),
@@ -148,7 +151,8 @@ class TestCreateLog(unittest.TestCase):
         self.assertEqual(post.get('title'), data['title'])
         self.assertEqual(post.get('content'), data['content'])
         self.assertEqual(post.get('is_public'), data['is_public'])
-        self.assertEqual(post.get('likes'), 0)
+        self.assertEqual(post.get('number_of_likes'), 0)
+        self.assertEqual(post.get('likes'), [])
         self.assertEqual(post.get('comments'), [])
         self.assertEqual(post.get('datePosted').strftime('%Y/%m/%d %H:%M:%S'),
                          data['datePosted'])

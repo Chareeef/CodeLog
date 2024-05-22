@@ -69,7 +69,8 @@ def log():
         'title': data.get('title'),
         'content': data.get('content'),
         'is_public': data.get('is_public', False),
-        'likes': 0,
+        'likes': [],
+        'number_of_likes': 0,
         'comments': [],
         'datePosted': datetime.utcnow()
     }
@@ -86,6 +87,7 @@ def log():
     response = entry.copy()
     response['_id'] = str(response['_id'])
     response['user_id'] = str(response['user_id'])
+    del response['number_of_likes']
     del response['likes']
     del response['comments']
 
