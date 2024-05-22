@@ -3,7 +3,7 @@
 """
 from flask import Flask, jsonify
 from config import Config
-from routes import auth_bp, home_bp, profile_bp
+from routes import auth_bp, home_bp, profile_bp, feed_bp
 from flask_jwt_extended import JWTManager
 
 
@@ -24,6 +24,7 @@ def create_app(config=Config):
     # Register blueprints
     app.register_blueprint(auth_bp)
     app.register_blueprint(home_bp)
+    app.register_blueprint(feed_bp, url_prefix='/feed')
     app.register_blueprint(profile_bp, url_prefix='/me')
 
     @jwt.invalid_token_loader
