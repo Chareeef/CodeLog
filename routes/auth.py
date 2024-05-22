@@ -11,7 +11,7 @@ from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity,
     create_refresh_token,
-    )
+)
 
 
 # Create auth Blueprint
@@ -19,14 +19,21 @@ auth_bp = Blueprint('auth_bp', __name__)
 
 
 def store_token(token_key, token, ttl_seconds):
+    """Store JWT in redis
+    """
     rc.setex(token_key, ttl_seconds, token)
 
 
 def is_token_expired(token_key):
+    """Check if a JWT is stored and alive in Redis
+    """
     return rc.exists(token_key)
 
 
 def verify_token_in_redis(func):
+    """Decorator to ensure a JWT presence
+    """
+
     @wraps(func)
     def valid_token(*args, **kwargs):
         identity = get_jwt_identity()
@@ -35,6 +42,7 @@ def verify_token_in_redis(func):
             return jsonify({"error": "Token has been revoked"}), 401
 
         return func(*args, **kwargs)
+
     return valid_token
 
 
@@ -75,7 +83,6 @@ def register():
         'username': username,
         'password': password,
         'created_at': datetime.utcnow(),
-        'current_streak': 0,
         'longest_streak': 0
     }
     db.insert_user(doc)
@@ -86,38 +93,55 @@ def register():
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
+    """Log in a user creating a JWT for him
+    """
     login_details = request.get_json()
 
+    # Verify that an email was sent
     email = login_details.get('email')
     if not email:
         return jsonify({'error': 'Missing email'}), 400
 
+    # Verify that a password was sent
     password = login_details.get('password')
     if not password:
         return jsonify({'error': 'Missing password'}), 400
 
+    # Get the user
     user_from_db = db.find_user({'email': email})
 
     if user_from_db:
+
+        # Check that the password is correct
         hashed_password = db.get_hash(email)
         verified = bcrypt.checkpw(password.encode('utf-8'), hashed_password)
         if verified:
+
+            # Create JWT Access Token
             access_token = create_access_token(
                 identity=str(user_from_db['_id'])
             )
+
+            # Create JWT Refresh Token
             refresh_token = create_refresh_token(
                 identity=str(user_from_db['_id'])
             )
+
+            # Store JWT Access Token
             store_token(
                 str(user_from_db['_id']),
                 access_token,
                 current_app.config["JWT_ACCESS_TOKEN_EXPIRES"]
             )
+
+            # Store JWT Refresh Token
             store_token(
                 str(user_from_db['_id']) + "_refresh",
                 refresh_token,
                 current_app.config["JWT_REFRESH_TOKEN_EXPIRES"]
             )
+
+            # Return both JWTs as a response
             return jsonify(
                 {
                     'access_token': access_token,
@@ -125,25 +149,34 @@ def login():
                 }
             ), 200
 
-    return jsonify({'error': 'The username or password is incorrect'}), 401
+    # Return an error if credentials were wrong
+    return jsonify({'error': 'The email and/or password are incorrect'}), 401
 
 
 @auth_bp.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)
 def refresh():
-    current_user = get_jwt_identity()
-    key = current_user + '_refresh'
+    """Refresh the current user's JWT
+    """
 
+    # Get the JWT identity of the current user
+    current_user = get_jwt_identity()
+
+    # Check JWT Refresh token
+    key = current_user + '_refresh'
     if not is_token_expired(key):
         return jsonify({"error": "Token has been revoked"}), 401
 
+    # Create and store a new JWT Access token
     new_access_token = create_access_token(identity=current_user)
+
     store_token(
         current_user,
         new_access_token,
         current_app.config["JWT_ACCESS_TOKEN_EXPIRES"]
     )
 
+    # Return the new JWT Access Token
     return jsonify({'new_access_token': new_access_token}), 200
 
 
@@ -151,7 +184,8 @@ def refresh():
 @jwt_required()
 @verify_token_in_redis
 def logout():
-    """ Invalidate tokens by deleting them from Redis """
+    """Invalidate JWTs by deleting them from Redis
+    """
     current_user = get_jwt_identity()
     rc.delete(current_user)
     rc.delete(current_user + "_refresh")

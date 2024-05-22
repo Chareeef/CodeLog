@@ -16,7 +16,7 @@ def create_app(config=Config):
     jwt = JWTManager(app)
 
     # Set configuration
-    app.config.from_object(Config)
+    app.config.from_object(config)
 
     # Disable strict slashes
     app.url_map.strict_slashes = False
@@ -25,14 +25,18 @@ def create_app(config=Config):
     app.register_blueprint(auth_bp)
     app.register_blueprint(home_bp)
     app.register_blueprint(feed_bp, url_prefix='/feed')
-    app.register_blueprint(profile_bp, url_prefix='/user')
+    app.register_blueprint(profile_bp, url_prefix='/me')
 
     @jwt.invalid_token_loader
     def unauthorized_response(callback):
+        """Return an error if invalid JWT
+        """
         return jsonify({'error': 'The token is invalid or has expired'}), 401
 
     @jwt.unauthorized_loader
     def unauthorized_callback(error):
+        """Return an error if missing JWT
+        """
         return jsonify({'error': 'Missing Authorization Header'}), 401
 
     return app

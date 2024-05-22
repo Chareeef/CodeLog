@@ -31,7 +31,6 @@ class TestRegister(unittest.TestCase):
             'email': 'lumos@poud.com',
             'username': 'albushog99',
             'password': 'gumbledore',
-            'current_streak': 0,
             'longest_streak': 0
         }
         db.insert_user(infos)
@@ -57,17 +56,18 @@ class TestRegister(unittest.TestCase):
                          {
                              'Created user': infos['username'],
                              'email': infos['email']
-                         })
+        })
 
         # Check stored user
         user = db.find_user({'email': infos['email']})
 
         self.assertEqual(user.get('email'), infos['email'])
         self.assertEqual(user.get('username'), infos['username'])
-        self.assertEqual(user.get('current_streak'), 0)
         self.assertEqual(user.get('longest_streak'), 0)
-        self.assertEqual(user.get('created_at').strftime('%Y/%m/%d %H:%M:%S'),
-                         datetime.utcnow().strftime('%Y/%m/%d %H:%M:%S'))
+
+        time_fmt = '%Y/%m/%d %H:%M:%S'
+        self.assertEqual(user.get('created_at').strftime(time_fmt),
+                         datetime.utcnow().strftime(time_fmt))
 
         hashed_pwd = db.get_hash(infos['email'])
         self.assertTrue(check_hash_password(hashed_pwd, infos['password']))
@@ -186,7 +186,7 @@ class LoginTests(unittest.TestCase):
 
         self.assertEqual(res.status_code, 401)
         self.assertEqual(
-            data, {'error': 'The username or password is incorrect'}
+            data, {'error': 'The email and/or password are incorrect'}
         )
         self.assertNotIn('access_token', data)
         self.assertNotIn('refresh_token', data)
@@ -203,7 +203,7 @@ class LoginTests(unittest.TestCase):
 
         self.assertEqual(res.status_code, 401)
         self.assertEqual(
-            data, {'error': 'The username or password is incorrect'}
+            data, {'error': 'The email and/or password are incorrect'}
         )
         self.assertNotIn('access_token', data)
         self.assertNotIn('refresh_token', data)

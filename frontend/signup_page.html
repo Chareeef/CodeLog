@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SWE_Journal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="src/css/styles.css" />
+  </head>
+  <body>
+    <div class="container" id="entire-container">
+      <div class="signup-container">
+        <h1>Sign Up</h1>
+        <form class="signup-form">
+          <input type="text" placeholder="Username" class="username-input"/>
+          <input type="text" placeholder="Email Address" class="emailaddress-input" />
+          <input
+            type="text"
+            id="inputpassword"
+            name="inputpassword"
+            placeholder="Password"
+            pattern="[A-Za-z0-9_@./#&+-]{5,20}"
+            title="Password must be 5-20 characters long and can include letters, numbers, and _ @ . / # & + -"
+          class="password-input"/>
+          <input
+            type="text"
+            id="confirmpassword"
+            name="confirmpassword"
+            placeholder="Confirm Password"
+            pattern="[A-Za-z0-9_@./#&+-]{5,20}"
+            title="Password must be 5-20 characters long and can include letters, numbers, and _ @ . / # & + -"
+            required
+          class="confirmpassword-input"/>
+          <button>Sign Up</button>
+          <a href="signin_page.html">Already have an account? Sign In</a>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
