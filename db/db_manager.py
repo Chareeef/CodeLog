@@ -139,16 +139,22 @@ class DBStorage:
             user_id: str,
             old_password: str,
             new_password: str
-    ) -> Tuple[Dict[str, str], int]:
-        """ Update the user's password as hash """
+    ) -> int:
+        """Update the user's password as hash
+
+        Return 0 if successfully updated, otherwise:
+            * -1: user not found
+            * -2: wrong old password
+            * -3: any other error
+        """
         users = self._db['users']
         user = users.find_one({'_id': ObjectId(user_id)})
 
         if not user:
-            return {'error': 'user not found'}, 400
+            return -1
 
         if not check_hash_password(user['password'], old_password):
-            return {'error': 'wrong old password'}, 400
+            return -2
 
         new_hashed_password = hash_pass(new_password)
         try:
@@ -156,9 +162,11 @@ class DBStorage:
                 {'_id': ObjectId(user_id)},
                 {'$set': {'password': new_hashed_password}}
             )
-            return {'success': 'password updated'}, 201
+
+            return 0
+
         except Exception as e:
-            return {'error': 'something went wrong'}, 500
+            return -3
 
     def update_post(
             self,

@@ -124,7 +124,14 @@ def update_password():
         return jsonify({'error': 'Missing new password'}), 400
 
     # Try to update password
-    response = db.update_user_password(user_id, old_pwd, new_pwd)
+    res_code = db.update_user_password(user_id, old_pwd, new_pwd)
 
     # Return response
-    return jsonify(response[0]), response[1]
+    responses = {
+        0: (jsonify({'success': 'password updated'}), 201),
+        -1: (jsonify({'error': 'user not found'}), 400),
+        -2: (jsonify({'error': 'wrong old password'}), 400),
+        -3: (jsonify({'error': 'something went wrong'}), 500)
+    }
+
+    return responses[res_code]
