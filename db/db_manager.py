@@ -24,6 +24,24 @@ def check_hash_password(hashed_password: bytes, password: str) -> bool:
     return bcrypt.checkpw(password.encode('utf-8'), hashed_password)
 
 
+def serialize_ObjectId(di: dict) -> Dict[str, Any]:
+    """ serialize ObjectId of documents """
+    user_id = di.get('user_id')
+    post_id = di.get('post_id')
+    id = di.get('_id')
+
+    if user_id is not None:
+        di['user_id'] = str(user_id)
+
+    if post_id is not None:
+        di['post_id'] = str(post_id)
+
+    if id is not None:
+        di['_id'] = str(id)
+
+    return di
+
+
 class DBStorage:
     """ Defines a class that manages storage of SWE_journal in MongoDB. """
 
@@ -62,9 +80,9 @@ class DBStorage:
         """ Return a user document """
         users = self._db['users']
         try:
-            user = users.find_one(info)
-            user.pop('password', None)
-            return user
+            user = users.find(info)
+            return list(map(serialize_ObjectId, user))[0]
+
         except Exception as e:
             return None
 
@@ -82,7 +100,8 @@ class DBStorage:
         posts = self._db['posts']
         try:
             user_posts = posts.find({'user_id': ObjectId(user_id)})
-            return list(user_posts)
+            return list(map(serialize_ObjectId, user_posts))
+
         except Exception as e:
             return None
 
@@ -90,8 +109,10 @@ class DBStorage:
         """ Return a post document """
         posts = self._db['posts']
         try:
-            post = posts.find_one(info)
-            return post
+            print(info)
+            post = posts.find(info)
+            return list(map(serialize_ObjectId, post))[0]
+
         except Exception as e:
             return None
 
@@ -109,7 +130,8 @@ class DBStorage:
                 {'$set': update_fields},
                 return_document=ReturnDocument.AFTER
             )
-            return updated_user
+            return list(map(serialize_ObjectId, updated_user))
+
         except Exception as e:
             return None
 
@@ -153,7 +175,8 @@ class DBStorage:
                 {'$set': update_fields},
                 return_document=ReturnDocument.AFTER
             )
-            return updated_post
+            return list(map(serialize_ObjectId, updated_post))
+
         except Exception as e:
             return None
 
@@ -172,12 +195,47 @@ class DBStorage:
     def find_all_users(self) -> List[Dict[str, Any]]:
         """ Returns all users in the db """
         users = self._db['users']
-        return list(users.find())
+
+        return list(map(serialize_ObjectId, users.find({}, {'password': 0})))
 
     def find_all_posts(self) -> List[Dict[str, Any]]:
         """ Returns all posts in the db """
         posts = self._db['posts']
-        return list(posts.find())
+
+        return list(map(serialize_ObjectId, posts.find()))
+
+    def like_post(self, user_id: str, post_id: str) -> bool:
+        """ add likes to a post document. """
+        posts = self._db['posts']
+        post = posts.find_one({"_id": ObjectId(post_id)})
+        user_id = ObjectId(user_id)
+
+        if user_id not in post['likes']:
+            posts.update_one(
+                {"_id": ObjectId(post_id)},
+                {
+                    "$inc": {"number_of_likes": 1},
+                    "$addToSet": {"likes": user_id}
+                }
+            )
+            return False
+        return True
+
+    def unlike_post(self, user_id: str, post_id: str) -> bool:
+        posts = self._db['posts']
+        post = posts.find_one({"_id": ObjectId(post_id)})
+        user_id = ObjectId(user_id)
+
+        if user_id in post['likes']:
+            posts.update_one(
+                {"_id": ObjectId(post_id)},
+                {
+                    "$inc": {"number_of_likes": -1},
+                    "$pull": {"likes": user_id}
+                }
+            )
+            return False
+        return True
 
     def clear_db(self):
         """
