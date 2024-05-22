@@ -398,7 +398,8 @@ class TestUpdatePassword(unittest.TestCase):
         """
         headers = {'Authorization': f'Bearer {self.access_token}'}
         payload = {'old_password': 'gumbledore', 'new_password': 'phoenix3000'}
-        response = self.client.put('/me/update_password', headers=headers, json=payload)
+        response = self.client.put(
+            '/me/update_password', headers=headers, json=payload)
         data = response.get_json()
 
         # Verify response
@@ -414,7 +415,8 @@ class TestUpdatePassword(unittest.TestCase):
         """
         headers = {'Authorization': f'Bearer {self.access_token}'}
         payload = {'new_password': 'gandalf'}
-        response = self.client.put('/me/update_password', headers=headers, json=payload)
+        response = self.client.put(
+            '/me/update_password', headers=headers, json=payload)
         data = response.get_json()
 
         # Verify response
@@ -426,7 +428,8 @@ class TestUpdatePassword(unittest.TestCase):
         """
         headers = {'Authorization': f'Bearer {self.access_token}'}
         payload = {'old_password': 'gumbledore'}
-        response = self.client.put('/me/update_password', headers=headers, json=payload)
+        response = self.client.put(
+            '/me/update_password', headers=headers, json=payload)
         data = response.get_json()
 
         # Verify response
@@ -438,13 +441,13 @@ class TestUpdatePassword(unittest.TestCase):
         """
         headers = {'Authorization': f'Bearer {self.access_token}'}
         payload = {'old_password': 'phoenix3000', 'new_password': 'gandalf'}
-        response = self.client.put('/me/update_password', headers=headers, json=payload)
+        response = self.client.put(
+            '/me/update_password', headers=headers, json=payload)
         data = response.get_json()
 
         # Verify response
         self.assertEqual(response.status_code, 400)
         self.assertEqual(data, {'error': 'wrong old password'})
-
 
 
 class TestGetPosts(unittest.TestCase):
