@@ -137,7 +137,7 @@ def refresh():
     if not is_token_expired(key):
         return jsonify({"error": "Token has been revoked"}), 401
 
-    new_access_token = create_access_token(identity=key)
+    new_access_token = create_access_token(identity=current_user)
     store_token(
         current_user,
         new_access_token,
