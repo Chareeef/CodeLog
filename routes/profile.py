@@ -97,7 +97,7 @@ def update_post():
     # Check that post_id is valid
     post = db.find_post({'_id': ObjectId(post_id), 'user_id': user_id})
     if not post:
-        return jsonify({'error': 'you have no post with this post_id'}), 400
+        return jsonify({'error': 'You have no post with this post_id'}), 400
 
     # Get content
     content = data.get('content')

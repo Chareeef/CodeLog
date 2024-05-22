@@ -9,6 +9,7 @@ from flask_jwt_extended import create_access_token
 from routes.auth import store_token
 from main import create_app
 import string
+from time import sleep
 import random
 import unittest
 
@@ -31,7 +32,7 @@ class TestGetInfos(unittest.TestCase):
         # Create dummy user
         infos = {
             'username': 'albushog99',
-            'email': 'dummy@yummy.choc',
+            'email': 'lumos@poud.mgc',
             'password': 'gumbledore',
             'longest_streak': 0
         }
@@ -92,7 +93,7 @@ class TestGetInfos(unittest.TestCase):
         # Verify response
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data, {
-            'email': 'dummy@yummy.choc',
+            'email': 'lumos@poud.mgc',
             'username': 'albushog99'
         })
 
@@ -115,7 +116,7 @@ class TestGetStreaks(unittest.TestCase):
         # Create dummy user
         infos = {
             'username': 'albushog99',
-            'email': 'dummy@yummy.choc',
+            'email': 'lumos@poud.mgc',
             'password': 'gumbledore',
             'longest_streak': 0
         }
@@ -226,7 +227,7 @@ class TestUpdateInfos(unittest.TestCase):
         # Create dummy user
         infos = {
             'username': 'albushog99',
-            'email': 'dummy@yummy.choc',
+            'email': 'lumos@poud.mgc',
             'password': 'gumbledore',
             'longest_streak': 0
         }
@@ -332,7 +333,7 @@ class TestGetPosts(unittest.TestCase):
         # Create dummy user
         infos = {
             'username': 'albushog99',
-            'email': 'dummy@yummy.choc',
+            'email': 'lumos@poud.mgc',
             'password': 'gumbledore',
             'longest_streak': 0
         }
@@ -359,13 +360,13 @@ class TestGetPosts(unittest.TestCase):
 
             title = ''.join(random.choice(characters) for _ in range(10))
             content = ''.join(random.choice(characters) for _ in range(30))
-            isPublic = random.choice([True, False])
+            is_public = random.choice([True, False])
             datePosted = datetime.utcnow()
 
             post = {
                 'title': title,
                 'content': content,
-                'isPublic': isPublic,
+                'is_public': is_public,
                 'datePosted': datePosted
             }
 
@@ -429,3 +430,317 @@ class TestGetPosts(unittest.TestCase):
 
         for data_dict, expected_dict in zip(data, self.posts):
             self.assertDictEqual(data_dict, expected_dict)
+
+
+class TestUpdateLog(unittest.TestCase):
+    """Tests for 'PUT /me/update_post' route
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        """Runs once before all tests
+        """
+
+        # Create app
+        cls.app = create_app(TestConfig)
+
+        # Create client
+        cls.client = cls.app.test_client()
+
+        # Create dummy user
+        infos = {
+            'username': 'albushog99',
+            'email': 'lumos@poud.mgc',
+            'password': 'gumbledore',
+            'longest_streak': 0
+        }
+        cls.user_id = str(db.insert_user(infos))
+
+        # Create dummy malicious user
+        # Create JWT Access Token
+        with cls.app.app_context():
+            cls.access_token = create_access_token(
+                identity=cls.user_id
+            )
+
+        # Store JWT Access Token
+        store_token(
+            cls.user_id,
+            cls.access_token,
+            cls.app.config["JWT_ACCESS_TOKEN_EXPIRES"]
+        )
+
+        infos = {
+            'username': 'tomdemort67',
+            'email': 'riddle@poud.mgc',
+            'password': 'serpentard',
+            'longest_streak': 0
+        }
+        cls.dark_user_id = str(db.insert_user(infos))
+
+        # Create JWT malicious Access Token
+        with cls.app.app_context():
+            cls.dark_access_token = create_access_token(
+                identity=cls.dark_user_id
+            )
+
+        # Store JWT malicious Access Token
+        store_token(
+            cls.dark_user_id,
+            cls.dark_access_token,
+            cls.app.config["JWT_ACCESS_TOKEN_EXPIRES"]
+        )
+
+        # Create two dummy posts
+        doc1 = {
+            'user_id': cls.user_id,
+            'title': 'Old title 1',
+            'content': 'Old content 1',
+            'is_public': True,
+            'datePosted': datetime.utcnow()
+        }
+
+        cls.post_id1 = str(db.insert_post(doc1))
+        cls.datePosted1 = doc1['datePosted'].strftime('%Y/%m/%d %H:%M:%S')
+
+        sleep(2)
+
+        doc2 = {
+            'user_id': cls.user_id,
+            'title': 'Old title 2',
+            'content': 'Old content 2',
+            'is_public': False,
+            'datePosted': datetime.utcnow()
+        }
+
+        cls.post_id2 = str(db.insert_post(doc2))
+        cls.datePosted2 = doc2['datePosted'].strftime('%Y/%m/%d %H:%M:%S')
+
+    @classmethod
+    def tearDownClass(cls):
+        """Clear Mongo and Redis databases
+        """
+        db.clear_db()
+        rc.flushdb()
+
+    def test_with_no_auth(self):
+        """Test with no authentication
+        """
+        payload = {
+            'post_id': self.post_id1,
+            'title': 'My Post',
+            'content': 'Here is my post'
+        }
+
+        response = self.client.put('/me/update_post', json=payload)
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(data, {'error': 'Missing Authorization Header'})
+
+    def test_with_wrong_auth(self):
+        """Test with wrong authentication
+        """
+        headers = {'Authorization': 'Bearer ' + self.access_token[:-2] + 'o3'}
+        payload = {
+            'post_id': self.post_id1,
+            'title': 'My Post',
+            'content': 'Here is my post'
+        }
+
+        response = self.client.put('/me/update_post', headers=headers, json=payload)
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(
+            data, {'error': 'The token is invalid or has expired'})
+
+    def test_with_missing_post_id(self):
+        """Test with missing post_id
+        """
+        headers = {'Authorization': 'Bearer ' + self.access_token}
+        payload = {
+            'title': 'My post',
+            'content': 'Here is my post'
+        }
+
+        response = self.client.put('/me/update_post', headers=headers, json=payload)
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data, {'error': 'Missing post_id'})
+
+    def test_updating_another_user_post(self):
+        """Test updating another user's post
+        """
+        headers = {'Authorization': 'Bearer ' + self.dark_access_token}
+        payload = {
+            'post_id': self.post_id1,
+            'title': 'My post',
+            'content': 'Here is my post'
+        }
+
+        response = self.client.put('/me/update_post', headers=headers, json=payload)
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data, {'error': 'You have no post with this post_id'})
+
+    def test_with_missing_title(self):
+        """Test with missing title
+        """
+        headers = {'Authorization': 'Bearer ' + self.access_token}
+        payload = {
+            'post_id': self.post_id1,
+            'content': 'Here is my post'
+        }
+
+        response = self.client.put('/me/update_post', headers=headers, json=payload)
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data, {'error': 'Missing title'})
+
+    def test_with_missing_content(self):
+        """Test with missing content
+        """
+        headers = {'Authorization': 'Bearer ' + self.access_token}
+        payload = {
+            'post_id': self.post_id1,
+            'title': 'My post',
+            'content': ''
+        }
+
+        response = self.client.put('/me/update_post', headers=headers, json=payload)
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data, {'error': 'Missing content'})
+
+    def test_update_post_with_wrong_is_public(self):
+        """Test updating a post with a wrong is_public type
+        """
+        headers = {'Authorization': 'Bearer ' + self.access_token}
+
+        payload = {
+            'post_id': self.post_id1,
+            'title': 'My post 1',
+            'content': 'Here is my post 1',
+            'is_public': 'true'
+        }
+
+        response = self.client.put('/me/update_post', headers=headers, json=payload)
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data, {'error': '`is_public` must be true or false'})
+
+    def test_update_public_post(self):
+        """Test updating post 1
+        """
+
+        # Check post 1
+        post1 = db.find_post({'_id': ObjectId(self.post_id1)})
+
+        self.assertEqual(post1.get('user_id'), self.user_id)
+        self.assertEqual(post1.get('title'), 'Old title 1')
+        self.assertEqual(post1.get('content'), 'Old content 1')
+        self.assertEqual(post1.get('is_public'), True)
+        #self.assertEqual(post2.get('number_of_likes'), 0)
+        #self.assertEqual(post2.get('likes'), [])
+        #self.assertEqual(post2.get('comments'), [])
+        self.assertEqual(post1.get('datePosted').strftime('%Y/%m/%d %H:%M:%S'),
+                         self.datePosted1)
+
+        # Make call
+        headers = {'Authorization': 'Bearer ' + self.access_token}
+        payload = {
+            'post_id': self.post_id1,
+            'title': 'New title 1',
+            'content': 'New content 1'
+        }
+
+        response = self.client.put('/me/update_post', headers=headers, json=payload)
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(data, {'success': 'post updated'})
+
+        # Recheck post 1
+        new_post1 = db.find_post({'_id': ObjectId(self.post_id1)})
+
+        self.assertEqual(new_post1.get('user_id'), self.user_id)
+        self.assertEqual(new_post1.get('title'), 'New title 1')
+        self.assertEqual(new_post1.get('content'), 'New content 1')
+        self.assertEqual(new_post1.get('is_public'), True)
+        #self.assertEqual(new_post2.get('number_of_likes'), 0)
+        #self.assertEqual(new_post2.get('likes'), [])
+        #self.assertEqual(new_post2.get('comments'), [])
+        self.assertEqual(new_post1.get('datePosted').strftime('%Y/%m/%d %H:%M:%S'),
+                         self.datePosted1)
+
+    def test_update_private_post(self):
+        """Test updating post 2
+        """
+
+        # Check post 2
+        post2 = db.find_post({'_id': ObjectId(self.post_id2)})
+        print(post2)
+
+        self.assertEqual(post2.get('user_id'), self.user_id)
+        self.assertEqual(post2.get('title'), 'Old title 2')
+        self.assertEqual(post2.get('content'), 'Old content 2')
+        self.assertEqual(post2.get('is_public'), False)
+        #self.assertEqual(post2.get('number_of_likes'), 0)
+        #self.assertEqual(post2.get('likes'), [])
+        #self.assertEqual(post2.get('comments'), [])
+        self.assertEqual(post2.get('datePosted').strftime('%Y/%m/%d %H:%M:%S'),
+                         self.datePosted2)
+
+        # Make call
+        headers = {'Authorization': 'Bearer ' + self.access_token}
+        payload = {
+            'post_id': self.post_id2,
+            'title': 'New title 2',
+            'content': 'New content 2',
+            'is_public': True
+        }
+        print(db.find_all_posts(), '--\n')
+        response = self.client.put('/me/update_post', headers=headers, json=payload)
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(data, {'success': 'post updated'})
+
+        # Recheck post 2
+        new_post2 = db.find_post({'_id': ObjectId(self.post_id2)})
+        print('new_post2:', new_post2)
+        print(db.find_all_posts(), '--\n')
+
+        self.assertEqual(new_post2.get('user_id'), self.user_id)
+        self.assertEqual(new_post2.get('title'), 'New title 2')
+        self.assertEqual(new_post2.get('content'), 'New content 2')
+        self.assertEqual(new_post2.get('is_public'), True)
+        #self.assertEqual(new_post2.get('number_of_likes'), 0)
+        #self.assertEqual(new_post2.get('likes'), [])
+        #self.assertEqual(new_post2.get('comments'), [])
+        self.assertEqual(new_post2.get('datePosted').strftime('%Y/%m/%d %H:%M:%S'),
+                         self.datePosted2)
