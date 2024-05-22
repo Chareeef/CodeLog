@@ -80,7 +80,7 @@ class DBStorage:
         """ Return a user document """
         users = self._db['users']
         try:
-            user = users.find(info)
+            user = users.find(info, {'password': 0})
             return list(map(serialize_ObjectId, user))[0]
 
         except Exception as e:
@@ -109,7 +109,6 @@ class DBStorage:
         """ Return a post document """
         posts = self._db['posts']
         try:
-            print(info)
             post = posts.find(info)
             return list(map(serialize_ObjectId, post))[0]
 
@@ -130,7 +129,7 @@ class DBStorage:
                 {'$set': update_fields},
                 return_document=ReturnDocument.AFTER
             )
-            return list(map(serialize_ObjectId, updated_user))
+            return list(map(serialize_ObjectId, updated_user))[0]
 
         except Exception as e:
             return None
