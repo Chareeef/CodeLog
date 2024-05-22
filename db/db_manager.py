@@ -13,7 +13,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 
 def hash_pass(password: str) -> bytes:
-    """ hashs a password and return the hashed value """
+    """ hash a password and return the hashed value """
     hash_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
     return hash_password
