@@ -130,7 +130,7 @@ class TestDBStorage(unittest.TestCase):
         )
         self.assertEqual(post['title'], post_document['title'])
         self.assertEqual(post['is_public'], post_document['is_public'])
-        self.assertEqual(post['user_id'], inserted_user_id)
+        self.assertEqual(post['user_id'], str(inserted_user_id))
 
     def test_update_post(self):
         """ Test update a new post """
@@ -249,8 +249,8 @@ class TestDBStorage(unittest.TestCase):
 
         self.assertEqual(len(posts), 2)
         self.assertEqual(len(self.db.find_all_posts()), 3)
-        self.assertEqual(posts[0]['user_id'], inserted_user_id)
-        self.assertEqual(posts[1]['user_id'], inserted_user_id)
+        self.assertEqual(posts[0]['user_id'], str(inserted_user_id))
+        self.assertEqual(posts[1]['user_id'], str(inserted_user_id))
 
 
 if __name__ == '__main__':
