@@ -92,8 +92,8 @@ class TestCreateLog(unittest.TestCase):
         self.assertEqual(data.get('new_record'), True)
         self.assertNotIn('likes', data)
         self.assertNotIn('comments', data)
-        self.assertEqual(data.get('datePosted'),
-                         datetime.utcnow().strftime('%Y/%m/%d %H:%M:%S'))
+        self.assertAlmostEqual(data.get('datePosted'),
+                               datetime.utcnow().strftime('%Y/%m/%d %H:%M:%S'))
 
         # Verify that the log was stored in MongoDB
         post = db.find_post({'_id': ObjectId(data.get('_id'))})
@@ -138,8 +138,8 @@ class TestCreateLog(unittest.TestCase):
         self.assertEqual(data.get('new_record'), True)
         self.assertNotIn('likes', data)
         self.assertNotIn('comments', data)
-        self.assertEqual(data.get('datePosted'),
-                         datetime.utcnow().strftime('%Y/%m/%d %H:%M:%S'))
+        self.assertAlmostEqual(data.get('datePosted'),
+                               datetime.utcnow().strftime('%Y/%m/%d %H:%M:%S'))
 
         # Verify that the log was stored in MongoDB
         post = db.find_post({'_id': ObjectId(data.get('_id'))})

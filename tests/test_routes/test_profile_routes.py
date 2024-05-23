@@ -550,7 +550,8 @@ class TestUpdateLog(unittest.TestCase):
             'content': 'Here is my post'
         }
 
-        response = self.client.put('/me/update_post', headers=headers, json=payload)
+        response = self.client.put(
+            '/me/update_post', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -568,7 +569,8 @@ class TestUpdateLog(unittest.TestCase):
             'content': 'Here is my post'
         }
 
-        response = self.client.put('/me/update_post', headers=headers, json=payload)
+        response = self.client.put(
+            '/me/update_post', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -586,7 +588,8 @@ class TestUpdateLog(unittest.TestCase):
             'content': 'Here is my post'
         }
 
-        response = self.client.put('/me/update_post', headers=headers, json=payload)
+        response = self.client.put(
+            '/me/update_post', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -603,7 +606,8 @@ class TestUpdateLog(unittest.TestCase):
             'content': 'Here is my post'
         }
 
-        response = self.client.put('/me/update_post', headers=headers, json=payload)
+        response = self.client.put(
+            '/me/update_post', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -621,7 +625,8 @@ class TestUpdateLog(unittest.TestCase):
             'content': ''
         }
 
-        response = self.client.put('/me/update_post', headers=headers, json=payload)
+        response = self.client.put(
+            '/me/update_post', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -641,7 +646,8 @@ class TestUpdateLog(unittest.TestCase):
             'is_public': 'true'
         }
 
-        response = self.client.put('/me/update_post', headers=headers, json=payload)
+        response = self.client.put(
+            '/me/update_post', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -653,6 +659,8 @@ class TestUpdateLog(unittest.TestCase):
         """Test updating post 1
         """
 
+        time_fmt = '%Y/%m/%d %H:%M:%S'
+
         # Check post 1
         post1 = db.find_post({'_id': ObjectId(self.post_id1)})
 
@@ -660,10 +668,10 @@ class TestUpdateLog(unittest.TestCase):
         self.assertEqual(post1.get('title'), 'Old title 1')
         self.assertEqual(post1.get('content'), 'Old content 1')
         self.assertEqual(post1.get('is_public'), True)
-        #self.assertEqual(post2.get('number_of_likes'), 0)
-        #self.assertEqual(post2.get('likes'), [])
-        #self.assertEqual(post2.get('comments'), [])
-        self.assertEqual(post1.get('datePosted').strftime('%Y/%m/%d %H:%M:%S'),
+        self.assertEqual(post1.get('number_of_likes'), 0)
+        self.assertEqual(post1.get('likes'), [])
+        self.assertEqual(post1.get('comments'), [])
+        self.assertEqual(post1.get('datePosted').strftime(time_fmt),
                          self.datePosted1)
 
         # Make call
@@ -674,7 +682,8 @@ class TestUpdateLog(unittest.TestCase):
             'content': 'New content 1'
         }
 
-        response = self.client.put('/me/update_post', headers=headers, json=payload)
+        response = self.client.put(
+            '/me/update_post', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -689,28 +698,29 @@ class TestUpdateLog(unittest.TestCase):
         self.assertEqual(new_post1.get('title'), 'New title 1')
         self.assertEqual(new_post1.get('content'), 'New content 1')
         self.assertEqual(new_post1.get('is_public'), True)
-        #self.assertEqual(new_post2.get('number_of_likes'), 0)
-        #self.assertEqual(new_post2.get('likes'), [])
-        #self.assertEqual(new_post2.get('comments'), [])
-        self.assertEqual(new_post1.get('datePosted').strftime('%Y/%m/%d %H:%M:%S'),
+        self.assertEqual(new_post1.get('number_of_likes'), 0)
+        self.assertEqual(new_post1.get('likes'), [])
+        self.assertEqual(new_post1.get('comments'), [])
+        self.assertEqual(new_post1.get('datePosted').strftime(time_fmt),
                          self.datePosted1)
 
     def test_update_private_post(self):
         """Test updating post 2
         """
 
+        time_fmt = '%Y/%m/%d %H:%M:%S'
+
         # Check post 2
         post2 = db.find_post({'_id': ObjectId(self.post_id2)})
-        print(post2)
 
         self.assertEqual(post2.get('user_id'), self.user_id)
         self.assertEqual(post2.get('title'), 'Old title 2')
         self.assertEqual(post2.get('content'), 'Old content 2')
         self.assertEqual(post2.get('is_public'), False)
-        #self.assertEqual(post2.get('number_of_likes'), 0)
-        #self.assertEqual(post2.get('likes'), [])
-        #self.assertEqual(post2.get('comments'), [])
-        self.assertEqual(post2.get('datePosted').strftime('%Y/%m/%d %H:%M:%S'),
+        self.assertEqual(post2.get('number_of_likes'), 0)
+        self.assertEqual(post2.get('likes'), [])
+        self.assertEqual(post2.get('comments'), [])
+        self.assertEqual(post2.get('datePosted').strftime(time_fmt),
                          self.datePosted2)
 
         # Make call
@@ -721,8 +731,8 @@ class TestUpdateLog(unittest.TestCase):
             'content': 'New content 2',
             'is_public': True
         }
-        print(db.find_all_posts(), '--\n')
-        response = self.client.put('/me/update_post', headers=headers, json=payload)
+        response = self.client.put(
+            '/me/update_post', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -732,15 +742,13 @@ class TestUpdateLog(unittest.TestCase):
 
         # Recheck post 2
         new_post2 = db.find_post({'_id': ObjectId(self.post_id2)})
-        print('new_post2:', new_post2)
-        print(db.find_all_posts(), '--\n')
 
         self.assertEqual(new_post2.get('user_id'), self.user_id)
         self.assertEqual(new_post2.get('title'), 'New title 2')
         self.assertEqual(new_post2.get('content'), 'New content 2')
         self.assertEqual(new_post2.get('is_public'), True)
-        #self.assertEqual(new_post2.get('number_of_likes'), 0)
-        #self.assertEqual(new_post2.get('likes'), [])
-        #self.assertEqual(new_post2.get('comments'), [])
-        self.assertEqual(new_post2.get('datePosted').strftime('%Y/%m/%d %H:%M:%S'),
+        self.assertEqual(new_post2.get('number_of_likes'), 0)
+        self.assertEqual(new_post2.get('likes'), [])
+        self.assertEqual(new_post2.get('comments'), [])
+        self.assertEqual(new_post2.get('datePosted').strftime(time_fmt),
                          self.datePosted2)

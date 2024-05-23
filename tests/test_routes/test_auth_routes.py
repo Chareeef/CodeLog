@@ -66,8 +66,8 @@ class TestRegister(unittest.TestCase):
         self.assertEqual(user.get('longest_streak'), 0)
 
         time_fmt = '%Y/%m/%d %H:%M:%S'
-        self.assertEqual(user.get('created_at').strftime(time_fmt),
-                         datetime.utcnow().strftime(time_fmt))
+        self.assertAlmostEqual(user.get('created_at').strftime(time_fmt),
+                               datetime.utcnow().strftime(time_fmt))
 
         hashed_pwd = db.get_hash(infos['email'])
         self.assertTrue(check_hash_password(hashed_pwd, infos['password']))
