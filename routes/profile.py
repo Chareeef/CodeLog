@@ -122,6 +122,7 @@ def update_post():
     # Return response
     return jsonify({'success': 'post updated'}), 201
 
+
 @profile_bp.route('/delete_post', methods=['DELETE'])
 @jwt_required()
 @verify_token_in_redis
@@ -139,10 +140,14 @@ def delete_post():
     if not post_id:
         return jsonify({'error': 'Missing post_id'}), 400
 
-    if db.delete_post(post_id, user_id) == True:
-        return jsonify({'success': 'deleted post'}), 204
-    else:
+    if not db.find_post({'_id': ObjectId(post_id), 'user_id': user_id}):
         return jsonify({'error': 'You have no post with this post_id'}), 400
+
+    if db.delete_post(post_id, user_id) is True:
+        return jsonify({'success': 'deleted post'}), 200
+    else:
+        return jsonify({'error': 'something went wrong'}), 500
+
 
 @profile_bp.route('/update_infos', methods=['PUT'])
 @jwt_required()

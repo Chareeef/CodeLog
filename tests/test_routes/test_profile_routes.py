@@ -592,7 +592,6 @@ class TestUpdateLog(unittest.TestCase):
         }
         cls.user_id = str(db.insert_user(infos))
 
-        # Create dummy malicious user
         # Create JWT Access Token
         with cls.app.app_context():
             cls.access_token = create_access_token(
@@ -606,6 +605,7 @@ class TestUpdateLog(unittest.TestCase):
             cls.app.config["JWT_ACCESS_TOKEN_EXPIRES"]
         )
 
+        # Create dummy malicious user
         infos = {
             'username': 'tomdemort67',
             'email': 'riddle@poud.mgc',
@@ -894,3 +894,215 @@ class TestUpdateLog(unittest.TestCase):
         self.assertEqual(new_post2.get('comments'), [])
         self.assertEqual(new_post2.get('datePosted').strftime(time_fmt),
                          self.datePosted2)
+
+
+class TestDeleteLog(unittest.TestCase):
+    """Tests for 'DELETE /me/delete_post' route
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        """Runs once before all tests
+        """
+
+        # Create app
+        cls.app = create_app(TestConfig)
+
+        # Create client
+        cls.client = cls.app.test_client()
+
+        # Create dummy user
+        infos = {
+            'username': 'albushog99',
+            'email': 'lumos@poud.mgc',
+            'password': 'gumbledore',
+            'longest_streak': 0
+        }
+        cls.user_id = str(db.insert_user(infos))
+
+        # Create dummy malicious user
+        # Create JWT Access Token
+        with cls.app.app_context():
+            cls.access_token = create_access_token(
+                identity=cls.user_id
+            )
+
+        # Store JWT Access Token
+        store_token(
+            cls.user_id,
+            cls.access_token,
+            cls.app.config["JWT_ACCESS_TOKEN_EXPIRES"]
+        )
+
+        infos = {
+            'username': 'tomdemort67',
+            'email': 'riddle@poud.mgc',
+            'password': 'serpentard',
+            'longest_streak': 0
+        }
+        cls.dark_user_id = str(db.insert_user(infos))
+
+        # Create JWT malicious Access Token
+        with cls.app.app_context():
+            cls.dark_access_token = create_access_token(
+                identity=cls.dark_user_id
+            )
+
+        # Store JWT malicious Access Token
+        store_token(
+            cls.dark_user_id,
+            cls.dark_access_token,
+            cls.app.config["JWT_ACCESS_TOKEN_EXPIRES"]
+        )
+
+        # Create two dummy posts
+        doc1 = {
+            'user_id': cls.user_id,
+            'title': 'title 1',
+            'content': 'content 1',
+            'is_public': True,
+            'number_of_likes': 0,
+            'likes': [],
+            'comments': [],
+            'datePosted': datetime.utcnow()
+        }
+
+        cls.post_id1 = str(db.insert_post(doc1))
+
+        doc2 = {
+            'user_id': cls.user_id,
+            'title': 'title 2',
+            'content': 'content 2',
+            'is_public': False,
+            'number_of_likes': 0,
+            'likes': [],
+            'comments': [],
+            'datePosted': datetime.utcnow()
+        }
+
+        cls.post_id2 = str(db.insert_post(doc2))
+
+    @classmethod
+    def tearDownClass(cls):
+        """Clear Mongo and Redis databases
+        """
+        db.clear_db()
+        rc.flushdb()
+
+    def test_with_no_auth(self):
+        """Test with no authentication
+        """
+        payload = {
+            'post_id': self.post_id1
+        }
+
+        response = self.client.delete('/me/delete_post', json=payload)
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(data, {'error': 'Missing Authorization Header'})
+
+    def test_with_wrong_auth(self):
+        """Test with wrong authentication
+        """
+        headers = {'Authorization': 'Bearer ' + self.access_token[:-2] + 'o3'}
+        payload = {
+            'post_id': self.post_id1
+        }
+
+        response = self.client.delete(
+            '/me/delete_post', headers=headers, json=payload)
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(
+            data, {'error': 'The token is invalid or has expired'})
+
+    def test_with_missing_post_id(self):
+        """Test with missing post_id
+        """
+        headers = {'Authorization': 'Bearer ' + self.access_token}
+
+        response = self.client.delete(
+            '/me/delete_post', headers=headers, json={})
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data, {'error': 'Missing post_id'})
+
+    def test_deleting_another_user_post(self):
+        """Test deleting another user's post
+        """
+        headers = {'Authorization': 'Bearer ' + self.dark_access_token}
+        payload = {
+            'post_id': self.post_id1
+        }
+
+        response = self.client.delete(
+            '/me/delete_post', headers=headers, json=payload)
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data, {'error': 'You have no post with this post_id'})
+
+    def test_delete_post_successfully(self):
+        """Test deleting posts
+        """
+        headers = {'Authorization': 'Bearer ' + self.access_token}
+
+        # Check users' posts number
+        self.assertEqual(len(db.find_user_posts(self.user_id)), 2)
+
+        # Check post 1 exístence
+        self.assertIsNotNone(db.find_post({'_id': ObjectId(self.post_id1)}))
+
+        # Delet post 1
+        payload1 = {
+            'post_id': self.post_id1
+        }
+
+        response1 = self.client.delete(
+            '/me/delete_post', headers=headers, json=payload1)
+
+        data1 = response1.get_json()
+
+        # Verify response
+        self.assertEqual(response1.status_code, 200)
+        self.assertEqual(data1, {'success': 'deleted post'})
+
+        # Check post 1 inexístence
+        self.assertIsNone(db.find_post({'_id': ObjectId(self.post_id1)}))
+
+        # Recheck users' posts number
+        self.assertEqual(len(db.find_user_posts(self.user_id)), 1)
+
+        # Check post 2 exístence
+        self.assertIsNotNone(db.find_post({'_id': ObjectId(self.post_id2)}))
+
+        # Delet post 2
+        payload2 = {
+            'post_id': self.post_id2
+        }
+
+        response2 = self.client.delete(
+            '/me/delete_post', headers=headers, json=payload2)
+
+        data2 = response2.get_json()
+
+        # Verify response
+        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(data2, {'success': 'deleted post'})
+
+        # Check post 2 inexístence
+        self.assertIsNone(db.find_post({'_id': ObjectId(self.post_id2)}))
+
+        # Check user's posts were all deleted
+        self.assertEqual(len(db.find_user_posts(self.user_id)), 0)
