@@ -29,8 +29,9 @@ class FeedTests(unittest.TestCase):
 
         self.user_id = db.insert_user(info)
 
+        self.dummy_user = ObjectId()
         self.post_info = {
-            'user_id': ObjectId(),
+            'user_id': self.dummy_user,
             'title': 'Post title',
             'content': 'Post content',
             'is_public': 'true',
@@ -73,7 +74,7 @@ class FeedTests(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data, {'success': 'Post liked successfully.'})
 
-        post = db.find_post({'_id': self.post_id})
+        post = db.find_post({'_id': self.post_id, 'user_id': self.dummy_user})
 
         self.assertEqual(post['number_of_likes'], 1)
         self.assertIn(self.user_id, post['likes'])
@@ -96,7 +97,7 @@ class FeedTests(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data, {'success': 'Post liked successfully.'})
 
-        post = db.find_post({'_id': self.post_id})
+        post = db.find_post({'_id': self.post_id, 'user_id': self.dummy_user})
 
         self.assertEqual(post['number_of_likes'], 1)
         self.assertIn(self.user_id, post['likes'])
@@ -109,7 +110,7 @@ class FeedTests(unittest.TestCase):
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data, {'error': 'User has already liked the post.'})
 
-        post = db.find_post({'_id': self.post_id})
+        post = db.find_post({'_id': self.post_id, 'user_id': self.dummy_user})
 
         self.assertEqual(post['number_of_likes'], 1)
 
@@ -132,7 +133,7 @@ class FeedTests(unittest.TestCase):
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data, {'error': 'Post not found.'})
 
-        post = db.find_post(dummy_id, self.user_id)
+        post = db.find_post({'_id': dummy_id, 'user_id': self.user_id})
 
         self.assertIsNone(post)
 
@@ -147,6 +148,105 @@ class FeedTests(unittest.TestCase):
         }
         res = self.client.post(
             '/feed/like', headers=headers, data=json.dumps(dump)
+        )
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 401)
+        self.assertEqual(data, {'error': 'Missing Authorization Header'})
+
+    def test_unlike_post(self):
+        """" Test for unliking posts for authed users """
+
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {self.access_token}',
+        }
+        dump = {
+            'post_id': str(self.post_id),
+        }
+
+        res = self.client.post(
+            '/feed/like', headers=headers, data=json.dumps(dump)
+        )
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data, {'success': 'Post liked successfully.'})
+
+        post = db.find_post({'_id': self.post_id, 'user_id': self.dummy_user})
+
+        self.assertEqual(post['number_of_likes'], 1)
+
+        res = self.client.post(
+            '/feed/unlike', headers=headers, data=json.dumps(dump)
+        )
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data, {'success': 'Post unliked successfully.'})
+
+        post = db.find_post({'_id': self.post_id, 'user_id': self.dummy_user})
+
+        self.assertEqual(post['number_of_likes'], 0)
+        self.assertNotIn(self.user_id, post['likes'])
+
+    def test_unlike_post_twice(self):
+        """" Test for unliking posts that's already unliked by the current user """
+
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {self.access_token}',
+        }
+        dump = {
+            'post_id': str(self.post_id),
+        }
+        res = self.client.post(
+            '/feed/unlike', headers=headers, data=json.dumps(dump)
+        )
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(data, {'error': 'User can only unliked the post that he liked.'})
+
+        post = db.find_post({'_id': self.post_id, 'user_id': self.dummy_user})
+
+        self.assertEqual(post['number_of_likes'], 0)
+        self.assertNotIn(self.user_id, post['likes'])
+
+    def test_unlike_none_existing_post(self):
+        """" Test for unliking posts that's does not exists. """
+
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {self.access_token}',
+        }
+        dummy_id = ObjectId()
+        dump = {
+            'post_id': str(dummy_id),
+        }
+        res = self.client.post(
+            '/feed/unlike', headers=headers, data=json.dumps(dump)
+        )
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data, {'error': 'Post not found.'})
+
+        post = db.find_post({'_id': dummy_id, 'user_id': self.user_id})
+
+        self.assertIsNone(post)
+
+    def test_unlike_post_anonymous_user(self):
+        """" Test for unliking posts with an unathanticated user. """
+
+        headers = {
+            'Content-Type': 'application/json',
+        }
+        dump = {
+            'post_id': str(self.post_id),
+        }
+        res = self.client.post(
+            '/feed/unlike', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
