@@ -99,7 +99,7 @@ class DBStorage:
         """ Return a posts documents created by a user. """
         posts = self._db['posts']
         try:
-            user_posts = posts.find({'user_id': ObjectId(user_id)})
+            user_posts = posts.find({'user_id': user_id})
             return list(map(serialize_ObjectId, user_posts))
 
         except Exception as e:
@@ -188,12 +188,12 @@ class DBStorage:
             return None
 
     def delete_post(self, post_id: str, user_id: str) -> bool:
-        """ deletes a post ducoment from db """
+        """ deletes a post document from db """
         posts = self._db['posts']
         try:
             posts.delete_one({
                 '_id': ObjectId(post_id),
-                'user_id': ObjectId(user_id)
+                'user_id': user_id
             })
             return True
         except Exception as e:

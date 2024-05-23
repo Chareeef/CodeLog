@@ -473,17 +473,17 @@ class TestGetPosts(unittest.TestCase):
             'password': 'gumbledore',
             'longest_streak': 0
         }
-        cls.user_id = db.insert_user(infos)
+        user_id = str(db.insert_user(infos))
 
         # Create JWT Access Token
         with cls.app.app_context():
             cls.access_token = create_access_token(
-                identity=str(cls.user_id)
+                identity=user_id
             )
 
         # Store JWT Access Token
         store_token(
-            str(cls.user_id),
+            user_id,
             cls.access_token,
             cls.app.config["JWT_ACCESS_TOKEN_EXPIRES"]
         )
@@ -508,7 +508,7 @@ class TestGetPosts(unittest.TestCase):
 
             cls.posts.append(post.copy())
 
-            post['user_id'] = cls.user_id
+            post['user_id'] = user_id
             db.insert_post(post)
 
         # Sort posts
