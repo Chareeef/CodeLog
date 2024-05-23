@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import {Link} from 'react-router-dom'
 // import Logo from "../Assets/temp_logo.png";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
@@ -17,13 +18,13 @@ const Navigation = () => {
       <div className="navbar-links-container">
         <ul className={showMenu ? "open" : ""} >
           <li>
-            <a href="/">Home</a>
+            <Link to="/">Home</Link>
           </li>
           <li>
-            <a href="/sign-in">Sign-in</a>
+            <Link to="/login">Sign-in</Link>
           </li>
           <li>
-            <a href="/register">Sign-up</a>
+            <Link to="/register">Sign-up</Link>
           </li>
         </ul>
       </div>
