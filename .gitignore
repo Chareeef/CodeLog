@@ -158,6 +158,6 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-#db
-.db_User.json
-.db
+# React
+node_modules
+package-lock.json
