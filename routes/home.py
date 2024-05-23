@@ -78,6 +78,8 @@ def log():
         return jsonify({'error': 'Missing title'}), 400
     elif not entry['content']:
         return jsonify({'error': 'Missing content'}), 400
+    elif type(entry['is_public']) is not bool:
+        return jsonify({'error': '`is_public` must be true or false'}), 400
 
     # Store this log in MongoDB
     db.insert_post(entry)

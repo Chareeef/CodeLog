@@ -170,7 +170,7 @@ class DBStorage:
         posts = self._db['posts']
         try:
             updated_post = posts.find_one_and_update(
-                {'_id': ObjectId(post_id), 'user_id': ObjectId(user_id)},
+                {'_id': ObjectId(post_id), 'user_id': user_id},
                 {'$set': update_fields},
                 return_document=ReturnDocument.AFTER
             )

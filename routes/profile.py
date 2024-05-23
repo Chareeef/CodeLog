@@ -76,6 +76,53 @@ def get_posts():
     return jsonify(posts)
 
 
+@profile_bp.route('/update_post', methods=['PUT'])
+@jwt_required()
+@verify_token_in_redis
+def update_post():
+    """Update a user's post
+    """
+
+    # Get the user_id
+    user_id = get_jwt_identity()
+
+    # Get the data to update
+    data = request.get_json()
+
+    # Get post_id
+    post_id = data.get('post_id')
+    if not post_id:
+        return jsonify({'error': 'Missing post_id'}), 400
+
+    # Check that post_id is valid
+    post = db.find_post({'_id': ObjectId(post_id), 'user_id': user_id})
+    if not post:
+        return jsonify({'error': 'You have no post with this post_id'}), 400
+
+    # Get content
+    content = data.get('content')
+    if not content:
+        return jsonify({'error': 'Missing content'}), 400
+
+    # Get title
+    title = data.get('title')
+    if not title:
+        return jsonify({'error': 'Missing title'}), 400
+
+    # Get is_public
+    is_public = data.get('is_public', post['is_public'])
+    if type(is_public) is not bool:
+        return jsonify({'error': '`is_public` must be true or false'}), 400
+
+    # Update post
+    updated_fields = {'title': title,
+                      'content': content, 'is_public': is_public}
+    db.update_post(post_id, user_id, updated_fields)
+
+    # Return response
+    return jsonify({'success': 'post updated'}), 201
+
+
 @profile_bp.route('/update_infos', methods=['PUT'])
 @jwt_required()
 @verify_token_in_redis
@@ -98,4 +145,5 @@ def update_infos():
     # Update the user's infos
     db.update_user_info(user_id, data)
 
+    # Return response
     return jsonify({'success': 'user updated'}), 201

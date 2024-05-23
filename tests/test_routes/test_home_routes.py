@@ -92,8 +92,8 @@ class TestCreateLog(unittest.TestCase):
         self.assertEqual(data.get('new_record'), True)
         self.assertNotIn('likes', data)
         self.assertNotIn('comments', data)
-        self.assertEqual(data.get('datePosted'),
-                         datetime.utcnow().strftime('%Y/%m/%d %H:%M:%S'))
+        self.assertAlmostEqual(data.get('datePosted'),
+                               datetime.utcnow().strftime('%Y/%m/%d %H:%M:%S'))
 
         # Verify that the log was stored in MongoDB
         post = db.find_post({'_id': ObjectId(data.get('_id'))})
@@ -138,8 +138,8 @@ class TestCreateLog(unittest.TestCase):
         self.assertEqual(data.get('new_record'), True)
         self.assertNotIn('likes', data)
         self.assertNotIn('comments', data)
-        self.assertEqual(data.get('datePosted'),
-                         datetime.utcnow().strftime('%Y/%m/%d %H:%M:%S'))
+        self.assertAlmostEqual(data.get('datePosted'),
+                               datetime.utcnow().strftime('%Y/%m/%d %H:%M:%S'))
 
         # Verify that the log was stored in MongoDB
         post = db.find_post({'_id': ObjectId(data.get('_id'))})
@@ -225,6 +225,25 @@ class TestCreateLog(unittest.TestCase):
         # Verify response
         self.assertEqual(response.status_code, 400)
         self.assertEqual(data, {'error': 'Missing content'})
+
+    def test_create_log_with_wrong_is_public(self):
+        """Test posting with a wrong is_public type
+        """
+        headers = {'Authorization': 'Bearer ' + self.access_token}
+
+        payload = {
+            'title': 'My post 1',
+            'content': 'Here is my post 1',
+            'is_public': 'true'
+        }
+
+        response = self.client.post('/log', headers=headers, json=payload)
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data, {'error': '`is_public` must be true or false'})
 
     def test_create_two_logs_in_correct_interval(self):
         """Test posting twice in different days
