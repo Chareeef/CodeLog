@@ -276,7 +276,7 @@ class DBStorage:
         try:
             users.delete_one({
                 '_id': ObjectId(user_id)
-            )}
+            })
 
         except Exception as e:
             return False
