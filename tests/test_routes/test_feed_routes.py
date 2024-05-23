@@ -191,7 +191,8 @@ class FeedTests(unittest.TestCase):
         self.assertNotIn(self.user_id, post['likes'])
 
     def test_unlike_post_twice(self):
-        """" Test for unliking posts that's already unliked by the current user """
+        """" Test for unliking posts that's
+        already unliked by the current user """
 
         headers = {
             'Content-Type': 'application/json',
@@ -206,7 +207,9 @@ class FeedTests(unittest.TestCase):
         data = res.get_json()
 
         self.assertEqual(res.status_code, 400)
-        self.assertEqual(data, {'error': 'User can only unliked the post that he liked.'})
+        self.assertEqual(
+            data, {'error': 'User can only unliked the post that he liked.'}
+        )
 
         post = db.find_post({'_id': self.post_id, 'user_id': self.dummy_user})
 

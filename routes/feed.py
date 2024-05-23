@@ -84,7 +84,7 @@ def unlike():
         # Check if the post is already unliked by the current user
         if unliked:
             return jsonify(
-                {"error": "User has already unliked the post."}
+                {"error": "User can only unliked the post that he liked."}
             ), 400
 
         return jsonify({"success": "Post unliked successfully."}), 200
