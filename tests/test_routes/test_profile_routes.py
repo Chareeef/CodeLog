@@ -920,7 +920,6 @@ class TestDeleteLog(unittest.TestCase):
         }
         cls.user_id = str(db.insert_user(infos))
 
-        # Create dummy malicious user
         # Create JWT Access Token
         with cls.app.app_context():
             cls.access_token = create_access_token(
@@ -934,6 +933,7 @@ class TestDeleteLog(unittest.TestCase):
             cls.app.config["JWT_ACCESS_TOKEN_EXPIRES"]
         )
 
+        # Create dummy malicious user
         infos = {
             'username': 'tomdemort67',
             'email': 'riddle@poud.mgc',
@@ -1106,3 +1106,170 @@ class TestDeleteLog(unittest.TestCase):
 
         # Check user's posts were all deleted
         self.assertEqual(len(db.find_user_posts(self.user_id)), 0)
+
+
+class TestDeleteUser(unittest.TestCase):
+    """Tests for 'DELETE /me/delete_user' route
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        """Runs once before all tests
+        """
+
+        # Create app
+        cls.app = create_app(TestConfig)
+
+        # Create client
+        cls.client = cls.app.test_client()
+
+        # Create dummy user
+        infos = {
+            'username': 'albushog99',
+            'email': 'lumos@poud.mgc',
+            'password': 'gumbledore',
+            'longest_streak': 0
+        }
+        cls.user_id = str(db.insert_user(infos))
+
+        # Create JWT Access Token
+        with cls.app.app_context():
+            cls.access_token = create_access_token(
+                identity=cls.user_id
+            )
+
+        # Store JWT Access Token
+        store_token(
+            cls.user_id,
+            cls.access_token,
+            cls.app.config["JWT_ACCESS_TOKEN_EXPIRES"]
+        )
+
+        # Create another dummy user
+        infos = {
+            'username': 'tomdemort67',
+            'email': 'riddle@poud.mgc',
+            'password': 'serpentard',
+            'longest_streak': 0
+        }
+        cls.another_user_id = str(db.insert_user(infos))
+
+        # Create another JWT Access Token
+        with cls.app.app_context():
+            cls.another_access_token = create_access_token(
+                identity=cls.another_user_id
+            )
+
+        # Store another JWT Access Token
+        store_token(
+            cls.another_user_id,
+            cls.another_access_token,
+            cls.app.config["JWT_ACCESS_TOKEN_EXPIRES"]
+        )
+
+        # Create two dummy posts for the first user
+        doc1 = {
+            'user_id': cls.user_id,
+            'title': 'title 1',
+            'content': 'content 1',
+            'is_public': True,
+            'number_of_likes': 0,
+            'likes': [],
+            'comments': [],
+            'datePosted': datetime.utcnow()
+        }
+
+        db.insert_post(doc1)
+
+        doc2 = {
+            'user_id': cls.user_id,
+            'title': 'title 2',
+            'content': 'content 2',
+            'is_public': False,
+            'number_of_likes': 0,
+            'likes': [],
+            'comments': [],
+            'datePosted': datetime.utcnow()
+        }
+
+        db.insert_post(doc2)
+
+    @classmethod
+    def tearDownClass(cls):
+        """Clear Mongo and Redis databases
+        """
+        db.clear_db()
+        rc.flushdb()
+
+    def test_with_no_auth(self):
+        """Test with no authentication
+        """
+        response = self.client.delete('/me/delete_user')
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(data, {'error': 'Missing Authorization Header'})
+
+    def test_with_wrong_auth(self):
+        """Test with wrong authentication
+        """
+        headers = {'Authorization': 'Bearer ' + self.access_token[:-2] + 'o3'}
+
+        response = self.client.delete('/me/delete_user', headers=headers)
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(
+            data, {'error': 'The token is invalid or has expired'})
+
+    def test_delete_user_having_posts(self):
+        """Test deleting a user having some posts
+        """
+
+        # Check the existence of the user and the user's posts
+        self.assertIsNotNone(db.find_user({'_id': ObjectId(self.user_id)}))
+        self.assertEqual(len(db.find_user_posts(self.user_id)), 2)
+
+        # Make the call
+        headers = {'Authorization': 'Bearer ' + self.access_token}
+
+        response = self.client.delete('/me/delete_user', headers=headers)
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data, {'success': 'account deleted'})
+
+        # Check the deletion of the user and the user's posts
+        self.assertIsNone(db.find_user({'_id': ObjectId(self.user_id)}))
+        self.assertEqual(len(db.find_user_posts(self.user_id)), 0)
+
+    def test_delete_user_with_no_posts(self):
+        """Test deleting a user having no posts
+        """
+
+        # Check the existence of the user and the absence of user's posts
+        self.assertIsNotNone(db.find_user(
+            {'_id': ObjectId(self.another_user_id)}))
+        self.assertEqual(len(db.find_user_posts(self.another_user_id)), 0)
+
+        # Make the call
+        headers = {'Authorization': 'Bearer ' + self.another_access_token}
+
+        response = self.client.delete('/me/delete_user', headers=headers)
+
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data, {'success': 'account deleted'})
+
+        # Check the deletion of the user and that user's posts are always absent
+        self.assertIsNone(db.find_user(
+            {'_id': ObjectId(self.another_user_id)}))
+        self.assertEqual(len(db.find_user_posts(self.another_user_id)), 0)
