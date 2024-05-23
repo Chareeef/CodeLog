@@ -1,6 +1,7 @@
 import React from "react";
 import Navigation from "./Navigation";
 // import "../index.css"
+import Footer from "./Footer";
 import "../App.css";
 import Animation from "./Animation";
 import AnimationSecTwo from "./AnimationSecTwo";
@@ -13,6 +14,7 @@ const Home = () => {
       <Animation />
       {/* <AnimationSecTwo /> */}
       <AnimationSecThree />
+      <Footer />
       
     </div>
   );
