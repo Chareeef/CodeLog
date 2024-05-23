@@ -61,6 +61,8 @@ class DBStorage:
 
         self._db = self._client[db_name]
 
+    # INSERT
+
     def insert_user(self, document: Dict[str, Any]) -> InsertOneResult:
         """ Create a new user document """
         password = document['password']
@@ -75,6 +77,8 @@ class DBStorage:
         new_post = posts.insert_one(document)
 
         return new_post.inserted_id
+
+    # FIND
 
     def find_user(self, info: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """ Return a user document """
@@ -114,6 +118,20 @@ class DBStorage:
 
         except Exception as e:
             return None
+
+    def find_all_users(self) -> List[Dict[str, Any]]:
+        """ Returns all users in the db """
+        users = self._db['users']
+
+        return list(map(serialize_ObjectId, users.find({}, {'password': 0})))
+
+    def find_all_posts(self) -> List[Dict[str, Any]]:
+        """ Returns all posts in the db """
+        posts = self._db['posts']
+
+        return list(map(serialize_ObjectId, posts.find()))
+
+    # UPDATE
 
     def update_user_info(
             self,
@@ -187,29 +205,7 @@ class DBStorage:
         except Exception as e:
             return None
 
-    def delete_post(self, post_id: str, user_id: str) -> bool:
-        """ deletes a post document from db """
-        posts = self._db['posts']
-        try:
-            posts.delete_one({
-                '_id': ObjectId(post_id),
-                'user_id': user_id
-            })
-            return True
-        except Exception as e:
-            return False
-
-    def find_all_users(self) -> List[Dict[str, Any]]:
-        """ Returns all users in the db """
-        users = self._db['users']
-
-        return list(map(serialize_ObjectId, users.find({}, {'password': 0})))
-
-    def find_all_posts(self) -> List[Dict[str, Any]]:
-        """ Returns all posts in the db """
-        posts = self._db['posts']
-
-        return list(map(serialize_ObjectId, posts.find()))
+    # FEED'S INTERACTIONS
 
     def like_post(self, user_id: str, post_id: str) -> bool:
         """ add likes to a post document. """
@@ -244,8 +240,51 @@ class DBStorage:
             return False
         return True
 
+    # DELETE
+
+    def delete_post(self, post_id: str, user_id: str) -> bool:
+        """ delete a post document from db """
+        posts = self._db['posts']
+        try:
+            posts.delete_one({
+                '_id': ObjectId(post_id),
+                'user_id': user_id
+            })
+            return True
+        except Exception as e:
+            return False
+
+    def delete_user(self, user_id: str) -> bool:
+        """ delete a user from db """
+
+        # First, delete all the user's posts
+
+        posts = self._db['posts']
+
+        try:
+            posts.delete_many({
+                'user_id': user_id
+            })
+
+        except Exception as e:
+            return False
+
+        # Then, delete the user himself
+
+        users = self._db['users']
+
+        try:
+            users.delete_one({
+                '_id': ObjectId(user_id)
+            })
+
+        except Exception as e:
+            return False
+
+        return True
+
     def clear_db(self):
-        """
+        """Clear the database
         THIS METHOD SHOULD BE USED ONLY FOR TESTING.
         """
         self._db.drop_collection('users')
