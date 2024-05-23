@@ -9,11 +9,11 @@ from pymongo import MongoClient
 from bson import ObjectId
 import os
 import bcrypt
-from typing import Optional, Dict, Any, List
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 
 def hash_pass(password: str) -> bytes:
-    """ hashs a password and return the hashed value """
+    """ hash a password and return the hashed value """
     hash_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
     return hash_password
@@ -137,18 +137,24 @@ class DBStorage:
     def update_user_password(
             self,
             user_id: str,
-            new_password: str,
-            old_password: str
-    ) -> Optional[ObjectId]:
-        """ Update the user's password as hash """
+            old_password: str,
+            new_password: str
+    ) -> int:
+        """Update the user's password as hash
+
+        Return 0 if successfully updated, otherwise:
+            * -1: user not found
+            * -2: wrong old password
+            * -3: any other error
+        """
         users = self._db['users']
         user = users.find_one({'_id': ObjectId(user_id)})
 
         if not user:
-            return None
+            return -1
 
         if not check_hash_password(user['password'], old_password):
-            return None
+            return -2
 
         new_hashed_password = hash_pass(new_password)
         try:
@@ -156,9 +162,11 @@ class DBStorage:
                 {'_id': ObjectId(user_id)},
                 {'$set': {'password': new_hashed_password}}
             )
-            return user_id
+
+            return 0
+
         except Exception as e:
-            return None
+            return -3
 
     def update_post(
             self,

@@ -5,6 +5,7 @@ from bson import ObjectId
 from config import TestConfig
 from datetime import datetime
 from db import db, redis_client as rc
+from db.db_manager import hash_pass, check_hash_password
 from flask_jwt_extended import create_access_token
 from routes.auth import store_token
 from main import create_app
@@ -313,6 +314,141 @@ class TestUpdateInfos(unittest.TestCase):
         user = db.find_user({'_id': ObjectId(self.user_id)})
         self.assertEqual(user['email'], to_update['email'])
         self.assertEqual(user['username'], to_update['username'])
+
+
+class TestUpdatePassword(unittest.TestCase):
+    """Tests for 'PUT /me/update_password' route
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        """Runs once before all tests
+        """
+
+        # Create app
+        cls.app = create_app(TestConfig)
+
+        # Create client
+        cls.client = cls.app.test_client()
+
+        # Create dummy user
+        infos = {
+            'username': 'albushog99',
+            'email': 'expeliamus@poud.mgc',
+            'password': 'gumbledore',
+            'longest_streak': 0
+        }
+
+        cls.user_id = str(db.insert_user(infos))
+        cls.user_email = infos['email']
+
+        # Create JWT Access Token
+        with cls.app.app_context():
+            cls.access_token = create_access_token(
+                identity=cls.user_id
+            )
+
+        # Store JWT Access Token
+        store_token(
+            cls.user_id,
+            cls.access_token,
+            cls.app.config["JWT_ACCESS_TOKEN_EXPIRES"]
+        )
+
+    @classmethod
+    def tearDownClass(cls):
+        """Clear Mongo and Redis databases
+        """
+        db.clear_db()
+        rc.flushdb()
+
+    def tearDown(self):
+        """Reset password to 'gumbledore'
+        """
+        new_hashed_password = hash_pass('gumbledore')
+        db._db['users'].find_one_and_update(
+            {'_id': ObjectId(self.user_id)},
+            {'$set': {'password': new_hashed_password}}
+        )
+
+    def test_update_password_with_no_token(self):
+        """Test updating user's password with no authentication
+        """
+        response = self.client.put('/me/update_password')
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(data, {'error': 'Missing Authorization Header'})
+
+    def test_update_password_with_wrong_token(self):
+        """Test updating user's password with wrong authentication
+        """
+        response = self.client.put('/me/update_password', headers={
+            'Authorization': 'Bearer ' + self.access_token + '123'
+        })
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(
+            data, {'error': 'The token is invalid or has expired'})
+
+    def test_update_password_successfully(self):
+        """Test updating user's password successfully
+        """
+        headers = {'Authorization': f'Bearer {self.access_token}'}
+        payload = {'old_password': 'gumbledore', 'new_password': 'phoenix3000'}
+        response = self.client.put(
+            '/me/update_password', headers=headers, json=payload)
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(data, {'success': 'password updated'})
+
+        # Verify updated password in DB
+        hashed_password = db.get_hash(self.user_email)
+        self.assertTrue(check_hash_password(hashed_password, 'phoenix3000'))
+
+    def test_update_password_with_missing_old_pwd(self):
+        """Test updating user's password with missing old password
+        """
+        headers = {'Authorization': f'Bearer {self.access_token}'}
+        payload = {'new_password': 'gandalf'}
+        response = self.client.put(
+            '/me/update_password', headers=headers, json=payload)
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data, {'error': 'Missing old password'})
+
+    def test_update_password_with_missing_new_pwd(self):
+        """Test updating user's password with missing new password
+        """
+        headers = {'Authorization': f'Bearer {self.access_token}'}
+        payload = {'old_password': 'gumbledore'}
+        response = self.client.put(
+            '/me/update_password', headers=headers, json=payload)
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data, {'error': 'Missing new password'})
+
+    def test_update_password_with_wrong_old_pwd(self):
+        """Test updating user's password with wrong old password
+        """
+        headers = {'Authorization': f'Bearer {self.access_token}'}
+        payload = {'old_password': 'phoenix3000', 'new_password': 'gandalf'}
+        response = self.client.put(
+            '/me/update_password', headers=headers, json=payload)
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data, {'error': 'wrong old password'})
 
 
 class TestGetPosts(unittest.TestCase):

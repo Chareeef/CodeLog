@@ -77,11 +77,10 @@ class TestDBStorage(unittest.TestCase):
 
         result = self.db.update_user_password(
             inserted_id,
-            'newpassword',
-            'oldpassword'
+            'oldpassword',
+            'newpassword'
         )
-        self.assertIsNotNone(result)
-        self.assertIsInstance(result, ObjectId)
+        self.assertEqual(result, 0)
 
     def test_update_user_with_wrong_password(self):
         """ Test updating user's password. """
@@ -96,10 +95,10 @@ class TestDBStorage(unittest.TestCase):
 
         result = self.db.update_user_password(
             inserted_id,
-            'newpassword',
-            'wrongpassword'
+            'wrongpassword',
+            'newpassword'
         )
-        self.assertIsNone(result)
+        self.assertEqual(result, -2)
 
     def test_insert_and_find_post(self):
         """ Test create and find post """

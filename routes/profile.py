@@ -147,3 +147,39 @@ def update_infos():
 
     # Return response
     return jsonify({'success': 'user updated'}), 201
+
+
+@profile_bp.route('/update_password', methods=['PUT'])
+@jwt_required()
+@verify_token_in_redis
+def update_password():
+    """Update the user's password
+    """
+
+    # Get the user_id
+    user_id = get_jwt_identity()
+
+    # Get the new and old password
+    data = request.get_json()
+
+    # Check fields
+    old_pwd = data.get('old_password')
+    if not old_pwd:
+        return jsonify({'error': 'Missing old password'}), 400
+
+    new_pwd = data.get('new_password')
+    if not new_pwd:
+        return jsonify({'error': 'Missing new password'}), 400
+
+    # Try to update password
+    res_code = db.update_user_password(user_id, old_pwd, new_pwd)
+
+    # Return response
+    responses = {
+        0: (jsonify({'success': 'password updated'}), 201),
+        -1: (jsonify({'error': 'user not found'}), 400),
+        -2: (jsonify({'error': 'wrong old password'}), 400),
+        -3: (jsonify({'error': 'something went wrong'}), 500)
+    }
+
+    return responses[res_code]
