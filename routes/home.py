@@ -14,8 +14,6 @@ import os
 # Create home Blueprint
 home_bp = Blueprint('home_bp', __name__)
 
-# NOTE: These routes will maybe have @login_required when Auth is set
-
 
 @home_bp.route('/')
 @jwt_required()
