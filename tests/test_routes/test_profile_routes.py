@@ -497,6 +497,9 @@ class TestUpdateLog(unittest.TestCase):
             'title': 'Old title 1',
             'content': 'Old content 1',
             'is_public': True,
+            'number_of_likes': 0,
+            'likes': [],
+            'comments': [],
             'datePosted': datetime.utcnow()
         }
 
@@ -510,6 +513,9 @@ class TestUpdateLog(unittest.TestCase):
             'title': 'Old title 2',
             'content': 'Old content 2',
             'is_public': False,
+            'number_of_likes': 0,
+            'likes': [],
+            'comments': [],
             'datePosted': datetime.utcnow()
         }
 
