@@ -200,7 +200,7 @@ class DBStorage:
                 {'$set': update_fields},
                 return_document=ReturnDocument.AFTER
             )
-            return list(map(serialize_ObjectId, updated_post))
+            return serialize_ObjectId(updated_post)
 
         except Exception as e:
             return None
@@ -239,6 +239,115 @@ class DBStorage:
             )
             return False
         return True
+
+    def insert_comment(
+            self,
+            document: Dict[str, Any],
+            post_id: str
+    ) -> InsertOneResult:
+        """ Create a new comment document """
+        posts = self._db['posts']
+        comments = self._db['comments']
+
+        new_comment = comments.insert_one(document)
+        posts.update_one(
+            {"_id": ObjectId(post_id)},
+            {
+                "$inc": {"number_of_comments": 1},
+                "$addToSet": {"comments": new_comment.inserted_id}
+            }
+        )
+        return new_comment.inserted_id
+
+    def find_comment(
+            self,
+            comment_id: str,
+            user_id: str
+    ) -> Optional[Dict[str, Any]]:
+        """ find and return a comment document  """
+        comments = self._db['comments']
+
+        try:
+            comment = comments.find(
+                {
+                    '_id': ObjectId(comment_id),
+                    'user_id': ObjectId(user_id)
+                }
+            )
+            return list(map(serialize_ObjectId, comment))[0]
+        except Exception as e:
+            return None
+
+    def update_comment(
+            self,
+            comment_id: str,
+            user_id: str,
+            body: Dict[str, Any]
+    ) -> Optional[Dict[str, Any]]:
+        """ Updates a comment document. """
+        comments = self._db['comments']
+        try:
+            updated_comment = comments.find_one_and_update(
+                {'_id': ObjectId(comment_id), 'user_id': ObjectId(user_id)},
+                {'$set': body},
+                return_document=ReturnDocument.AFTER
+            )
+            return serialize_ObjectId(updated_comment)
+
+        except Exception as e:
+            return None
+
+    def delete_comment(
+            self,
+            comment_id: str,
+            user_id: str,
+            post_id: str
+    ) -> bool:
+        """ deletes a comments and remove it from the post. """
+        comments = self._db['comments']
+        posts = self._db['posts']
+        try:
+            comments.delete_one({
+                '_id': ObjectId(comment_id),
+                'user_id': ObjectId(user_id)
+            })
+            post = posts.find_one({"_id": ObjectId(post_id)})
+
+            if ObjectId(comment_id) in post['comments']:
+                posts.update_one(
+                    {"_id": ObjectId(post_id)},
+                    {
+                        "$inc": {"number_of_comments": -1},
+                        "$pull": {"comments": ObjectId(comment_id)}
+                    }
+                )
+            return True
+        except Exception as e:
+            return False
+
+    def get_post_comments(self, post_id: str):
+        """ return all the comment documents
+        associated with a post document. """
+        comments = self._db['comments']
+        try:
+            post_comments = comments.find(
+                {
+                    'post_id': ObjectId(post_id)
+                }
+            )
+            return list(map(serialize_ObjectId, post_comments))
+        except Exception as e:
+            return None
+
+    def delete_many_comments(self, post_id: str) -> bool:
+        """ Deletes comment documents associated with post document  """
+        comments = self._db['comments']
+        try:
+            comments.delete_many({'post_id': ObjectId(post_id)})
+            return True
+        except Exception as e:
+            return False
+
 
     # DELETE
 
