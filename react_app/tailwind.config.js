@@ -9,7 +9,11 @@ module.exports = {
       colors: {
         'grey': '#333',
         'cyan': '#06b6d4',
-        'king':  '#6264eb'
+        'king':  '#6264eb',
+        'green': '#103B40',
+        'glight': '#1d6b74'
+
+
 
       }
     },
