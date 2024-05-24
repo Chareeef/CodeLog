@@ -297,7 +297,9 @@ class TestComment(unittest.TestCase):
         """ Test create a new comment """
         comment_document = {
             'user_id': self.inserted_user_id,
-            'body': 'First comment'
+            'body': 'First comment',
+            'post_id': self.inserted_post_id
+
         }
         comment_id = self.db.insert_comment(comment_document, self.inserted_post_id)
 
@@ -312,7 +314,8 @@ class TestComment(unittest.TestCase):
         """ Test create a new comment """
         comment_document = {
             'user_id': self.inserted_user_id,
-            'body': 'First comment'
+            'body': 'First comment',
+            'post_id': self.inserted_post_id
         }
         comment_id = self.db.insert_comment(comment_document, self.inserted_post_id)
 
@@ -332,7 +335,8 @@ class TestComment(unittest.TestCase):
         """ Test updating a comment documment """
         comment_document = {
             'user_id': self.inserted_user_id,
-            'body': 'Second comment'
+            'body': 'Second comment',
+            'post_id': self.inserted_post_id
         }
         comment_id = self.db.insert_comment(comment_document, self.inserted_post_id)
 
@@ -360,7 +364,8 @@ class TestComment(unittest.TestCase):
         """ Test deleting a comment documment """
         comment_document = {
             'user_id': self.inserted_user_id,
-            'body': 'Second comment'
+            'body': 'Second comment',
+            'post_id': self.inserted_post_id
         }
         comment_id = self.db.insert_comment(comment_document, self.inserted_post_id)
 
@@ -383,6 +388,45 @@ class TestComment(unittest.TestCase):
         self.assertIsNone(comment)
         self.assertEqual(post['number_of_comments'], 0)
         self.assertNotIn(comment_id, post['comments'])
+
+    def test_get_post_comments(self):
+        """ Test to return all comments associated with a post """
+        comment_document_1 = {
+            'user_id': self.inserted_user_id,
+            'body': 'Second comment',
+            'post_id': self.inserted_post_id
+
+        }
+        comment_document_2 = {
+            'user_id': self.inserted_second_user_id,
+            'body': 'Second comment',
+            'post_id': self.inserted_post_id
+        }
+        comment_id_1 = self.db.insert_comment(comment_document_1, self.inserted_post_id)
+        comment_id_2 = self.db.insert_comment(comment_document_2, self.inserted_post_id)
+
+        self.assertIsInstance(comment_id_1, ObjectId)
+        self.assertIsInstance(comment_id_2, ObjectId)
+
+        post = self.db.find_post({'_id': self.inserted_post_id})
+
+        self.assertEqual(post['number_of_comments'], 2)
+        self.assertIn(comment_id_1, post['comments'])
+        self.assertIn(comment_id_2, post['comments'])
+
+        comments = self.db.get_post_comments(post['_id'])
+
+        self.assertEqual(len(comments), 2)
+
+    def test_delete_comments_post(self):
+        """ Test for removing all comments associated with a post
+        when the post is deleted"""
+        pass
+
+    def test_delete_comments_user(self):
+        """ Test for removing all comments associated with a post
+        when the user is deleted"""
+        pass
 
 if __name__ == '__main__':
     unittest.main()

@@ -286,7 +286,6 @@ class DBStorage:
             return serialize_ObjectId(updated_comment)
 
         except Exception as e:
-            print(e)
             return None
 
     def delete_comment(self, comment_id: str, user_id: str, post_id: str) -> bool:
