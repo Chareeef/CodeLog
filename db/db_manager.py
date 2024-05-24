@@ -182,7 +182,7 @@ class DBStorage:
                 {'$set': update_fields},
                 return_document=ReturnDocument.AFTER
             )
-            return list(map(serialize_ObjectId, updated_post))
+            return serialize_ObjectId(updated_post)
 
         except Exception as e:
             return None
@@ -259,7 +259,22 @@ class DBStorage:
         )
         return new_comment.inserted_id
 
-    def update_comment(self, comment_id: str, user_id: str, body: Dict[str, Any]) -> bool:
+    def find_comment(self, comment_id: str, user_id: str) -> Optional[Dict[str, Any]]:
+        """ find and return a comment document  """
+        comments = self._db['comments']
+
+        try:
+            comment = comments.find(
+                {
+                    '_id': ObjectId(comment_id),
+                    'user_id': ObjectId(user_id)
+                }
+            )
+            return list(map(serialize_ObjectId, comment))[0]
+        except Exception as e:
+            return None
+
+    def update_comment(self, comment_id: str, user_id: str, body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """ Updates a comment document. """
         comments = self._db['comments']
         try:
@@ -268,9 +283,10 @@ class DBStorage:
                 {'$set': body},
                 return_document=ReturnDocument.AFTER
             )
-            return list(map(serialize_ObjectId, updated_comment))
+            return serialize_ObjectId(updated_comment)
 
         except Exception as e:
+            print(e)
             return None
 
     def delete_comment(self, comment_id: str, user_id: str, post_id: str) -> bool:
@@ -288,7 +304,7 @@ class DBStorage:
                 posts.update_one(
                     {"_id": ObjectId(post_id)},
                     {
-                        "$inc": {"number_of_likes": -1},
+                        "$inc": {"number_of_comments": -1},
                         "$pull": {"comments": ObjectId(comment_id)}
                     }
                 )

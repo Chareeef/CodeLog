@@ -251,6 +251,7 @@ class TestDBStorage(unittest.TestCase):
         self.assertEqual(posts[0]['user_id'], str(inserted_user_id))
         self.assertEqual(posts[1]['user_id'], str(inserted_user_id))
 
+
 class TestComment(unittest.TestCase):
     """ Tests for the comment document """
     @patch('db.db_manager.MongoClient', new=mongomock.MongoClient)
@@ -286,12 +287,102 @@ class TestComment(unittest.TestCase):
             'comments': [],
             'number_of_comments': 0,
         }
-        self.inserted_post_id = self.db.insert_user(self.post_document)
+        self.inserted_post_id = self.db.insert_post(self.post_document)
 
     def tearDown(self):
         """ Clean up the database after each test """
         self.db.clear_db()
 
+    def test_add_comment_to_post(self):
+        """ Test create a new comment """
+        comment_document = {
+            'user_id': self.inserted_user_id,
+            'body': 'First comment'
+        }
+        comment_id = self.db.insert_comment(comment_document, self.inserted_post_id)
+
+        self.assertIsInstance(comment_id, ObjectId)
+
+        post = self.db.find_post({'_id': self.inserted_post_id})
+
+        self.assertEqual(post['number_of_comments'], 1)
+        self.assertIn(comment_id, post['comments'])
+
+    def test_find_comment(self):
+        """ Test create a new comment """
+        comment_document = {
+            'user_id': self.inserted_user_id,
+            'body': 'First comment'
+        }
+        comment_id = self.db.insert_comment(comment_document, self.inserted_post_id)
+
+        self.assertIsInstance(comment_id, ObjectId)
+
+        post = self.db.find_post({'_id': self.inserted_post_id})
+
+        self.assertEqual(post['number_of_comments'], 1)
+        self.assertIn(comment_id, post['comments'])
+
+        comment = self.db.find_comment(comment_id, self.inserted_user_id)
+
+        self.assertEqual(ObjectId(comment['user_id']), comment_document['user_id'])
+        self.assertEqual(comment['body'], comment_document['body'])
+
+    def test_update_comment(self):
+        """ Test updating a comment documment """
+        comment_document = {
+            'user_id': self.inserted_user_id,
+            'body': 'Second comment'
+        }
+        comment_id = self.db.insert_comment(comment_document, self.inserted_post_id)
+
+        self.assertIsInstance(comment_id, ObjectId)
+
+        post = self.db.find_post({'_id': self.inserted_post_id})
+        comment = self.db.find_comment(comment_id, self.inserted_user_id)
+
+        self.assertEqual(comment['body'], comment_document['body'])
+        self.assertEqual(post['number_of_comments'], 1)
+        self.assertIn(comment_id, post['comments'])
+        body = {
+            'body': 'Updated comment'
+        }
+
+        updated_comment = self.db.update_comment(comment_id, self.inserted_user_id, body)
+
+        comment = self.db.find_comment(comment_id, self.inserted_user_id)
+
+        self.assertEqual(comment['body'], updated_comment['body'])
+        self.assertEqual(post['number_of_comments'], 1)
+        self.assertIn(comment_id, post['comments'])
+
+    def test_delete_comment(self):
+        """ Test deleting a comment documment """
+        comment_document = {
+            'user_id': self.inserted_user_id,
+            'body': 'Second comment'
+        }
+        comment_id = self.db.insert_comment(comment_document, self.inserted_post_id)
+
+        self.assertIsInstance(comment_id, ObjectId)
+
+        post = self.db.find_post({'_id': self.inserted_post_id})
+        comment = self.db.find_comment(comment_id, self.inserted_user_id)
+
+        self.assertEqual(comment['body'], comment_document['body'])
+        self.assertEqual(post['number_of_comments'], 1)
+        self.assertIn(comment_id, post['comments'])
+
+        deleted = self.db.delete_comment(comment_id, self.inserted_user_id, self.inserted_post_id)
+
+        self.assertTrue(deleted)
+
+        post = self.db.find_post({'_id': self.inserted_post_id})
+        comment = self.db.find_comment(comment_id, self.inserted_user_id)
+
+        self.assertIsNone(comment)
+        self.assertEqual(post['number_of_comments'], 0)
+        self.assertNotIn(comment_id, post['comments'])
 
 if __name__ == '__main__':
     unittest.main()
