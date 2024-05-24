@@ -61,6 +61,8 @@ class DBStorage:
 
         self._db = self._client[db_name]
 
+    # INSERT
+
     def insert_user(self, document: Dict[str, Any]) -> InsertOneResult:
         """ Create a new user document """
         password = document['password']
@@ -75,6 +77,8 @@ class DBStorage:
         new_post = posts.insert_one(document)
 
         return new_post.inserted_id
+
+    # FIND
 
     def find_user(self, info: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """ Return a user document """
@@ -99,7 +103,7 @@ class DBStorage:
         """ Return a posts documents created by a user. """
         posts = self._db['posts']
         try:
-            user_posts = posts.find({'user_id': ObjectId(user_id)})
+            user_posts = posts.find({'user_id': user_id})
             return list(map(serialize_ObjectId, user_posts))
 
         except Exception as e:
@@ -114,6 +118,20 @@ class DBStorage:
 
         except Exception as e:
             return None
+
+    def find_all_users(self) -> List[Dict[str, Any]]:
+        """ Returns all users in the db """
+        users = self._db['users']
+
+        return list(map(serialize_ObjectId, users.find({}, {'password': 0})))
+
+    def find_all_posts(self) -> List[Dict[str, Any]]:
+        """ Returns all posts in the db """
+        posts = self._db['posts']
+
+        return list(map(serialize_ObjectId, posts.find()))
+
+    # UPDATE
 
     def update_user_info(
             self,
@@ -182,34 +200,12 @@ class DBStorage:
                 {'$set': update_fields},
                 return_document=ReturnDocument.AFTER
             )
-            return list(map(serialize_ObjectId, updated_post))
+            return serialize_ObjectId(updated_post)
 
         except Exception as e:
             return None
 
-    def delete_post(self, post_id: str, user_id: str) -> bool:
-        """ deletes a post ducoment from db """
-        posts = self._db['posts']
-        try:
-            posts.delete_one({
-                '_id': ObjectId(post_id),
-                'user_id': ObjectId(user_id)
-            })
-            return True
-        except Exception as e:
-            return False
-
-    def find_all_users(self) -> List[Dict[str, Any]]:
-        """ Returns all users in the db """
-        users = self._db['users']
-
-        return list(map(serialize_ObjectId, users.find({}, {'password': 0})))
-
-    def find_all_posts(self) -> List[Dict[str, Any]]:
-        """ Returns all posts in the db """
-        posts = self._db['posts']
-
-        return list(map(serialize_ObjectId, posts.find()))
+    # FEED'S INTERACTIONS
 
     def like_post(self, user_id: str, post_id: str) -> bool:
         """ add likes to a post document. """
@@ -244,8 +240,160 @@ class DBStorage:
             return False
         return True
 
+    def insert_comment(
+            self,
+            document: Dict[str, Any],
+            post_id: str
+    ) -> InsertOneResult:
+        """ Create a new comment document """
+        posts = self._db['posts']
+        comments = self._db['comments']
+
+        new_comment = comments.insert_one(document)
+        posts.update_one(
+            {"_id": ObjectId(post_id)},
+            {
+                "$inc": {"number_of_comments": 1},
+                "$addToSet": {"comments": new_comment.inserted_id}
+            }
+        )
+        return new_comment.inserted_id
+
+    def find_comment(
+            self,
+            comment_id: str,
+            user_id: str
+    ) -> Optional[Dict[str, Any]]:
+        """ find and return a comment document  """
+        comments = self._db['comments']
+
+        try:
+            comment = comments.find(
+                {
+                    '_id': ObjectId(comment_id),
+                    'user_id': ObjectId(user_id)
+                }
+            )
+            return list(map(serialize_ObjectId, comment))[0]
+        except Exception as e:
+            return None
+
+    def update_comment(
+            self,
+            comment_id: str,
+            user_id: str,
+            body: Dict[str, Any]
+    ) -> Optional[Dict[str, Any]]:
+        """ Updates a comment document. """
+        comments = self._db['comments']
+        try:
+            updated_comment = comments.find_one_and_update(
+                {'_id': ObjectId(comment_id), 'user_id': ObjectId(user_id)},
+                {'$set': body},
+                return_document=ReturnDocument.AFTER
+            )
+            return serialize_ObjectId(updated_comment)
+
+        except Exception as e:
+            return None
+
+    def delete_comment(
+            self,
+            comment_id: str,
+            user_id: str,
+            post_id: str
+    ) -> bool:
+        """ deletes a comments and remove it from the post. """
+        comments = self._db['comments']
+        posts = self._db['posts']
+        try:
+            comments.delete_one({
+                '_id': ObjectId(comment_id),
+                'user_id': ObjectId(user_id)
+            })
+            post = posts.find_one({"_id": ObjectId(post_id)})
+
+            if ObjectId(comment_id) in post['comments']:
+                posts.update_one(
+                    {"_id": ObjectId(post_id)},
+                    {
+                        "$inc": {"number_of_comments": -1},
+                        "$pull": {"comments": ObjectId(comment_id)}
+                    }
+                )
+            return True
+        except Exception as e:
+            return False
+
+    def get_post_comments(self, post_id: str):
+        """ return all the comment documents
+        associated with a post document. """
+        comments = self._db['comments']
+        try:
+            post_comments = comments.find(
+                {
+                    'post_id': ObjectId(post_id)
+                }
+            )
+            return list(map(serialize_ObjectId, post_comments))
+        except Exception as e:
+            return None
+
+    def delete_many_comments(self, post_id: str) -> bool:
+        """ Deletes comment documents associated with post document  """
+        comments = self._db['comments']
+        try:
+            comments.delete_many({'post_id': ObjectId(post_id)})
+            return True
+        except Exception as e:
+            return False
+
+
+    # DELETE
+
+    def delete_post(self, post_id: str, user_id: str) -> bool:
+        """ delete a post document from db """
+        posts = self._db['posts']
+        try:
+            posts.delete_one({
+                '_id': ObjectId(post_id),
+                'user_id': user_id
+            })
+            return True
+        except Exception as e:
+            return False
+
+    def delete_user(self, user_id: str) -> bool:
+        """ delete a user from db """
+
+        # First, delete all the user's posts
+
+        posts = self._db['posts']
+
+        try:
+            posts.delete_many({
+                'user_id': user_id
+            })
+
+        except Exception as e:
+            return False
+
+        # Then, delete the user himself
+
+        users = self._db['users']
+
+        try:
+            users.delete_one({
+                '_id': ObjectId(user_id)
+            })
+
+        except Exception as e:
+            return False
+
+        return True
+
     def clear_db(self):
-        """
+        """Clear the database
         THIS METHOD SHOULD BE USED ONLY FOR TESTING.
         """
         self._db.drop_collection('users')
