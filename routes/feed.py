@@ -11,12 +11,21 @@ from bson import ObjectId
 feed_bp = Blueprint('feed_bp', __name__)
 
 
-@feed_bp.route('/', methods=['GET'])
+@feed_bp.route('/get_posts', methods=['GET'])
 @jwt_required()
 @verify_token_in_redis
-def feed():
-    """ Return all the posts """
-    posts = db.find_all_posts()
+def get_feed():
+    """ Return all the public posts """
+    posts = list(filter(lambda p: p['is_public'] == True, db.find_all_posts()))
+    for p in posts:
+        del p['_id']
+
+    # Sort posts from the most to the less recent
+    posts.sort(key=lambda x: x['datePosted'], reverse=True)
+
+    # Stringify datePosted
+    for p in posts:
+        p['datePosted'] = p['datePosted'].strftime('%Y/%m/%d %H:%M:%S')
 
     return jsonify(posts)
 
