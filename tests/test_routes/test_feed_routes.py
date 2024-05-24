@@ -4,7 +4,6 @@
 from config import TestConfig
 from datetime import datetime
 from db import db, redis_client as rc
-from db.db_manager import check_hash_password
 from main import create_app
 import unittest
 from bson import ObjectId

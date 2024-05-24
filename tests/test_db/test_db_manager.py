@@ -251,6 +251,47 @@ class TestDBStorage(unittest.TestCase):
         self.assertEqual(posts[0]['user_id'], str(inserted_user_id))
         self.assertEqual(posts[1]['user_id'], str(inserted_user_id))
 
+class TestComment(unittest.TestCase):
+    """ Tests for the comment document """
+    @patch('db.db_manager.MongoClient', new=mongomock.MongoClient)
+    def setUp(self):
+        """Set up a mock MongoDB client before each test."""
+        self.db = db
+
+        self.user_document = {
+            'username': 'Mohamed',
+            'email': 'mohamed@example.com',
+            'password': 'password123',
+            'longest_streak': 0
+
+        }
+        self.inserted_user_id = self.db.insert_user(self.user_document)
+
+        self.second_user_document = {
+            'username': 'Youssef',
+            'email': 'youssef@example.com',
+            'password': 'password123',
+            'longest_streak': 0
+
+        }
+        self.inserted_second_user_id = self.db.insert_user(self.second_user_document)
+
+
+        self.post_document = {
+            'user_id': self.inserted_user_id,
+            'title': 'Post title',
+            'content': 'Post content',
+            'likes': [],
+            'number_of_likes': 0,
+            'comments': [],
+            'number_of_comments': 0,
+        }
+        self.inserted_post_id = self.db.insert_user(self.post_document)
+
+    def tearDown(self):
+        """ Clean up the database after each test """
+        self.db.clear_db()
+
 
 if __name__ == '__main__':
     unittest.main()
