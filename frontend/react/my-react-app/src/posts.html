@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Posts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 90%;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 0;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+        .posts, .submission-box {
+            width: 48%;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .post {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+        .post:last-child {
+            border: none;
+        }
+        .post h3 {
+            margin: 0;
+            color: #333;
+        }
+        .post p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .comments {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+        .comment {
+            border-top: 1px solid #ddd;
+            margin-top: 5px;
+            padding: 5px 0;
+        }
+        .comment-form {
+            display: flex;
+            margin-top: 10px;
+        }
+        .comment-form input[type="text"] {
+            flex: 1;
+            padding: 5px;
+            margin-right: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .comment-form input[type="submit"] {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background: #333;
+            color: #fff;
+            cursor: pointer;
+        }
+        .comment-form input[type="submit"]:hover {
+            background: #0779e4;
+        }
+        .submission-box textarea, 
+        .submission-box input[type="text"],
+        .submission-box input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .submission-box input[type="submit"] {
+            background: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .submission-box input[type="submit"]:hover {
+            background: #0779e4;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Member Posts</h1>
+    </header>
+    <div class="container">
+        <div class="submission-box">
+            <h3>Write Your Own Post</h3>
+            <form action="submit_post.php" method="post">
+                <input type="text" name="title" placeholder="Post Title" required>
+                <textarea name="content" rows="5" placeholder="Write your post here..." required></textarea>
+                <input type="submit" value="Submit Post">
+            </form>
+        </div>
+
+        <div class="posts">
+            <!-- Example post -->
+            <div class="post">
+                <h3>Post Title 1</h3>
+                <p>Post content goes here. This is an example of a post written by a member.</p>
+                <div class="comments">
+                    <h4>Comments</h4>
+                    <div class="comment">
+                        <p><strong>User1:</strong> This is a comment.</p>
+                    </div>
+                    <div class="comment-form">
+                        <input type="text" placeholder="Add a comment...">
+                        <input type="submit" value="Comment">
+                    </div>
+                </div>
+            </div>
+            <div class="post">
+                <h3>Post Title 2</h3>
+                <p>Another post content goes here. This is another example of a post written by a member.</p>
+                <div class="comments">
+                    <h4>Comments</h4>
+                    <div class="comment">
+                        <p><strong>User2:</strong> Another comment here.</p>
+                    </div>
+                    <div class="comment-form">
+                        <input type="text" placeholder="Add a comment...">
+                        <input type="submit" value="Comment">
+                    </div>
+                </div>
+            </div>
+            <!-- Additional posts will be inserted here -->
+        </div>
+    </div>
+</body>
+</html>
