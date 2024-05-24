@@ -2,6 +2,7 @@
 """Module that creates and configures the Flask application
 """
 from flask import Flask, jsonify
+from flask_cors import CORS
 from config import Config
 from routes import auth_bp, home_bp, profile_bp, feed_bp
 from flask_jwt_extended import JWTManager
@@ -12,11 +13,15 @@ def create_app(config=Config):
     """
     app = Flask(__name__)
 
-    # # Initialize the JWTManager
+    # Initialize the JWTManager
     jwt = JWTManager(app)
 
     # Set configuration
     app.config.from_object(config)
+
+    # Set up CORS
+    # CORS(app, resources={r'/*': {'origins': ['http://localhost']}})
+    CORS(app)
 
     # Disable strict slashes
     app.url_map.strict_slashes = False
