@@ -27,7 +27,7 @@ def get_feed():
     for p in posts:
         p['datePosted'] = p['datePosted'].strftime('%Y/%m/%d %H:%M:%S')
 
-    # If a page is queried, paginante with 20 posts per page
+    # If a page is queried, paginate with 20 posts per page
     page = request.args.get('page')
     if page:
         try:
