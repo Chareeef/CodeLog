@@ -275,8 +275,9 @@ class TestComment(unittest.TestCase):
             'longest_streak': 0
 
         }
-        self.inserted_second_user_id = self.db.insert_user(self.second_user_document)
-
+        self.inserted_second_user_id = self.db.insert_user(
+            self.second_user_document
+        )
 
         self.post_document = {
             'user_id': self.inserted_user_id,
@@ -301,7 +302,9 @@ class TestComment(unittest.TestCase):
             'post_id': self.inserted_post_id
 
         }
-        comment_id = self.db.insert_comment(comment_document, self.inserted_post_id)
+        comment_id = self.db.insert_comment(
+            comment_document, self.inserted_post_id
+        )
 
         self.assertIsInstance(comment_id, ObjectId)
 
@@ -317,7 +320,9 @@ class TestComment(unittest.TestCase):
             'body': 'First comment',
             'post_id': self.inserted_post_id
         }
-        comment_id = self.db.insert_comment(comment_document, self.inserted_post_id)
+        comment_id = self.db.insert_comment(
+            comment_document, self.inserted_post_id
+        )
 
         self.assertIsInstance(comment_id, ObjectId)
 
@@ -328,7 +333,9 @@ class TestComment(unittest.TestCase):
 
         comment = self.db.find_comment(comment_id, self.inserted_user_id)
 
-        self.assertEqual(ObjectId(comment['user_id']), comment_document['user_id'])
+        self.assertEqual(
+            ObjectId(comment['user_id']), comment_document['user_id']
+        )
         self.assertEqual(comment['body'], comment_document['body'])
 
     def test_update_comment(self):
@@ -338,7 +345,9 @@ class TestComment(unittest.TestCase):
             'body': 'Second comment',
             'post_id': self.inserted_post_id
         }
-        comment_id = self.db.insert_comment(comment_document, self.inserted_post_id)
+        comment_id = self.db.insert_comment(
+            comment_document, self.inserted_post_id
+        )
 
         self.assertIsInstance(comment_id, ObjectId)
 
@@ -352,7 +361,9 @@ class TestComment(unittest.TestCase):
             'body': 'Updated comment'
         }
 
-        updated_comment = self.db.update_comment(comment_id, self.inserted_user_id, body)
+        updated_comment = self.db.update_comment(
+            comment_id, self.inserted_user_id, body
+        )
 
         comment = self.db.find_comment(comment_id, self.inserted_user_id)
 
@@ -367,7 +378,9 @@ class TestComment(unittest.TestCase):
             'body': 'Second comment',
             'post_id': self.inserted_post_id
         }
-        comment_id = self.db.insert_comment(comment_document, self.inserted_post_id)
+        comment_id = self.db.insert_comment(
+            comment_document, self.inserted_post_id
+        )
 
         self.assertIsInstance(comment_id, ObjectId)
 
@@ -378,7 +391,9 @@ class TestComment(unittest.TestCase):
         self.assertEqual(post['number_of_comments'], 1)
         self.assertIn(comment_id, post['comments'])
 
-        deleted = self.db.delete_comment(comment_id, self.inserted_user_id, self.inserted_post_id)
+        deleted = self.db.delete_comment(
+            comment_id, self.inserted_user_id, self.inserted_post_id
+        )
 
         self.assertTrue(deleted)
 
@@ -402,8 +417,12 @@ class TestComment(unittest.TestCase):
             'body': 'Second comment',
             'post_id': self.inserted_post_id
         }
-        comment_id_1 = self.db.insert_comment(comment_document_1, self.inserted_post_id)
-        comment_id_2 = self.db.insert_comment(comment_document_2, self.inserted_post_id)
+        comment_id_1 = self.db.insert_comment(
+            comment_document_1, self.inserted_post_id
+        )
+        comment_id_2 = self.db.insert_comment(
+            comment_document_2, self.inserted_post_id
+        )
 
         self.assertIsInstance(comment_id_1, ObjectId)
         self.assertIsInstance(comment_id_2, ObjectId)
@@ -427,6 +446,7 @@ class TestComment(unittest.TestCase):
         """ Test for removing all comments associated with a post
         when the user is deleted"""
         pass
+
 
 if __name__ == '__main__':
     unittest.main()
