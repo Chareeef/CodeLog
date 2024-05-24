@@ -27,7 +27,29 @@ def get_feed():
     for p in posts:
         p['datePosted'] = p['datePosted'].strftime('%Y/%m/%d %H:%M:%S')
 
-    return jsonify(posts)
+    # If a page is queried, paginante with 20 posts per page
+    page = request.args.get('page')
+    if page:
+        try:
+            page_num = int(page)
+
+            if page_num < 1:
+                return jsonify({'error': 'page number must be greater or equal to 1'}), 400
+
+            # Compute posts quantity
+            len_posts = len(posts)
+
+            # Extract the page
+            if (page_num - 1) * 20 > len_posts:
+                return jsonify({'info': 'page out of range'})
+
+            return jsonify(posts[(page_num - 1) * 20: page_num * 20])
+
+        except ValueError:
+            return jsonify({'error': 'page argument must be an integer'}), 400
+
+    else:  # Return all posts with no pagination
+        return jsonify(posts)
 
 
 @feed_bp.route('/like', methods=['POST'])

@@ -61,7 +61,7 @@ class TestGetFeedPosts(unittest.TestCase):
         # Create dummy posts
         cls.public_posts = []
 
-        for i in range(1, 87):
+        for i in range(1, 84):
 
             title = f'Title {i}'
             content = f'This is post {i}'
@@ -86,7 +86,7 @@ class TestGetFeedPosts(unittest.TestCase):
 
             db.insert_post(post)
 
-        # Sort posts
+        # Sort posts from the most to the less recent
         cls.public_posts.sort(key=lambda x: x['datePosted'], reverse=True)
 
         # Stringify datePosted
@@ -126,7 +126,7 @@ class TestGetFeedPosts(unittest.TestCase):
     def test_number_of_public_posts(self):
         """Check number of public_posts
         """
-        self.assertEqual(len(self.public_posts), 43)
+        self.assertEqual(len(self.public_posts), 41)
 
     def test_get_feed_without_pagination(self):
         """Test getting feed's posts without pagination
@@ -142,6 +142,99 @@ class TestGetFeedPosts(unittest.TestCase):
 
         for recieved, expected in zip(data, self.public_posts):
             self.assertEqual(recieved, expected)
+
+    def test_get_feed_page_1(self):
+        """Test getting first feed's page
+        """
+        response = self.client.get('/feed/get_posts?page=1', headers={
+            'Authorization': 'Bearer ' + self.access_token
+        })
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(data), 20)
+
+        for recieved, expected in zip(data, self.public_posts[:20]):
+            self.assertEqual(recieved, expected)
+
+    def test_get_feed_page_2(self):
+        """Test getting second feed's page
+        """
+        response = self.client.get('/feed/get_posts?page=2', headers={
+            'Authorization': 'Bearer ' + self.access_token
+        })
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(data), 20)
+
+        for recieved, expected in zip(data, self.public_posts[20:40]):
+            self.assertEqual(recieved, expected)
+
+    def test_get_feed_page_3(self):
+        """Test getting third feed's page
+        """
+        response = self.client.get('/feed/get_posts?page=3', headers={
+            'Authorization': 'Bearer ' + self.access_token
+        })
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(data), 1)
+
+        for recieved, expected in zip(data, self.public_posts[40:]):
+            self.assertEqual(recieved, expected)
+
+    def test_get_feed_page_4(self):
+        """Test getting fourth feed's page
+        """
+        response = self.client.get('/feed/get_posts?page=4', headers={
+            'Authorization': 'Bearer ' + self.access_token
+        })
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data, {'info': 'page out of range'})
+
+    def test_get_feed_invalid_page_0(self):
+        """Test getting feed's with page=0
+        """
+        response = self.client.get('/feed/get_posts?page=0', headers={
+            'Authorization': 'Bearer ' + self.access_token
+        })
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data, {'error': 'page number must be greater or equal to 1'})
+
+    def test_get_feed_negative_page(self):
+        """Test getting feed's with page=-3
+        """
+        response = self.client.get('/feed/get_posts?page=-3', headers={
+            'Authorization': 'Bearer ' + self.access_token
+        })
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data, {'error': 'page number must be greater or equal to 1'})
+
+    def test_get_feed_invalid_page_type(self):
+        """Test getting feed's with page=page_1
+        """
+        response = self.client.get('/feed/get_posts?page=page_1', headers={
+            'Authorization': 'Bearer ' + self.access_token
+        })
+        data = response.get_json()
+
+        # Verify response
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data, {'error': 'page argument must be an integer'})
 
 
 class TestLikeUnlike(unittest.TestCase):
