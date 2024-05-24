@@ -244,7 +244,11 @@ class DBStorage:
             return False
         return True
 
-    def insert_comment(self, document: Dict[str, Any], post_id: str) -> InsertOneResult:
+    def insert_comment(
+            self,
+            document: Dict[str, Any],
+            post_id: str
+    ) -> InsertOneResult:
         """ Create a new comment document """
         posts = self._db['posts']
         comments = self._db['comments']
@@ -259,7 +263,11 @@ class DBStorage:
         )
         return new_comment.inserted_id
 
-    def find_comment(self, comment_id: str, user_id: str) -> Optional[Dict[str, Any]]:
+    def find_comment(
+            self,
+            comment_id: str,
+            user_id: str
+    ) -> Optional[Dict[str, Any]]:
         """ find and return a comment document  """
         comments = self._db['comments']
 
@@ -274,7 +282,12 @@ class DBStorage:
         except Exception as e:
             return None
 
-    def update_comment(self, comment_id: str, user_id: str, body: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def update_comment(
+            self,
+            comment_id: str,
+            user_id: str,
+            body: Dict[str, Any]
+    ) -> Optional[Dict[str, Any]]:
         """ Updates a comment document. """
         comments = self._db['comments']
         try:
@@ -288,7 +301,12 @@ class DBStorage:
         except Exception as e:
             return None
 
-    def delete_comment(self, comment_id: str, user_id: str, post_id: str) -> bool:
+    def delete_comment(
+            self,
+            comment_id: str,
+            user_id: str,
+            post_id: str
+    ) -> bool:
         """ deletes a comments and remove it from the post. """
         comments = self._db['comments']
         posts = self._db['posts']
@@ -312,7 +330,8 @@ class DBStorage:
             return False
 
     def get_post_comments(self, post_id: str):
-        """ return all the comment documents associated with a post document. """
+        """ return all the comment documents
+        associated with a post document. """
         comments = self._db['comments']
         try:
             post_comments = comments.find(
