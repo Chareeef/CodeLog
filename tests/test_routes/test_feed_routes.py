@@ -76,6 +76,11 @@ class TestGetFeedPosts(unittest.TestCase):
                 'datePosted': datePosted
             }
 
+            if post['user_id'] == user_id:
+                post['username'] = 'albushog99'
+            else:
+                post['username'] = 'tomdemort67'
+
             if i % 2 == 0:
                 cls.public_posts.append(post.copy())
 
