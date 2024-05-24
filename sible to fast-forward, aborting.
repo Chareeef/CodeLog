@@ -1,0 +1,380 @@
+[33mcommit 2cba0329e692cd9925ed6e56ab5138e192b3ab84[m[33m ([m[1;36mHEAD -> [m[1;32mreact-front[m[33m)[m
+Author: Gdija <khadijaghadi00@gmail.com>
+Date:   Fri May 24 14:09:56 2024 +0100
+
+    create signup
+
+[33mcommit 223eee3d5d4fa8567b7382225f08224eb54dce23[m
+Author: Gdija <khadijaghadi00@gmail.com>
+Date:   Thu May 23 21:29:52 2024 +0100
+
+    update Signin
+
+[33mcommit bef3866784d03010f42b534ed083d5768f21a497[m
+Author: Gdija <khadijaghadi00@gmail.com>
+Date:   Thu May 23 01:54:45 2024 +0100
+
+    routers
+
+[33mcommit c27928114af6e96ce0b85087a79c694a6f388091[m
+Author: Gdija <khadijaghadi00@gmail.com>
+Date:   Tue May 21 16:41:45 2024 +0100
+
+    create Navbar
+
+[33mcommit 69a334e96c841bb112c6b22f629943038c128cac[m
+Author: Gdija <khadijaghadi00@gmail.com>
+Date:   Tue May 21 01:02:28 2024 +0100
+
+    added react app
+
+[33mcommit 1dbee70db043cc7518db7f386eb2649406117e7f[m[33m ([m[1;32mmaster[m[33m)[m
+Merge: e1d0a2f 12b35a0
+Author: Youssef Charif HAMIDI <youssef.charif.h@gmail.com>
+Date:   Mon May 20 21:22:24 2024 +0100
+
+    feat: Implement authentication using JWT
+    
+    feat: Implement authentication using JWT
+
+[33mcommit e1d0a2fde580830fc3bb3c684705e2321fd15892[m
+Merge: 6d4c444 ae9eab4
+Author: tommy457 <65306709+tommy457@users.noreply.github.com>
+Date:   Mon May 20 20:53:12 2024 +0100
+
+    Merge pull request #9 from Chareeef/get-streaks
+    
+    Get streaks
+
+[33mcommit 6d4c44482dd108edb77ef8c8ecbf6c61171485d1[m
+Merge: 8c9586f ae426ac
+Author: tommy457 <65306709+tommy457@users.noreply.github.com>
+Date:   Mon May 20 20:52:24 2024 +0100
+
+    Merge pull request #8 from Chareeef/update-streaks
+    
+    Update streaks
+
+[33mcommit 8c9586f228d68791e3eb061da95347852cac685d[m
+Merge: 8a1a383 1209345
+Author: tommy457 <65306709+tommy457@users.noreply.github.com>
+Date:   Mon May 20 20:51:37 2024 +0100
+
+    Merge pull request #7 from Chareeef/update-infos-route
+    
+    Update user's infos route
+
+[33mcommit 12b35a064e39ce0596698ae3177e98b004291d20[m[33m ([m[1;31morigin/auth[m[33m)[m
+Author: tommy457 <boukhalfaml1011@gmail.com>
+Date:   Mon May 20 20:49:06 2024 +0100
+
+    feat: impliment authentication using JWT
+
+[33mcommit ae9eab43b5dc690e47a372729911b52741415482[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Mon May 20 19:33:00 2024 +0000
+
+    test: Test 'GET /me/streaks' route
+
+[33mcommit 1e82af25b9b61dd8bd592747e1ebbe03f50196eb[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Mon May 20 19:31:00 2024 +0000
+
+    feat: implement 'GET /me/streaks' route
+
+[33mcommit 541b102e08d8fee7a125e8f6763d1d44397c17ec[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Mon May 20 18:27:53 2024 +0000
+
+    Change profile route url prefix to /me
+
+[33mcommit ae426acb0da7a2886971256a74abbed251305f9b[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Mon May 20 17:07:06 2024 +0000
+
+    test: loosing the current streak
+
+[33mcommit ff458eb8eaa841b6ac85fc0edefc9f675f0b0cfa[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Mon May 20 15:12:37 2024 +0000
+
+    feat: Define small ttl for Redis' current streak key in testing mode
+
+[33mcommit a7581d42c8f6e4df9743c814ed2a84f3a6e454fa[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Mon May 20 14:53:23 2024 +0000
+
+    test: creating two consecutive logs is not allowed
+
+[33mcommit 8711ed2b403e7aea2e8bdc73865bbd2fbdd6eb86[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Mon May 20 14:34:16 2024 +0000
+
+    feat: Store current streak in Redis
+
+[33mcommit ae3b99bd5d7f6fbfc7ee2fa6c0f895e0d60ac4f9[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Mon May 20 13:05:15 2024 +0000
+
+    feat: Update current/longest streak
+
+[33mcommit a087623772e80dcc3e04169eea57b6c8edbeb107[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Mon May 20 11:37:46 2024 +0000
+
+    refactor: Add routes/utils.py
+
+[33mcommit 3cbb12c92e0f9e1405d6db67cf19180ae9139237[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Mon May 20 11:15:26 2024 +0000
+
+    fix: delete 'GET /' route
+
+[33mcommit 12093455711bb5552a4e878438cc27104d62791c[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Mon May 20 01:12:43 2024 +0000
+
+    test: updating a wrong field
+
+[33mcommit c51d85b87cef494f1697810bdeaec8e0fd46bf19[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Sun May 19 21:16:02 2024 +0000
+
+    test: successfuly update user's infos
+
+[33mcommit b6cdb60d43ea3027616eafc3dcdbc8a3dfb0a6ad[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Sun May 19 20:32:33 2024 +0000
+
+    feat: implement 'PUT /user/update_infos' route
+
+[33mcommit 8a1a383bc089b9e543ce8cb8c28c1b99126a7c33[m
+Merge: 7b47516 b98f139
+Author: tommy457 <65306709+tommy457@users.noreply.github.com>
+Date:   Sun May 19 20:32:42 2024 +0100
+
+    Merge pull request #6 from Chareeef/register-route
+    
+    feat: Register route
+
+[33mcommit b98f139f02367bd2c6d6853b35cb077b5071c464[m
+Merge: 8c396a4 15e24e2
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Sun May 19 18:46:30 2024 +0000
+
+    fix: some conflicts
+
+[33mcommit 8c396a4893328144ff37f6c90267deadc9a080da[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Sun May 19 18:39:15 2024 +0000
+
+    fix: tests updated to fit changes in db methods
+
+[33mcommit ac9c12886f5ee76dacecc085a968cb5f36bd91b0[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Sun May 19 17:52:10 2024 +0000
+
+    test: register a user with bad requests
+
+[33mcommit bfbbf299ee1a6de73646c6f7f81ce4aea57f95ae[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Sun May 19 15:55:58 2024 +0000
+
+    test: successfully register a user
+
+[33mcommit ac93a7bb26564d97a18e0cfc5a843bca5b598a49[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Sun May 19 14:02:04 2024 +0000
+
+    feat: implement 'POST /register' route
+
+[33mcommit bc6e28d67ff900f5a0e06766e1bfe9c3d2812a08[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Sun May 19 13:26:40 2024 +0000
+
+    fix: replace userId by user_id
+
+[33mcommit 15e24e2831c33fac9f5a6dc709644a9310e0ff97[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Sun May 19 17:52:10 2024 +0000
+
+    test: register a user with bad requests
+
+[33mcommit 09aaefd80edd7b6fc2b66d969c2104b44ca75e40[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Sun May 19 15:55:58 2024 +0000
+
+    test: successfully register a user
+
+[33mcommit 7b47516e0c4969a1aa671c9d63baf48c9d315910[m
+Merge: a023e21 71fb50b
+Author: tommy457 <65306709+tommy457@users.noreply.github.com>
+Date:   Sun May 19 15:05:44 2024 +0100
+
+    Merge pull request #5 from Chareeef/db_manager
+    
+    Resolve merge conflict
+
+[33mcommit 71fb50b4beef7028266e25a40b14953845261442[m[33m ([m[1;31morigin/db_manager[m[33m)[m
+Merge: 5a787e3 a023e21
+Author: tommy457 <boukhalfaml1011@gmail.com>
+Date:   Sun May 19 15:03:52 2024 +0100
+
+    Resolve merge conflict
+
+[33mcommit d5bd6bc3325d8c795531494f1ca781f5012a700f[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Sun May 19 14:02:04 2024 +0000
+
+    feat: implement 'POST /register' route
+
+[33mcommit 3e4e284278465ac8b81ecdd7adc51cb78408a534[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Sun May 19 13:26:40 2024 +0000
+
+    fix: replace userId by user_id
+
+[33mcommit a023e211b9a378fc6c7d6b7c0be8329c19d57061[m
+Merge: 669817b c9f552c
+Author: tommy457 <65306709+tommy457@users.noreply.github.com>
+Date:   Sun May 19 13:51:59 2024 +0100
+
+    Merge pull request #4 from Chareeef/profile-routes
+    
+    Get user's posts
+
+[33mcommit c9f552c0461f0ccea70260bf89996a9b0d8ca604[m
+Merge: 5953c17 669817b
+Author: Youssef Charif HAMIDI <youssef.charif.h@gmail.com>
+Date:   Sun May 19 13:47:29 2024 +0100
+
+    Merge branch 'master' into profile-routes
+
+[33mcommit 5a787e371c9f27b7e32ee92dd4b86f3d13cba148[m
+Author: tommy457 <boukhalfaml1011@gmail.com>
+Date:   Sun May 19 11:49:53 2024 +0100
+
+    chore: update db_manger
+
+[33mcommit 71aac76b0eae98c6fe94dbdfeaf169a5d89d3e4d[m
+Author: tommy457 <boukhalfaml1011@gmail.com>
+Date:   Sun May 19 11:32:18 2024 +0100
+
+    test: added tests for the db manager
+
+[33mcommit 5953c174877c24bf7b2aab114b5496db4800423b[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Sat May 18 21:40:47 2024 +0000
+
+    test: 'GET /user/posts' route
+
+[33mcommit 005f9355d292391392ae6f96e7b4cf8cf9ed55f3[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Sat May 18 17:58:11 2024 +0000
+
+    feat: create a redis client
+
+[33mcommit c22fa8c0e05b0683ccaf4ca2b8651edaa0845270[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Sat May 18 17:15:37 2024 +0000
+
+    feat: 'GET /user/posts' route
+
+[33mcommit 669817be5b3915d2e5f6632fed7b48e745c337bc[m
+Merge: 512cb13 c87a36c
+Author: Youssef Charif HAMIDI <youssef.charif.h@gmail.com>
+Date:   Sat May 18 20:57:40 2024 +0100
+
+    feat: added find_post method and fix return type
+    
+    feat: added find_post method and fix return type
+
+[33mcommit c87a36c65f96a0d1b771774100e9374d7eea9fcc[m
+Author: tommy457 <boukhalfaml1011@gmail.com>
+Date:   Sat May 18 20:44:02 2024 +0100
+
+    feat: added find_post method and fix return type
+
+[33mcommit 575a77aeaff14d5a92ec0ff5aa0e6f21895d5b61[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Sat May 18 15:57:03 2024 +0000
+
+    test: 'POST /log' route
+
+[33mcommit 7e23c64e72de3243078c866c7a508d0ab5e59e95[m
+Author: tommy457 <boukhalfaml1011@gmail.com>
+Date:   Sat May 18 14:20:56 2024 +0100
+
+    feat: added update and delete for users and posts collection
+
+[33mcommit 1841b645b1ef633e45898e7c563a00b4365bb0b9[m
+Author: tommy457 <boukhalfaml1011@gmail.com>
+Date:   Fri May 17 22:06:19 2024 +0100
+
+    feat: added create and select for users and posts colelctions
+
+[33mcommit 512cb13d7b73d8532001cfd38a332a1e6226812c[m
+Merge: dc5ecab 7665ba7
+Author: Youssef Charif HAMIDI <youssef.charif.h@gmail.com>
+Date:   Sat May 18 14:27:54 2024 +0100
+
+    Implement MongoDB storage
+    
+    Db manager
+
+[33mcommit dc5ecab972ed393ccb10a978cb39c292c5017c2e[m
+Merge: 3756676 20145bf
+Author: tommy457 <65306709+tommy457@users.noreply.github.com>
+Date:   Sat May 18 14:26:44 2024 +0100
+
+    Merge pull request #1 from Chareeef/set-flask-app
+    
+    Set flask app
+
+[33mcommit 7665ba79eed5b8c7a7f2c1a7e3c5a947783b6a4c[m
+Author: tommy457 <boukhalfaml1011@gmail.com>
+Date:   Sat May 18 14:20:56 2024 +0100
+
+    feat: added update and delete for users and posts collection
+
+[33mcommit dc075868c246ee709b9778490a733c8caec99966[m
+Author: tommy457 <boukhalfaml1011@gmail.com>
+Date:   Fri May 17 22:06:19 2024 +0100
+
+    feat: added create and select for users and posts colelctions
+
+[33mcommit c4a622f393efff501f81f614637a14f7db5979ba[m[33m ([m[1;31morigin/home-routes[m[33m)[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Fri May 17 19:09:06 2024 +0000
+
+    Create 'POST /log' route to log a new entry
+
+[33mcommit 20145bfdee93a53b9f75c2e22fc833fc36ad093f[m[33m ([m[1;31morigin/set-flask-app[m[33m)[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Fri May 17 17:58:16 2024 +0000
+
+    Import Config in wsgi.py
+
+[33mcommit af0c174b73189698d8b4398eb86ce760ac59bca6[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Fri May 17 17:42:06 2024 +0000
+
+    Implement correct templates rendering
+
+[33mcommit e03c2f78762cc36ae21f3a3b2c6abcfc5bfdcc76[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Fri May 17 16:11:58 2024 +0000
+
+    Set wsgi.py
+
+[33mcommit dc0ab73ec044a5646969ff375fee9db59d8a1fb9[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Fri May 17 16:01:00 2024 +0000
+
+    Configure initial app
+
+[33mcommit 37566760edaef8ecc6c771107627eae3db793fb4[m
+Author: Chareeef <youssef.charif.h@gmail.com>
+Date:   Fri May 17 13:00:56 2024 +0100
+
+    Set the project's structure
