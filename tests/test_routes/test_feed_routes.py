@@ -480,3 +480,453 @@ class TestLikeUnlike(unittest.TestCase):
 
         self.assertEqual(res.status_code, 401)
         self.assertEqual(data, {'error': 'Missing Authorization Header'})
+
+class TestComments(unittest.TestCase):
+    """ Testing comments for authenticated users """
+    def setUp(self):
+        """ Runs once before every test """
+        self.app = create_app(TestConfig)
+        self.client = self.app.test_client()
+
+        info = {
+            'email': 'mohamed@example.com',
+            'username': 'mohamed',
+            'password': 'pass123',
+            'longest_streak': 0
+        }
+
+        self.user_id = db.insert_user(info)
+
+        self.dummy_user = ObjectId()
+        self.post_info = {
+            'user_id': self.dummy_user,
+            'title': 'Post title',
+            'content': 'Post content',
+            'is_public': 'true',
+            'likes': [],
+            'number_of_likes': 0,
+            'comments': [],
+            'number_of_comments': 0,
+            'date_posted': datetime.utcnow()
+        }
+        self.post_id = db.insert_post(self.post_info)
+
+        self.login_detail = {
+            'email': 'mohamed@example.com',
+            'password': 'pass123'
+        }
+        res = self.client.post('/login', json=self.login_detail)
+        data = res.get_json()
+
+        self.access_token = data['access_token']
+        self.refresh_token = data['refresh_token']
+
+    def tearDown(self):
+        """ Runs once after every test """
+        db.clear_db()
+        rc.flushall()
+
+    def test_create_new_comment(self):
+        """ Test for adding a new comment to a post document. """
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {self.access_token}',
+        }
+        dump = {
+            'post_id': str(self.post_id),
+            'body': 'First Comment'
+        }
+        res = self.client.post(
+            '/feed/comment', headers=headers, data=json.dumps(dump)
+        )
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['msg'], 'Comment created successfully.')
+
+    def test_find_comment(self):
+        """ Test for findind a new comment. """
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {self.access_token}',
+        }
+        dump = {
+            'post_id': str(self.post_id),
+            'body': 'First Comment'
+        }
+        res = self.client.post(
+            '/feed/comment', headers=headers, data=json.dumps(dump)
+        )
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['msg'], 'Comment created successfully.')
+
+        post = db.find_post({'_id': self.post_id})
+
+        self.assertNotEqual(post['comments'], [])
+        self.assertNotEqual(post['number_of_comments'], 0)
+
+        comment = db.find_comment(post['comments'][0], self.user_id)
+
+        self.assertIsNotNone(comment)
+        self.assertEqual(data['data'], comment)
+
+    def test_comment_anonymous(self):
+        """ Test comment for unauthenticed users. """
+        headers = {
+            'Content-Type': 'application/json',
+        }
+        dump = {
+            'post_id': str(self.post_id),
+            'body': 'First Comment'
+        }
+        res = self.client.post(
+            '/feed/comment', headers=headers, data=json.dumps(dump)
+        )
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 401)
+        self.assertEqual(data['error'], 'Missing Authorization Header')
+
+    def test_update_comment(self):
+        """ Test for updating a comment. """
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {self.access_token}',
+        }
+        dump = {
+            'post_id': str(self.post_id),
+            'body': 'First Comment'
+        }
+        res = self.client.post(
+            '/feed/comment', headers=headers, data=json.dumps(dump)
+        )
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['msg'], 'Comment created successfully.')
+
+        post = db.find_post({'_id': self.post_id})
+
+        self.assertNotEqual(post['comments'], [])
+        self.assertNotEqual(post['number_of_comments'], 0)
+
+        comment = db.find_comment(post['comments'][0], self.user_id)
+
+        self.assertIsNotNone(comment)
+        self.assertEqual(data['data'], comment)
+
+        updated_comment = {
+            'post_id': str(self.post_id),
+            'comment_id' : str(post['comments'][0]),
+            'body': 'Updated comment'
+        }
+        res = self.client.put(
+            '/feed/update_comment', headers=headers, data=json.dumps(updated_comment)
+        )
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['msg'], 'Comment updated successfully.')
+
+        comment = db.find_comment(post['comments'][0], self.user_id)
+
+        self.assertEqual(post['number_of_comments'], 1)
+        self.assertEqual(data['data'], comment)
+
+    def test_update_comment_with_no_body(self):
+        """ Test for updating a comment with no body. """
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {self.access_token}',
+        }
+        dump = {
+            'post_id': str(self.post_id),
+            'body': 'First Comment'
+        }
+        res = self.client.post(
+            '/feed/comment', headers=headers, data=json.dumps(dump)
+        )
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['msg'], 'Comment created successfully.')
+
+        post = db.find_post({'_id': self.post_id})
+
+        self.assertNotEqual(post['comments'], [])
+        self.assertNotEqual(post['number_of_comments'], 0)
+
+        comment = db.find_comment(post['comments'][0], self.user_id)
+
+        self.assertIsNotNone(comment)
+        self.assertEqual(data['data'], comment)
+
+        updated_comment = {
+            'post_id': str(self.post_id),
+            'comment_id' : str(post['comments'][0]),
+        }
+        res = self.client.put(
+            '/feed/update_comment', headers=headers, data=json.dumps(updated_comment)
+        )
+        data = res.get_json()
+        comment = db.find_comment(post['comments'][0], self.user_id)
+
+
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(data['error'], 'Missing body')
+        self.assertEqual(comment['body'], dump['body'])
+
+
+    def test_update_comment_with_no_postid(self):
+        """ Test for updating a comment with no post_id. """
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {self.access_token}',
+        }
+        dump = {
+            'post_id': str(self.post_id),
+            'body': 'First Comment'
+        }
+        res = self.client.post(
+            '/feed/comment', headers=headers, data=json.dumps(dump)
+        )
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['msg'], 'Comment created successfully.')
+
+        post = db.find_post({'_id': self.post_id})
+
+        self.assertNotEqual(post['comments'], [])
+        self.assertNotEqual(post['number_of_comments'], 0)
+
+        comment = db.find_comment(post['comments'][0], self.user_id)
+
+        self.assertIsNotNone(comment)
+        self.assertEqual(data['data'], comment)
+
+        updated_comment = {
+            'comment_id' : str(post['comments'][0]),
+            'body': 'Updated comment'
+        }
+        res = self.client.put(
+            '/feed/update_comment', headers=headers, data=json.dumps(updated_comment)
+        )
+        data = res.get_json()
+        comment = db.find_comment(post['comments'][0], self.user_id)
+
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(data['error'], 'Missing post_id')
+        self.assertEqual(comment['body'], dump['body'])
+
+    def test_update_comment_with_no_commentid(self):
+        """ Test for updating a comment with no post_id. """
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {self.access_token}',
+        }
+        dump = {
+            'post_id': str(self.post_id),
+            'body': 'First Comment'
+        }
+        res = self.client.post(
+            '/feed/comment', headers=headers, data=json.dumps(dump)
+        )
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['msg'], 'Comment created successfully.')
+
+        post = db.find_post({'_id': self.post_id})
+
+        self.assertNotEqual(post['comments'], [])
+        self.assertNotEqual(post['number_of_comments'], 0)
+
+        comment = db.find_comment(post['comments'][0], self.user_id)
+
+        self.assertIsNotNone(comment)
+        self.assertEqual(data['data'], comment)
+
+        updated_comment = {
+            'post_id': str(self.post_id),
+            'body': 'Updated comment'
+        }
+        res = self.client.put(
+            '/feed/update_comment', headers=headers, data=json.dumps(updated_comment)
+        )
+        data = res.get_json()
+        comment = db.find_comment(post['comments'][0], self.user_id)
+
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(data['error'], 'Missing comment_id')
+        self.assertEqual(comment['body'], dump['body'])
+
+    def test_delete_comment(self):
+        """ Test delete comment. """
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {self.access_token}',
+        }
+        dump = {
+            'post_id': str(self.post_id),
+            'body': 'First Comment'
+        }
+        res = self.client.post(
+            '/feed/comment', headers=headers, data=json.dumps(dump)
+        )
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['msg'], 'Comment created successfully.')
+
+        comment_id = data['data']['_id']
+        dump = {
+            'post_id': str(self.post_id),
+            'comment_id': str(comment_id)
+        }
+
+        res = self.client.delete(
+            '/feed/delete_comment', headers=headers, data=json.dumps(dump)
+        )
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['msg'], 'Comment deleted successfully.')
+
+        post = db.find_post({"_id": self.post_id})
+
+        self.assertEqual(post['number_of_comments'], 0)
+        self.assertNotIn(comment_id, post['comments'])
+
+    def test_delete_comment_with_no_commentid(self):
+        """ Test delete comment. """
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {self.access_token}',
+        }
+        dump = {
+            'post_id': str(self.post_id),
+            'body': 'First Comment'
+        }
+        res = self.client.post(
+            '/feed/comment', headers=headers, data=json.dumps(dump)
+        )
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['msg'], 'Comment created successfully.')
+
+        comment_id = data['data']['_id']
+        dump = {
+            'post_id': str(self.post_id),
+        }
+
+        res = self.client.delete(
+            '/feed/delete_comment', headers=headers, data=json.dumps(dump)
+        )
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(data['error'], 'Missing comment_id')
+
+        post = db.find_post({"_id": self.post_id})
+
+        self.assertEqual(post['number_of_comments'], 1)
+        self.assertIn(ObjectId(comment_id), post['comments'])
+
+    def test_delete_post_comment(self):
+        """ Test deleting a post also
+        deletes all the comments associated with this post """
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {self.access_token}',
+        }
+        dump = {
+            'post_id': str(self.post_id),
+            'body': 'First Comment'
+        }
+        res = self.client.post(
+            '/feed/comment', headers=headers, data=json.dumps(dump)
+        )
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['msg'], 'Comment created successfully.')
+
+        deleted = db.delete_post(self.post_id, self.user_id)
+        comment = db.find_comment(data['data']['_id'], self.user_id)
+
+        self.assertTrue(deleted)
+        self.assertIsNone(comment)
+
+
+    def test_delete_user_comment(self):
+        """ Test deleting a user also
+        deletes all the comments associated with this user """
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {self.access_token}',
+        }
+        dump = {
+            'post_id': str(self.post_id),
+            'body': 'First Comment'
+        }
+        res = self.client.post(
+            '/feed/comment', headers=headers, data=json.dumps(dump)
+        )
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['msg'], 'Comment created successfully.')
+
+        deleted = db.delete_user(self.user_id)
+        comment = db.find_comment(data['data']['_id'], self.user_id)
+
+        self.assertTrue(deleted)
+        self.assertIsNone(comment)
+
+    def test_get_all_post_comments(self):
+        """ Test get all comments asssociated with a post """
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {self.access_token}',
+        }
+        dump = {
+            'post_id': str(self.post_id),
+            'body': 'Second Comment'
+        }
+        res_1 = self.client.post(
+            '/feed/comment', headers=headers, data=json.dumps(dump)
+        )
+        data_1 = res_1.get_json()
+
+        dump = {
+            'post_id': str(self.post_id),
+            'body': 'First Comment'
+        }
+        res_2 = self.client.post(
+            '/feed/comment', headers=headers, data=json.dumps(dump)
+        )
+        data_2 = res_2.get_json()
+
+        self.assertEqual(res_1.status_code, 200)
+        self.assertEqual(data_1['msg'], 'Comment created successfully.')
+
+        self.assertEqual(res_2.status_code, 200)
+        self.assertEqual(data_2['msg'], 'Comment created successfully.')
+
+        dump = {
+            'post_id': str(self.post_id),
+        }
+        res = self.client.get(
+            '/feed/post_comments', headers=headers, data=json.dumps(dump)
+        )
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['msg'], 'Comments retrieved successfully.')
+        self.assertEqual(len(data['data']), 2)
+        self.assertEqual(data['data'][0]['body'], 'Second Comment')
+        self.assertEqual(data['data'][1]['body'], 'First Comment')
