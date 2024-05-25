@@ -16,7 +16,7 @@ feed_bp = Blueprint('feed_bp', __name__)
 @verify_token_in_redis
 def get_feed():
     """ Return all the public posts """
-    posts = list(filter(lambda p: p['is_public'] == True, db.find_all_posts()))
+    posts = list(filter(lambda p: p['is_public'] is True, db.find_all_posts()))
     for p in posts:
         del p['_id']
 
@@ -34,7 +34,11 @@ def get_feed():
             page_num = int(page)
 
             if page_num < 1:
-                return jsonify({'error': 'page number must be greater or equal to 1'}), 400
+                return jsonify(
+                    {
+                        'error': 'page number must be greater or equal to 1'
+                    }
+                ), 400
 
             # Compute posts quantity
             len_posts = len(posts)
@@ -119,5 +123,176 @@ def unlike():
             ), 400
 
         return jsonify({"success": "Post unliked successfully."}), 200
+
+    return jsonify({"error": "Post not found."}), 404
+
+
+@feed_bp.route('/comment', methods=['POST'])
+@jwt_required()
+@verify_token_in_redis
+def comment():
+    """ route for adding comments to a post """
+    # Get data from request
+    data = request.get_json()
+
+    # Get the post id
+    post_id = data.get('post_id')
+
+    # Get the current user's id
+    user_id = get_jwt_identity()
+
+    # comment body
+    comment_body = data.get('body')
+
+    # Check if post id is missing
+    if not post_id:
+        return jsonify({"error": "Missing post_id"}), 400
+
+    # Return the post associated with post_id
+    post = db.find_post({"_id": ObjectId(post_id)})
+
+    # Check if the post exist.
+    if post:
+        comment_document = {
+            'user_id': ObjectId(user_id),
+            'post_id': ObjectId(post_id),
+            'body': comment_body,
+            'date_posted': datetime.utcnow().strftime(
+                '%a, %d %b %Y %H:%M:%S GMT'
+            )
+        }
+
+        comment_id = db.insert_comment(comment_document, post_id)
+        comment = db.find_comment(comment_id, user_id)
+
+        if comment_id:
+            return jsonify(
+                {
+                    'data': comment,
+                    "msg": "Comment created successfully."
+                }
+            ), 200
+
+    return jsonify({"error": "Post not found."}), 404
+
+
+@feed_bp.route('/update_comment', methods=['PUT'])
+@jwt_required()
+@verify_token_in_redis
+def update_comment():
+    """ route for updating comments from a post """
+    # Get data from request
+    data = request.get_json()
+
+    # Get the post id
+    post_id = data.get('post_id')
+
+    # Get the current user's id
+    user_id = get_jwt_identity()
+
+    # comment id
+    comment_id = data.get('comment_id')
+
+    # Check if post id is missing
+    if not post_id:
+        return jsonify({"error": "Missing post_id"}), 400
+
+    # Check if comment id is missing
+    if not comment_id:
+        return jsonify({"error": "Missing comment_id"}), 400
+
+    # Get comment body
+    comment_body = data.get('body')
+    if not comment_body:
+        return jsonify({"error": "Missing body"}), 400
+
+    # Return the post associated with post_id
+    post = db.find_post({"_id": ObjectId(post_id)})
+
+    # Check if the post exist.
+    if post:
+
+        updated_comment = db.update_comment(comment_id, user_id, comment_body)
+        if updated_comment:
+            return jsonify(
+                {
+                    'data': updated_comment,
+                    "msg": "Comment updated successfully."
+                }
+            ), 200
+
+    return jsonify({"error": "Post not found."}), 404
+
+
+@feed_bp.route('/delete_comment', methods=['DELETE'])
+@jwt_required()
+@verify_token_in_redis
+def delete_comment():
+    """ route for deleting comments from a post """
+    # Get data from request
+    data = request.get_json()
+
+    # Get the post id
+    post_id = data.get('post_id')
+
+    # Get the current user's id
+    user_id = get_jwt_identity()
+
+    # comment id
+    comment_id = data.get('comment_id')
+
+    # Check if post id is missing
+    if not post_id:
+        return jsonify({"error": "Missing post_id"}), 400
+
+    # Check if comment id is missing
+    if not comment_id:
+        return jsonify({"error": "Missing comment_id"}), 400
+
+    # Return the post associated with post_id
+    post = db.find_post({"_id": ObjectId(post_id)})
+
+    # Check if the post exist.
+    if post:
+
+        deleted = db.delete_comment(comment_id, user_id, post_id)
+
+        if deleted:
+            return jsonify({"msg": "Comment deleted successfully."}), 200
+
+    return jsonify({"error": "Post not found."}), 404
+
+
+@feed_bp.route('/post_comments', methods=['GET'])
+@jwt_required()
+@verify_token_in_redis
+def post_comments():
+    """ route for returing all the comments associated with a post """
+    # Get data from request
+    data = request.get_json()
+
+    # Get the post id
+    post_id = data.get('post_id')
+
+    # Check if post id is missing
+    if not post_id:
+        return jsonify({"error": "Missing post_id"}), 400
+
+    # Return the post associated with post_id
+    post = db.find_post({"_id": ObjectId(post_id)})
+
+    # Check if the post exist.
+    if post:
+
+        # Get comments from db
+        comments = db.get_post_comments(post_id)
+
+        if comments:
+            return jsonify(
+                {
+                    'data': comments,
+                    "msg": "Comments retrieved successfully."
+                }
+            ), 200
 
     return jsonify({"error": "Post not found."}), 404
