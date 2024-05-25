@@ -1,6 +1,4 @@
-import React from "react";
 import Navigation from "./Navigation";
-// import "../index.css"
 import Footer from "./Footer";
 import "../App.css";
 import Animation from "./Animation";
@@ -19,4 +17,5 @@ const Home = () => {
     </div>
   );
 };
+
 export default Home;

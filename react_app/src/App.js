@@ -2,9 +2,8 @@ import React from 'react'
 import './App.css';
 import Home from './Components/Home';
 import "./Assets/Navstyle.css";
-import Footer from './Components/Footer';
 import SignIn from './Components/SignIn';
-import Signup from './Components/Signup';
+import SignUp from './Components/SignUp';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom'
 import Navigation from './Components/Navigation';
 
@@ -19,7 +18,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />}/>
           <Route path="/login" element={<SignIn />}/>
-          <Route path="/register" element={<Signup />}/>
+          <Route path="/register" element={<SignUp />}/>
         </Routes>
         
       </div>

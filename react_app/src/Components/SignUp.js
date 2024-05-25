@@ -1,54 +1,49 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from 'axios';
 import "../index.css";
 import {useNavigate} from "react-router-dom"
 
 
-function Signup() {
+function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const navigate = useNavigate();
+  const hostIP = process.env.REACT_APP_HOST || "127.0.0.1";
 
 
   const registerUser = async (event) => {
     event.preventDefault();
+
     if (!username) {
       alert("Please enter your username");
-    } else if (!email){
+    } else if (!email) {
       alert("please enter you email")
-    }else if (password.length < 8){
+    } else if (password.length < 8) {
       alert("Password must include at least 8 characters")
-    }else{ 
+    } else {
+
       const data = {
         username: username,
         email: email,
         password: password,
       };
-      axios.post("/register", 
-      data, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then(function (response) {
-          console.log(response);
-          navigate("/");
-        })
-        .catch(function (error) {
-          console.log(error, "error");
-          if (error.response) {
-            if (error.response.status === 401) {
-              alert("Invalid credentials");
-            } else {
-              alert(`Error: ${error.response.status}`);
-            }
-          } else {
-            alert("An error occurred. Please try again later.");
-          }
-        });
+      
+      try {
+        const response = await axios.post(`http://${hostIP}:5000/register`, data);
+
+        alert(`Great to meet you ${username}! You can Log In now!`);
+        navigate("/login");
+      } catch (error) {
+        if (error.response) {
+          alert(`Error: ${error.response.data.error}`);
+        } else {
+          alert("An error occurred. Please try again later.");
+        }
       }
+    }
   }
+
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -60,11 +55,8 @@ function Signup() {
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form
+            onSubmit={registerUser}
             className="space-y-6"
-            onSubmit={() => registerUser()}
-
-            // action="http://localhost:5000/register"
-            method="POST"
           >
             <div>
               <label
@@ -136,7 +128,6 @@ function Signup() {
             <div>
               <button
                 type="submit"
-                  // onClick={() => registerUser()}
                 className="flex w-full justify-center rounded-md bg-green px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-glight focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Sign up
@@ -159,4 +150,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default SignUp;
