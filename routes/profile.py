@@ -70,6 +70,10 @@ def get_posts():
 
     # Return posts
     posts = db.find_user_posts(user_id)
+
+    # Sort posts from the most to the less recent
+    posts.sort(key=lambda x: x['datePosted'], reverse=True)
+
     for p in posts:
         del p['_id']
         del p['user_id']

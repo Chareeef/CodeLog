@@ -500,6 +500,7 @@ class TestGetPosts(unittest.TestCase):
             datePosted = datetime.utcnow()
 
             post = {
+                'username': infos['username'],
                 'title': title,
                 'content': content,
                 'is_public': is_public,
@@ -511,8 +512,8 @@ class TestGetPosts(unittest.TestCase):
             post['user_id'] = user_id
             db.insert_post(post)
 
-        # Sort posts
-        cls.posts.sort(key=lambda x: x['title'])
+        # Sort posts from the most to the less recent
+        cls.posts.sort(key=lambda x: x['datePosted'], reverse=True)
 
         # Stringify datePosted
         for p in cls.posts:
@@ -558,9 +559,6 @@ class TestGetPosts(unittest.TestCase):
 
         # Verify response
         self.assertEqual(response.status_code, 200)
-
-        # Sort data
-        data.sort(key=lambda x: x['title'])
 
         self.assertEqual(len(self.posts), len(data))
 

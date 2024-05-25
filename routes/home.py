@@ -64,6 +64,7 @@ def log():
     # Retrieve the entry's infos
     entry = {
         'user_id': user_id,
+        'username': user['username'],
         'title': data.get('title'),
         'content': data.get('content'),
         'is_public': data.get('is_public', False),

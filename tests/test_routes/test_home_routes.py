@@ -86,6 +86,7 @@ class TestCreateLog(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn('_id', data)
         self.assertIn('user_id', data)
+        self.assertIn('username', data)
         self.assertEqual(data.get('title'), 'My post')
         self.assertEqual(data.get('content'), 'Here is my post')
         self.assertEqual(data.get('is_public'), False)
@@ -100,6 +101,7 @@ class TestCreateLog(unittest.TestCase):
         post = db.find_post({'_id': ObjectId(data.get('_id'))})
 
         self.assertEqual(post.get('user_id'), data['user_id'])
+        self.assertEqual(post.get('username'), data['username'])
         self.assertEqual(post.get('title'), data['title'])
         self.assertEqual(post.get('content'), data['content'])
         self.assertEqual(post.get('is_public'), data['is_public'])
@@ -134,6 +136,7 @@ class TestCreateLog(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn('_id', data)
         self.assertIn('user_id', data)
+        self.assertIn('username', data)
         self.assertEqual(data.get('title'), 'My post')
         self.assertEqual(data.get('content'), 'Here is my post')
         self.assertEqual(data.get('is_public'), True)
@@ -148,6 +151,7 @@ class TestCreateLog(unittest.TestCase):
         post = db.find_post({'_id': ObjectId(data.get('_id'))})
 
         self.assertEqual(post.get('user_id'), data['user_id'])
+        self.assertEqual(post.get('username'), data['username'])
         self.assertEqual(post.get('title'), data['title'])
         self.assertEqual(post.get('content'), data['content'])
         self.assertEqual(post.get('is_public'), data['is_public'])
