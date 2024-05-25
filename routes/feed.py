@@ -16,7 +16,7 @@ feed_bp = Blueprint('feed_bp', __name__)
 @verify_token_in_redis
 def get_feed():
     """ Return all the public posts """
-    posts = list(filter(lambda p: p['is_public'] == True, db.find_all_posts()))
+    posts = list(filter(lambda p: p['is_public'] is True, db.find_all_posts()))
     for p in posts:
         del p['_id']
 
@@ -34,7 +34,11 @@ def get_feed():
             page_num = int(page)
 
             if page_num < 1:
-                return jsonify({'error': 'page number must be greater or equal to 1'}), 400
+                return jsonify(
+                    {
+                        'error': 'page number must be greater or equal to 1'
+                    }
+                ), 400
 
             # Compute posts quantity
             len_posts = len(posts)
@@ -122,6 +126,7 @@ def unlike():
 
     return jsonify({"error": "Post not found."}), 404
 
+
 @feed_bp.route('/comment', methods=['POST'])
 @jwt_required()
 @verify_token_in_redis
@@ -152,7 +157,9 @@ def comment():
             'user_id': ObjectId(user_id),
             'post_id': ObjectId(post_id),
             'body': comment_body,
-            'date_posted': datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT')
+            'date_posted': datetime.utcnow().strftime(
+                '%a, %d %b %Y %H:%M:%S GMT'
+            )
         }
 
         comment_id = db.insert_comment(comment_document, post_id)
@@ -161,8 +168,8 @@ def comment():
         if comment_id:
             return jsonify(
                 {
-                'data': comment,
-                "msg": "Comment created successfully."
+                    'data': comment,
+                    "msg": "Comment created successfully."
                 }
             ), 200
 
@@ -242,7 +249,6 @@ def delete_comment():
     if not comment_id:
         return jsonify({"error": "Missing comment_id"}), 400
 
-
     # Return the post associated with post_id
     post = db.find_post({"_id": ObjectId(post_id)})
 
@@ -255,6 +261,7 @@ def delete_comment():
             return jsonify({"msg": "Comment deleted successfully."}), 200
 
     return jsonify({"error": "Post not found."}), 404
+
 
 @feed_bp.route('/post_comments', methods=['GET'])
 @jwt_required()

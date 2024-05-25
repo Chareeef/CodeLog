@@ -210,7 +210,9 @@ class TestGetFeedPosts(unittest.TestCase):
 
         # Verify response
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(data, {'error': 'page number must be greater or equal to 1'})
+        self.assertEqual(
+            data, {'error': 'page number must be greater or equal to 1'}
+        )
 
     def test_get_feed_negative_page(self):
         """Test getting feed's with page=-3
@@ -222,7 +224,9 @@ class TestGetFeedPosts(unittest.TestCase):
 
         # Verify response
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(data, {'error': 'page number must be greater or equal to 1'})
+        self.assertEqual(
+            data, {'error': 'page number must be greater or equal to 1'}
+        )
 
     def test_get_feed_invalid_page_type(self):
         """Test getting feed's with page=page_1
@@ -481,6 +485,7 @@ class TestLikeUnlike(unittest.TestCase):
         self.assertEqual(res.status_code, 401)
         self.assertEqual(data, {'error': 'Missing Authorization Header'})
 
+
 class TestComments(unittest.TestCase):
     """ Testing comments for authenticated users """
     def setUp(self):
@@ -619,11 +624,13 @@ class TestComments(unittest.TestCase):
 
         updated_comment = {
             'post_id': str(self.post_id),
-            'comment_id' : str(post['comments'][0]),
+            'comment_id': str(post['comments'][0]),
             'body': 'Updated comment'
         }
         res = self.client.put(
-            '/feed/update_comment', headers=headers, data=json.dumps(updated_comment)
+            '/feed/update_comment',
+            headers=headers,
+            data=json.dumps(updated_comment)
         )
         data = res.get_json()
 
@@ -665,19 +672,19 @@ class TestComments(unittest.TestCase):
 
         updated_comment = {
             'post_id': str(self.post_id),
-            'comment_id' : str(post['comments'][0]),
+            'comment_id': str(post['comments'][0]),
         }
         res = self.client.put(
-            '/feed/update_comment', headers=headers, data=json.dumps(updated_comment)
+            '/feed/update_comment',
+            headers=headers,
+            data=json.dumps(updated_comment)
         )
         data = res.get_json()
         comment = db.find_comment(post['comments'][0], self.user_id)
 
-
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data['error'], 'Missing body')
         self.assertEqual(comment['body'], dump['body'])
-
 
     def test_update_comment_with_no_postid(self):
         """ Test for updating a comment with no post_id. """
@@ -708,11 +715,13 @@ class TestComments(unittest.TestCase):
         self.assertEqual(data['data'], comment)
 
         updated_comment = {
-            'comment_id' : str(post['comments'][0]),
+            'comment_id': str(post['comments'][0]),
             'body': 'Updated comment'
         }
         res = self.client.put(
-            '/feed/update_comment', headers=headers, data=json.dumps(updated_comment)
+            '/feed/update_comment',
+            headers=headers,
+            data=json.dumps(updated_comment)
         )
         data = res.get_json()
         comment = db.find_comment(post['comments'][0], self.user_id)
@@ -754,7 +763,9 @@ class TestComments(unittest.TestCase):
             'body': 'Updated comment'
         }
         res = self.client.put(
-            '/feed/update_comment', headers=headers, data=json.dumps(updated_comment)
+            '/feed/update_comment',
+            headers=headers,
+            data=json.dumps(updated_comment)
         )
         data = res.get_json()
         comment = db.find_comment(post['comments'][0], self.user_id)
@@ -860,7 +871,6 @@ class TestComments(unittest.TestCase):
 
         self.assertTrue(deleted)
         self.assertIsNone(comment)
-
 
     def test_delete_user_comment(self):
         """ Test deleting a user also

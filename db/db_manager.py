@@ -11,6 +11,7 @@ import os
 import bcrypt
 from typing import Any, Dict, List, Optional
 
+
 def hash_pass(password: str) -> bytes:
     """ hash a password and return the hashed value """
     hash_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
@@ -338,7 +339,11 @@ class DBStorage:
         except Exception as e:
             return None
 
-    def delete_many_comments(self, post_id: str = None, user_id: str = None) -> bool:
+    def delete_many_comments(
+            self,
+            post_id: str = None,
+            user_id: str = None
+    ) -> bool:
         """ Deletes comment documents associated with post document  """
         comments = self._db['comments']
         try:
@@ -413,4 +418,3 @@ class DBStorage:
         self._db.drop_collection('users')
         self._db.drop_collection('posts')
         self._db.drop_collection('comments')
-
