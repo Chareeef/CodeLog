@@ -1,13 +1,11 @@
-import React from 'react'
-import {motion} from "framer-motion"
+// import React from 'react';
+// import { motion } from 'framer-motion';
 // import "../Assets/AnimationSecTwo.css"
 // import Pic from "../Assets/sciene.png"
 // import Pic2 from "../Assets/python.png"
 // import Pic3 from "../Assets/linux.png"
 // import Pic4 from "../Assets/java.png"
 // import Pic5 from "../Assets/agile.png"
-
-
 
 // const images =[
 //     {src: Pic, alt:'react'},
@@ -19,9 +17,8 @@ import {motion} from "framer-motion"
 
 // function AnimationSecTwo() {
 //   return (
- 
+
 //         <div className='animation'>
-            
 
 //             <div className='square-container'>
 //                 <div className='heading-container'>
@@ -46,8 +43,7 @@ import {motion} from "framer-motion"
 
 //                 ))}
 //                 </div>
-              
-                   
+
 //             </div>
 //         </div>
 

@@ -1,12 +1,16 @@
-import React from 'react'
+import React from 'react';
 
 function AnimationSecThree() {
   return (
-    <div style={{
+    <div
+      style={{
         backgroundColor: 'purple',
-        height: 700
-    }}>AnimationSecThree</div>
-  )
+        height: 700,
+      }}
+    >
+      AnimationSecThree
+    </div>
+  );
 }
 
-export default AnimationSecThree
+export default AnimationSecThree;
