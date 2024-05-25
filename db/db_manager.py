@@ -9,8 +9,7 @@ from pymongo import MongoClient
 from bson import ObjectId
 import os
 import bcrypt
-from typing import Any, Dict, List, Optional, Tuple, Union
-
+from typing import Any, Dict, List, Optional
 
 def hash_pass(password: str) -> bytes:
     """ hash a password and return the hashed value """
@@ -266,7 +265,6 @@ class DBStorage:
     ) -> Optional[Dict[str, Any]]:
         """ find and return a comment document  """
         comments = self._db['comments']
-
         try:
             comment = comments.find(
                 {
@@ -274,7 +272,7 @@ class DBStorage:
                     'user_id': ObjectId(user_id)
                 }
             )
-            return list(map(serialize_ObjectId, comment))[0]
+            return serialize_ObjectId(list(comment)[0])
         except Exception as e:
             return None
 
@@ -289,7 +287,7 @@ class DBStorage:
         try:
             updated_comment = comments.find_one_and_update(
                 {'_id': ObjectId(comment_id), 'user_id': ObjectId(user_id)},
-                {'$set': body},
+                {'$set': {'body': body}},
                 return_document=ReturnDocument.AFTER
             )
             return serialize_ObjectId(updated_comment)
@@ -334,20 +332,26 @@ class DBStorage:
                 {
                     'post_id': ObjectId(post_id)
                 }
-            )
+
+            ).sort('date_posted', 1)
             return list(map(serialize_ObjectId, post_comments))
         except Exception as e:
             return None
 
-    def delete_many_comments(self, post_id: str) -> bool:
+    def delete_many_comments(self, post_id: str = None, user_id: str = None) -> bool:
         """ Deletes comment documents associated with post document  """
         comments = self._db['comments']
         try:
-            comments.delete_many({'post_id': ObjectId(post_id)})
-            return True
+            if post_id is not None:
+                comments.delete_many({'post_id': ObjectId(post_id)})
+                return True
+            elif user_id is not None:
+                comments.delete_many({'user_id': ObjectId(user_id)})
+                return True
+            else:
+                return False
         except Exception as e:
             return False
-
 
     # DELETE
 
@@ -355,6 +359,11 @@ class DBStorage:
         """ delete a post document from db """
         posts = self._db['posts']
         try:
+            # Revome all comments associated with the post
+            deleted = self.delete_many_comments(post_id=post_id)
+            if not deleted:
+                return False
+
             posts.delete_one({
                 '_id': ObjectId(post_id),
                 'user_id': user_id
@@ -371,6 +380,11 @@ class DBStorage:
         posts = self._db['posts']
 
         try:
+            # Remove all of the user's comments
+            deleted = self.delete_many_comments(user_id=user_id)
+
+            if not deleted:
+                return False
             posts.delete_many({
                 'user_id': user_id
             })
@@ -398,3 +412,5 @@ class DBStorage:
         """
         self._db.drop_collection('users')
         self._db.drop_collection('posts')
+        self._db.drop_collection('comments')
+
