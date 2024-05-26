@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import '../index.css';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../index.css';
+import apiClient from '../apiClient';
 
 function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const navigate = useNavigate();
-  const hostIP = process.env.REACT_APP_HOST || '127.0.0.1';
 
   const registerUser = async (event) => {
     event.preventDefault();
@@ -31,7 +30,7 @@ function SignUp() {
       };
 
       try {
-        await axios.post(`http://${hostIP}:5000/register`, data);
+        await apiClient.post('/register', data);
 
         alert(`Great to meet you ${username}! You can Log In now!`);
         navigate('/login');
@@ -73,6 +72,7 @@ function SignUp() {
                   type='username'
                   autoComplete='username'
                   className='block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+                  required
                 />
               </div>
             </div>
@@ -94,6 +94,7 @@ function SignUp() {
                   type='email'
                   autoComplete='email'
                   className='block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+                  required
                 />
               </div>
             </div>
@@ -118,6 +119,7 @@ function SignUp() {
                   type='password'
                   autoComplete='current-password'
                   className='block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+                  required
                 />
               </div>
             </div>
