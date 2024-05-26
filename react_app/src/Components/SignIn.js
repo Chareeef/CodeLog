@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import apiClient from '../apiClient';
 import '../index.css';
 import '../Assets/Signin.css';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const hostIP = process.env.REACT_APP_HOST || '127.0.0.1';
 
   const logInUser = async (event) => {
     event.preventDefault();
@@ -25,9 +24,12 @@ function SignIn() {
       };
 
       try {
-        const response = await axios.post(`http://${hostIP}:5000/login`, data);
-        // TODO; Store 'response.data.access_token' for later requests
-        // TODO; Store 'response.data.refresh_token' for later requests
+        const response = await apiClient.post('/login', data);
+
+        // Store JWT Tokens for later requests
+        localStorage.setItem('jwt_access_token', response.data.access_token);
+        localStorage.setItem('jwt_refresh_token', response.data.refresh_token);
+
         alert("It's nice to see you!");
         navigate('/');
       } catch (error) {
@@ -68,6 +70,7 @@ function SignIn() {
                   type='email'
                   autoComplete='email'
                   className='block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+                  required
                 />
               </div>
             </div>
@@ -99,6 +102,8 @@ function SignIn() {
                   type='password'
                   autoComplete='current-password'
                   className='block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+                  min='6'
+                  required
                 />
               </div>
             </div>
