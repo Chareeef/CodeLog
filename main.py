@@ -6,6 +6,7 @@ from flask_cors import CORS
 from config import Config
 from routes import auth_bp, home_bp, profile_bp, feed_bp
 from flask_jwt_extended import JWTManager
+from flasgger import Swagger
 
 
 def create_app(config=Config):
@@ -15,6 +16,12 @@ def create_app(config=Config):
 
     # Initialize the JWTManager
     jwt = JWTManager(app)
+
+    app.config['SWAGGER'] = {
+    'title': 'SWE JOURNAL Restful API',
+}
+    # Initialize Swagger
+    Swagger(app)
 
     # Set configuration
     app.config.from_object(config)

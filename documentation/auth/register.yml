@@ -1,0 +1,35 @@
+tags:
+  - Authentication
+summary: Register a user
+description: Register a new user
+parameters:
+  - in: body
+    name: user
+    description: User information
+    required: true
+    schema:
+      type: object
+      properties:
+        email:
+          type: string
+          example: "user@example.com"
+        username:
+          type: string
+          example: "username123"
+        password:
+          type: string
+          example: "password123"
+responses:
+  400:
+    description: Invalid request - Missing email, username, or password, or email, username already used
+  201:
+    description: User created successfully
+    schema:
+      type: object
+      properties:
+        Created user:
+          type: string
+          example: "username123"
+        email:
+          type: string
+          example: 'user@example.com'

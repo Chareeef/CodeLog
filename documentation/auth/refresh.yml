@@ -1,0 +1,21 @@
+tags:
+  - Authentication
+summary: Refresh Token
+description: Refresh the current user's JWT
+parameters:
+  - in: header
+    name: Access token
+    type: string
+    required: true
+    description: Bearer access token for authorization
+responses:
+  401:
+    description: Unauthorized - Token has expired or invalid
+  200:
+    description: Successful token refresh
+    schema:
+      type: object
+      properties:
+        new_access_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."

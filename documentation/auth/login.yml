@@ -1,0 +1,35 @@
+tags:
+  - Authentication
+summary: Login a user
+description: Log in a user and create JWT tokens
+parameters:
+  - in: body
+    name: user
+    description: User credentials
+    required: true
+    schema:
+      type: object
+      properties:
+        email:
+          type: string
+          example: "user@example.com"
+        password:
+          type: string
+          example: "password123"
+responses:
+  400:
+    description: Invalid request - Missing email or username
+  401:
+    description: Unauthorized - Incorrect email or password
+  200:
+    description: Successful login
+    schema:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        refresh_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+

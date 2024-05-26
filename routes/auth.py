@@ -12,6 +12,7 @@ from flask_jwt_extended import (
     get_jwt_identity,
     create_refresh_token,
 )
+from flasgger.utils import swag_from
 
 
 # Create auth Blueprint
@@ -46,7 +47,8 @@ def verify_token_in_redis(func):
     return valid_token
 
 
-@auth_bp.route('/register', methods=['GET', 'POST'])
+@auth_bp.route('/register', methods=['POST'])
+@swag_from('../documentation/auth/register.yml')
 def register():
     """Register a new user
     """
@@ -92,6 +94,7 @@ def register():
 
 
 @auth_bp.route("/login", methods=["POST"])
+@swag_from('../documentation/auth/login.yml')
 def login():
     """Log in a user creating a JWT for him
     """
@@ -155,6 +158,7 @@ def login():
 
 @auth_bp.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)
+@swag_from('../documentation/auth/refresh.yml')
 def refresh():
     """Refresh the current user's JWT
     """
@@ -183,6 +187,7 @@ def refresh():
 @auth_bp.route('/logout', methods=['POST'])
 @jwt_required()
 @verify_token_in_redis
+@swag_from('../documentation/auth/logout.yml')
 def logout():
     """Invalidate JWTs by deleting them from Redis
     """
