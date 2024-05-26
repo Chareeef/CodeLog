@@ -1,0 +1,13 @@
+tags:
+  - Authentication
+summary: Logout
+description: Invalidate JWTs by deleting them from Redis
+parameters:
+  - in: header
+    name: Access token
+    type: string
+    required: true
+    description: Bearer token for authorization
+responses:
+  204:
+    description: JWTs successfully invalidated
