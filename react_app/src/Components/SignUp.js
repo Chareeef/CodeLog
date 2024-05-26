@@ -13,12 +13,16 @@ function SignUp() {
   const registerUser = async (event) => {
     event.preventDefault();
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!username) {
       alert('Please enter your username');
     } else if (!email) {
-      alert('please enter you email');
-    } else if (password.length < 8) {
-      alert('Password must include at least 8 characters');
+      alert('Please enter you email');
+    } else if (!emailRegex.test(email)) {
+      alert('Invalid email');
+    } else if (password.length < 6) {
+      alert('Password must include at least 6 characters');
     } else {
       const data = {
         username: username,

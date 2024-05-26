@@ -8,38 +8,35 @@ function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const hostIP = process.env.REACT_APP_HOST || '127.0.0.1';
 
-  const logInUser = (event) => {
+  const logInUser = async (event) => {
     event.preventDefault();
-    if (email.length === 0 || password.length === 0) {
-      alert('Invalid email or password');
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert('Invalid email');
+    } else if (password.length === 0) {
+      alert('Invalid password');
     } else {
       const data = {
         email: email,
         password: password,
       };
-      axios
-        .post('/login', JSON.stringify(data), {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then(function (response) {
-          console.log(response);
-          navigate('/');
-        })
-        .catch(function (error) {
-          console.log(error, 'error');
-          if (error.response) {
-            if (error.response.status === 401) {
-              alert('Invalid credentials');
-            } else {
-              alert(`Error: ${error.response.status}`);
-            }
-          } else {
-            alert('An error occurred. Please try again later.');
-          }
-        });
+
+      try {
+        const response = await axios.post(`http://${hostIP}:5000/login`, data);
+        // TODO; Store 'response.data.access_token' for later requests
+        // TODO; Store 'response.data.refresh_token' for later requests
+        alert("It's nice to see you!");
+        navigate('/');
+      } catch (error) {
+        if (error.response) {
+          alert(`Error: ${error.response.data.error}`);
+        } else {
+          alert('An error occurred. Please try again later.');
+        }
+      }
     }
   };
 
@@ -53,12 +50,7 @@ function SignIn() {
         </div>
 
         <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
-          <form
-            className='space-y-6'
-            onSubmit={logInUser}
-            // action="http://localhost:5000/login"
-            // method="POST"
-          >
+          <form className='space-y-6' onSubmit={logInUser}>
             <div>
               <label
                 htmlFor='email'
@@ -75,7 +67,6 @@ function SignIn() {
                   name='email'
                   type='email'
                   autoComplete='email'
-                  //   required
                   className='block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
                 />
               </div>
