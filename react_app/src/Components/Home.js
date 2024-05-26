@@ -11,9 +11,9 @@ function Home() {
       <div className='home-container'>
         {/* <Navigation /> */}
         <Animation />
-        {/* <AnimationSecTwo /> */}
+        {/* <AnimationSecTwo /> 
         <AnimationSecThree />
-        <Footer />
+        <Footer /> */}
       </div>
     </>
   );
