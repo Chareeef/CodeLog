@@ -20,7 +20,6 @@ def create_app(config=Config):
     app.config.from_object(config)
 
     # Set up CORS
-    # CORS(app, resources={r'/*': {'origins': ['http://localhost']}})
     CORS(app)
 
     # Disable strict slashes

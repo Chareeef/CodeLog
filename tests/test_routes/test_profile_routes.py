@@ -1267,7 +1267,9 @@ class TestDeleteUser(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data, {'success': 'account deleted'})
 
-        # Check the deletion of the user and that user's posts are always absent
+        # Check the user's deletion of the user
         self.assertIsNone(db.find_user(
             {'_id': ObjectId(self.another_user_id)}))
+
+        # Check that the user's posts are always absent
         self.assertEqual(len(db.find_user_posts(self.another_user_id)), 0)

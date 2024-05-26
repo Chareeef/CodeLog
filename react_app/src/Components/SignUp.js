@@ -1,35 +1,40 @@
 import React, { useState } from 'react';
-import '../index.css';
-import '../Assets/Signin.css';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import '../index.css';
+import { useNavigate } from 'react-router-dom';
 
-function SignIn() {
+function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
   const navigate = useNavigate();
   const hostIP = process.env.REACT_APP_HOST || '127.0.0.1';
 
-  const logInUser = async (event) => {
+  const registerUser = async (event) => {
     event.preventDefault();
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+
+    if (!username) {
+      alert('Please enter your username');
+    } else if (!email) {
+      alert('Please enter you email');
+    } else if (!emailRegex.test(email)) {
       alert('Invalid email');
-    } else if (password.length === 0) {
-      alert('Invalid password');
+    } else if (password.length < 6) {
+      alert('Password must include at least 6 characters');
     } else {
       const data = {
+        username: username,
         email: email,
         password: password,
       };
 
       try {
-        const response = await axios.post(`http://${hostIP}:5000/login`, data);
-        // TODO; Store 'response.data.access_token' for later requests
-        // TODO; Store 'response.data.refresh_token' for later requests
-        alert("It's nice to see you!");
-        navigate('/');
+        await axios.post(`http://${hostIP}:5000/register`, data);
+
+        alert(`Great to meet you ${username}! You can Log In now!`);
+        navigate('/login');
       } catch (error) {
         if (error.response) {
           alert(`Error: ${error.response.data.error}`);
@@ -45,12 +50,33 @@ function SignIn() {
       <div className='flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
         <div className='sm:mx-auto sm:w-full sm:max-w-sm'>
           <h2 className='mt-10 text-center text-2xl font-bold leading-9 tracking-tight  text-white	text-900'>
-            Sign in to your account
+            Create your account
           </h2>
         </div>
 
         <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
-          <form className='space-y-6' onSubmit={logInUser}>
+          <form onSubmit={registerUser} className='space-y-6'>
+            <div>
+              <label
+                htmlFor='username'
+                className='block text-sm font-medium leading-6 text-white text-900'
+              >
+                Username
+              </label>
+              <div className='mt-2'>
+                <input
+                  onChange={(e) => setUsername(e.target.value)}
+                  value={username}
+                  placeholder='username'
+                  id='username'
+                  name='username'
+                  type='username'
+                  autoComplete='username'
+                  className='block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+                />
+              </div>
+            </div>
+
             <div>
               <label
                 htmlFor='email'
@@ -80,14 +106,7 @@ function SignIn() {
                 >
                   Password
                 </label>
-                <div className='text-sm'>
-                  <a
-                    href='#'
-                    className='font-semibold text-white-600 hover:text-white-500'
-                  >
-                    Forgot password?
-                  </a>
-                </div>
+                <div className='text-sm'></div>
               </div>
               <div className='mt-2'>
                 <input
@@ -106,20 +125,20 @@ function SignIn() {
             <div>
               <button
                 type='submit'
-                className='flex w-full justify-center rounded-md bg-green px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-glight hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                className='flex w-full justify-center rounded-md bg-green px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-glight focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
               >
-                Sign in
+                Sign up
               </button>
             </div>
           </form>
 
           <p className='mt-10 text-center text-sm text-black text-500'>
-            Not a member?{' '}
+            Already have an account?{' '}
             <a
-              href='/register'
-              className='font-semibold leading-6 text-white text-600 hover:text-indigo-500'
+              href='/login'
+              className='font-bold leading-6 text-white text-600 hover:text-indigo-500'
             >
-              Sign up
+              Log in
             </a>
           </p>
         </div>
@@ -128,4 +147,4 @@ function SignIn() {
   );
 }
 
-export default SignIn;
+export default SignUp;

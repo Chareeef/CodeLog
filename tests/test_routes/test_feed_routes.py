@@ -488,6 +488,7 @@ class TestLikeUnlike(unittest.TestCase):
 
 class TestComments(unittest.TestCase):
     """ Testing comments for authenticated users """
+
     def setUp(self):
         """ Runs once before every test """
         self.app = create_app(TestConfig)
