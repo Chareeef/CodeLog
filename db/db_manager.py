@@ -47,18 +47,29 @@ class DBStorage:
 
     def __init__(self) -> None:
         """ Constructor """
-        db_host = os.getenv('DB_HOST', 'localhost')
-        db_port = os.getenv('DB_PORT', '27017')
-        db_name = os.getenv('DB_DATABASE', 'swe_journal')
-        self._client = MongoClient(f"mongodb://{db_host}:{db_port}/")
+
+        mongo_uri = os.getenv('MONGO_URI')
+        with_uri = True
+
+        if not mongo_uri:
+            db_host = os.getenv('DB_HOST', '127.0.0.1')
+            db_port = os.getenv('DB_PORT', '27017')
+            mongo_uri = f"mongodb://{db_host}:{db_port}"
+            with_uri = False
+
+        self._client = MongoClient(mongo_uri)
 
         try:
             self._client.admin.command('ismaster')
-            print(f"Connected to MongoDB successfully on port: {db_port}")
+            if with_uri:
+                print(f"Connected to remote MongoDB")
+            else:
+                print(f"Connected to MongoDB: host={db_host}, port={db_port}")
         except ConnectionFailure as err:
             print(f"Connection failed: {err}")
             raise
 
+        db_name = os.getenv('DB_DATABASE', 'swe_journal')
         self._db = self._client[db_name]
 
     # INSERT

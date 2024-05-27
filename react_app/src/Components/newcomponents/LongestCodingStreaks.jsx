@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import "./index.css";
+import React, { useState } from 'react';
+import './index.css';
 
 function LongestCodingStreaks() {
   const [codedToday, setCodedToday] = useState(false); // State to track whether the member has coded today
@@ -12,12 +12,12 @@ function LongestCodingStreaks() {
   const handleSubmit = (event) => {
     event.preventDefault();
     // Here you can handle the submission of code of the day
-    console.log("Code submitted:", codeHours, "hours");
+    console.log('Code submitted:', codeHours, 'hours');
   };
 
   return (
-    <div className="longest-streaks-container">
-      <div className="coding-streaks-section">
+    <div className='longest-streaks-container'>
+      <div className='coding-streaks-section'>
         <h2>Longest Coding Streaks</h2>
         <ul>
           <li>1. John Doe - 365 days</li>
@@ -25,14 +25,10 @@ function LongestCodingStreaks() {
           {/* Add more streaks as needed */}
         </ul>
       </div>
-      <div className="coding-today-section">
+      <div className='coding-today-section'>
         <h2>Did you code today?</h2>
         <label>
-          <input
-            type="checkbox"
-            checked={codedToday}
-            onChange={handleToggle}
-          />
+          <input type='checkbox' checked={codedToday} onChange={handleToggle} />
           Yes, I coded today
         </label>
         {codedToday && (
@@ -40,33 +36,30 @@ function LongestCodingStreaks() {
             <label>
               How many hours did you code today?
               <input
-                type="number"
+                type='number'
                 value={codeHours}
                 onChange={(e) => setCodeHours(e.target.value)}
                 required
               />
             </label>
-            <button type="submit">Submit</button>
+            <button type='submit'>Submit</button>
           </form>
         )}
       </div>
-      <div className="code-post-section">
+      <div className='code-post-section'>
         <h2>Post Your Code of the Day</h2>
         <form onSubmit={handleSubmit}>
           <label>
             Number of Hours Coded:
             <input
-              type="number"
+              type='number'
               value={codeHours}
               onChange={(e) => setCodeHours(e.target.value)}
               required
             />
           </label>
-          <textarea
-            placeholder="Write your code here..."
-            required
-          ></textarea>
-          <button type="submit">Submit</button>
+          <textarea placeholder='Write your code here...' required></textarea>
+          <button type='submit'>Submit</button>
         </form>
       </div>
     </div>

@@ -17,10 +17,10 @@ def create_app(config=Config):
     # Initialize the JWTManager
     jwt = JWTManager(app)
 
-    app.config['SWAGGER'] = {
-    'title': 'SWE JOURNAL Restful API',
-}
     # Initialize Swagger
+    app.config['SWAGGER'] = {
+        'title': 'SWE JOURNAL Restful API',
+    }
     Swagger(app)
 
     # Set configuration
