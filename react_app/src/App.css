@@ -26,5 +26,5 @@ div {
   margin: 0;
 } */
 .content {
-	background: linear-gradient(to right, rgb(255, 255, 255), rgb(128, 0, 128));
+  background: linear-gradient(to right, rgb(255, 255, 255), rgb(128, 0, 128));
 }

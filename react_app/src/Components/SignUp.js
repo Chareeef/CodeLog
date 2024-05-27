@@ -61,29 +61,8 @@ function SignUp() {
               {message}
             </div>
           )}
-          <form onSubmit={registerUser} className='space-y-6'>
-            <div>
-              <label
-                htmlFor='username'
-                className='block text-sm font-medium leading-6 text-white text-900'
-              >
-                Username
-              </label>
-              <div className='mt-2'>
-                <input
-                  onChange={(e) => setUsername(e.target.value)}
-                  value={username}
-                  placeholder='username'
-                  id='username'
-                  name='username'
-                  type='username'
-                  autoComplete='username'
-                  className='block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
-                  required
-                />
-              </div>
-            </div>
 
+          <form onSubmit={registerUser} className='space-y-6'>
             <div>
               <label
                 htmlFor='email'
@@ -100,6 +79,28 @@ function SignUp() {
                   name='email'
                   type='email'
                   autoComplete='email'
+                  className='block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor='username'
+                className='block text-sm font-medium leading-6 text-white text-900'
+              >
+                Username
+              </label>
+              <div className='mt-2'>
+                <input
+                  onChange={(e) => setUsername(e.target.value)}
+                  value={username}
+                  placeholder='username'
+                  id='username'
+                  name='username'
+                  type='username'
+                  autoComplete='username'
                   className='block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
                   required
                 />
