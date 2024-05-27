@@ -7,6 +7,7 @@ from datetime import datetime
 from db import db, redis_client as rc
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from routes.auth import verify_token_in_redis
+from flasgger import swag_from
 
 # Create profile Blueprint
 profile_bp = Blueprint('profile_bp', __name__)
@@ -17,6 +18,7 @@ profile_bp = Blueprint('profile_bp', __name__)
 @profile_bp.route('/get_infos')
 @jwt_required()
 @verify_token_in_redis
+@swag_from('../documentation/profile/get_info.yml')
 def get_infos():
     """Get user's email and username
     """
@@ -33,6 +35,7 @@ def get_infos():
 @profile_bp.route('/streaks')
 @jwt_required()
 @verify_token_in_redis
+@swag_from('../documentation/profile/get_streaks.yml')
 def get_streaks():
     """Get user's current and longest streaks
     """
@@ -61,6 +64,7 @@ def get_streaks():
 @profile_bp.route('/posts')
 @jwt_required()
 @verify_token_in_redis
+@swag_from('../documentation/profile/get_posts.yml')
 def get_posts():
     """Get the user's posts
     """
@@ -87,6 +91,7 @@ def get_posts():
 @profile_bp.route('/update_post', methods=['PUT'])
 @jwt_required()
 @verify_token_in_redis
+@swag_from('../documentation/profile/update_post.yml')
 def update_post():
     """Update a user's post
     """
@@ -134,6 +139,7 @@ def update_post():
 @profile_bp.route('/update_infos', methods=['PUT'])
 @jwt_required()
 @verify_token_in_redis
+@swag_from('../documentation/profile/update_infos.yml')
 def update_infos():
     """Update the user's infos
     """
@@ -160,6 +166,7 @@ def update_infos():
 @profile_bp.route('/update_password', methods=['PUT'])
 @jwt_required()
 @verify_token_in_redis
+@swag_from('../documentation/profile/update_password.yml')
 def update_password():
     """Update the user's password
     """
@@ -198,6 +205,7 @@ def update_password():
 @profile_bp.route('/delete_post', methods=['DELETE'])
 @jwt_required()
 @verify_token_in_redis
+@swag_from('../documentation/profile/delete_post.yml')
 def delete_post():
     """Delete a user's post
     """
@@ -224,6 +232,7 @@ def delete_post():
 @profile_bp.route('/delete_user', methods=['DELETE'])
 @jwt_required()
 @verify_token_in_redis
+@swag_from('../documentation/profile/delete_user.yml')
 def delete_user():
     """Delete a user's account
     """

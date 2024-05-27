@@ -1,0 +1,23 @@
+tags:
+  - Profile
+summary: Delete User Account
+description: Delete a user's account
+parameters:
+  - in: header
+    name: Access Token
+    type: string
+    required: true
+    description: Bearer token for authorization
+responses:
+  401:
+    description: Unauthorized - Invalid or missing token
+  500:
+    description: Internal Server Error - Something went wrong
+  200:
+    description: Account deleted successfully
+    schema:
+      type: object
+      properties:
+        success:
+          type: string
+          example: "account deleted"

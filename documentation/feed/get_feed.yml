@@ -1,0 +1,44 @@
+tags:
+  - Feed
+summary: Get Feed Posts
+description: Return all public posts
+parameters:
+  - in: header
+    name: Access token
+    type: string
+    required: true
+    description: Bearer token for authorization
+  - in: query
+    name: page
+    type: integer
+    description: Page number for pagination (optional)
+responses:
+  400:
+    description: Bad Request - Invalid page number or format
+  401:
+    description: Unauthorized - Invalid or missing token
+  200:
+    description: Successful retrieval of feed posts
+    schema:
+      type: array
+      items:
+        type: object
+        properties:
+          _id:
+            type: string
+            example: "60d21b4667d0d8992e610c85"
+          title:
+            type: string
+            example: "Public Post"
+          content:
+            type: string
+            example: "This is the content of a public post."
+          date_posted:
+            type: string
+            example: "Wed, 11 Nov 1996 10:00:00 GMT"
+          number_of_likes:
+            type: integer
+            example: 2
+          number_of_comments:
+            type: integer
+            example: 7
