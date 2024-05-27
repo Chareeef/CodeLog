@@ -1,15 +1,16 @@
-// import Navigation from './Navigation';
-import Footer from './Footer';
-import '../App.css';
+import Navigation from './Navigation';
 import Animation from './Animation';
+
+import '../App.css';
 // import AnimationSecTwo from './AnimationSecTwo';
-import AnimationSecThree from './AnimationSecThree';
+// import AnimationSecThree from './AnimationSecThree';
+// import Footer from './Footer';
 
 function LandingPage() {
   return (
     <>
       <div className='home-container'>
-        {/* <Navigation /> */}
+        <Navigation />
         <Animation />
         {/* <AnimationSecTwo /> 
         <AnimationSecThree />

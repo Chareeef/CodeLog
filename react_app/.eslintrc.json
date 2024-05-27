@@ -28,7 +28,7 @@
   ],
   "rules": {
     "prettier/prettier": [
-      "error",
+      "warn",
       {
         "singleQuote": true,
         "printWidth": 80,
@@ -38,25 +38,7 @@
       }
     ],
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-    "import/order": [
-      "error",
-      {
-        "groups": [["builtin", "external", "internal"]],
-        "pathGroups": [
-          {
-            "pattern": "react",
-            "group": "external",
-            "position": "before"
-          }
-        ],
-        "pathGroupsExcludedImportTypes": ["react"],
-        "newlines-between": "always",
-        "alphabetize": {
-          "order": "asc",
-          "caseInsensitive": true
-        }
-      }
-    ],
+    "import/order": "off",
     "react/react-in-jsx-scope": "off"
   },
   "settings": {

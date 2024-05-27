@@ -1,8 +1,10 @@
 import { useState } from 'react';
+
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, useNavigate } from 'react-router-dom';
 
+import '../Assets/Navstyle.css';
 import apiClient from '../apiClient';
 
 const Navigation = () => {
