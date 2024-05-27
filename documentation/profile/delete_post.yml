@@ -1,0 +1,35 @@
+tags:
+  - Profile
+summary: Delete User Post
+description: Delete a user's post
+parameters:
+  - in: header
+    name: Access Token
+    type: string
+    required: true
+    description: Bearer token for authorization
+  - in: body
+    name: post_id
+    description: Post ID to be deleted
+    required: true
+    schema:
+      type: object
+      properties:
+        post_id:
+          type: string
+          example: "60d21b4667d0d8992e610c85"
+responses:
+  400:
+    description: Bad Request - Missing post ID or post not found
+  401:
+    description: Unauthorized - Invalid or missing token
+  500:
+    description: Internal Server Error - Something went wrong
+  200:
+    description: Post deleted successfully
+    schema:
+      type: object
+      properties:
+        success:
+          type: string
+          example: "deleted post"

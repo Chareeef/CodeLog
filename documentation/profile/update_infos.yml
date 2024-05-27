@@ -1,0 +1,36 @@
+tags:
+  - Profile
+summary: Update User Information
+description: Update the user's email and/or username
+parameters:
+  - in: header
+    name: Access Token
+    type: string
+    required: true
+    description: Bearer token for authorization
+  - in: body
+    name: user_info
+    description: User information to be updated
+    required: true
+    schema:
+      type: object
+      properties:
+        email:
+          type: string
+          example: "newemail@example.com"
+        username:
+          type: string
+          example: "newusername"
+responses:
+  400:
+    description: Bad Request - Only email and/or username can be updated
+  401:
+    description: Unauthorized - Invalid or missing token
+  201:
+    description: User information updated successfully
+    schema:
+      type: object
+      properties:
+        success:
+          type: string
+          example: "user updated"
