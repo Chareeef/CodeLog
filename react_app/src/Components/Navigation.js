@@ -1,5 +1,4 @@
 import { useState } from 'react';
-
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, useNavigate } from 'react-router-dom';
@@ -34,6 +33,7 @@ const Navigation = () => {
   return (
     <nav className='nav'>
       <a href='/' className='site-title'>
+
         SoftwareSphere
       </a>
       <div className='navbar-links-container'>
@@ -41,7 +41,7 @@ const Navigation = () => {
           {localStorage.getItem('jwt_access_token') ? (
             <>
               <li>
-                <Link to='/'>Home</Link>
+                <Link to='/log'>Home</Link>
               </li>
               <li>
                 <Link to='/' onClick={handleLogOut}>
