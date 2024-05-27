@@ -1,19 +1,84 @@
-// import Navigation from './Navigation';
-import Footer from './Footer';
-import '../App.css';
-import Animation from './Animation';
-// import AnimationSecTwo from './AnimationSecTwo';
-import AnimationSecThree from './AnimationSecThree';
+import React, { useState } from 'react';
+import '../index.css';
+import apiClient from '../apiClient';
 
 function Home() {
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+
+  const handleUserPost = async (event) => {
+    event.preventDefault();
+
+    const data = {
+      title: title,
+      content: content,
+    };
+
+    try {
+      const response = await apiClient.post('/log', data);
+
+      console.log('Server response:', response.data);
+
+      setTitle('');
+      setContent('');
+
+    } catch (error) {
+        console.error('Error:', error);
+    }
+  };
   return (
     <>
-      <div className='home-container'>
-        {/* <Navigation /> */}
-        <Animation />
-        {/* <AnimationSecTwo /> 
-        <AnimationSecThree />
-        <Footer /> */}
+      <div className='flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
+        {/* <div className='sm:mx-auto sm:w-full sm:max-w-sm'> */}
+        <h2 className='mt-10 text-center text-3xl font-bold leading-9 tracking-wide  text-white'>
+          Behind the Code: Your Journey Matters
+        </h2>
+        {/* </div> */}
+        {/* <textarea
+          class=' mt-10 w-full p-4 text-base text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500'
+          rows='10'
+          placeholder='How  was  your  day? '
+        ></textarea>
+        <button class='mt-4 inline-block bg-green hover:bg-glight text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'>
+          
+          Submit
+        </button> */}
+        <form onSubmit={handleUserPost}>
+          <div class='mb-4'>
+            <label class='block text-white text-sm font-bold mb-2' for='title'>
+              Title
+            </label>
+            <input
+              class='appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline'
+              id='title'
+              type='text'
+              placeholder='Enter title'
+              required
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
+          <div class='mb-4'>
+            {/* <label class="block text-white text-sm font-bold mb-2" for="journey">
+          Journey
+        </label> */}
+            <textarea
+              class='w-full p-4 text-base text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500'
+              id='journey'
+              rows='10'
+              placeholder='Write your journey here...'
+              required
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            ></textarea>
+          </div>
+          <button
+            class='inline-block bg-green hover:bg-glight text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
+            type='submit'
+          >
+            Submit
+          </button>
+        </form>
       </div>
     </>
   );

@@ -28,7 +28,7 @@
     "lint": "eslint 'src/**/*.{js,jsx}'",
     "lint:fix": "eslint 'src/**/*.{js,jsx}' --fix",
     "format": "prettier --write 'src/**/*.{js,jsx,css}'"
-	},
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
