@@ -1,0 +1,51 @@
+tags:
+  - Feed
+summary: Get The Post Comments
+description: Route for returning all the comments associated with a post
+parameters:
+  - in: header
+    name: Access token
+    type: string
+    required: true
+    description: Bearer token for authorization
+  - in: query
+    name: post_id
+    type: string
+    required: true
+    description: ID of the post to retrieve comments for
+responses:
+  400:
+    description: Bad Request - Missing post ID
+  401:
+    description: Unauthorized - Invalid or missing token
+  404:
+    description: Not Found - Post not found
+  200:
+    description: Comments retrieved successfully
+    schema:
+      type: object
+      properties:
+        data:
+          type: array
+          description: List of comments associated with the post
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                example: "60d21b4667d0d8992e610c86"
+              user_id:
+                type: string
+                example: "60d21b4667d0d8992e610c85"
+              post_id:
+                type: string
+                example: "60d21b4667d0d8992e610c85"
+              body:
+                type: string
+                example: "Great post"
+              date_posted:
+                type: string
+                example: "Wed, 11 Nov 1996 10:00:00 GMT"
+        msg:
+          type: string
+          example: "Comments retrieved successfully."
