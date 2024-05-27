@@ -6,6 +6,7 @@ from db import db
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from routes.auth import verify_token_in_redis
 from bson import ObjectId
+from flasgger import swag_from
 
 # Create feed Blueprint
 feed_bp = Blueprint('feed_bp', __name__)
@@ -14,6 +15,7 @@ feed_bp = Blueprint('feed_bp', __name__)
 @feed_bp.route('/get_posts', methods=['GET'])
 @jwt_required()
 @verify_token_in_redis
+@swag_from('../documentation/feed/get_feed.yml')
 def get_feed():
     """ Return all the public posts """
     posts = list(filter(lambda p: p['is_public'] is True, db.find_all_posts()))
@@ -59,6 +61,7 @@ def get_feed():
 @feed_bp.route('/like', methods=['POST'])
 @jwt_required()
 @verify_token_in_redis
+@swag_from('../documentation/feed/like.yml')
 def like():
     """ Add likes to a post document """
     # Get data from request
@@ -94,6 +97,7 @@ def like():
 @feed_bp.route('/unlike', methods=['POST'])
 @jwt_required()
 @verify_token_in_redis
+@swag_from('../documentation/feed/unlike.yml')
 def unlike():
     """ remove likes from a post document """
     # Get data from request
@@ -130,6 +134,7 @@ def unlike():
 @feed_bp.route('/comment', methods=['POST'])
 @jwt_required()
 @verify_token_in_redis
+@swag_from('../documentation/feed/comment.yml')
 def comment():
     """ route for adding comments to a post """
     # Get data from request
@@ -179,6 +184,7 @@ def comment():
 @feed_bp.route('/update_comment', methods=['PUT'])
 @jwt_required()
 @verify_token_in_redis
+@swag_from('../documentation/feed/update_comment.yml')
 def update_comment():
     """ route for updating comments from a post """
     # Get data from request
@@ -227,6 +233,7 @@ def update_comment():
 @feed_bp.route('/delete_comment', methods=['DELETE'])
 @jwt_required()
 @verify_token_in_redis
+@swag_from('../documentation/feed/delete_comment.yml')
 def delete_comment():
     """ route for deleting comments from a post """
     # Get data from request
@@ -266,6 +273,7 @@ def delete_comment():
 @feed_bp.route('/post_comments', methods=['GET'])
 @jwt_required()
 @verify_token_in_redis
+@swag_from('../documentation/feed/post_comments.yml')
 def post_comments():
     """ route for returing all the comments associated with a post """
     # Get data from request

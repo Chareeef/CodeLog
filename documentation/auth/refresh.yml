@@ -4,10 +4,10 @@ summary: Refresh Token
 description: Refresh the current user's JWT
 parameters:
   - in: header
-    name: Access token
+    name: Refresh token
     type: string
     required: true
-    description: Bearer access token for authorization
+    description: Bearer refresh token for authorization
 responses:
   401:
     description: Unauthorized - Token has expired or invalid

@@ -1,0 +1,63 @@
+tags:
+  - Home
+summary: Log Entry
+description: Log a new entry
+parameters:
+  - in: header
+    name: Authorization
+    type: string
+    required: true
+    description: Bearer token for authorization
+  - in: body
+    name: entry
+    description: Entry details
+    required: true
+    schema:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "My New Entry"
+        content:
+          type: string
+          example: "This is the content of my entry."
+        is_public:
+          type: boolean
+          example: true
+responses:
+  400:
+    description: Bad Request - Missing title or content
+  401:
+    description: Unauthorized - Invalid or missing token
+  201:
+    description: Entry logged successfully
+    schema:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "60d21b4667d0d8992e610c85"
+        user_id:
+          type: string
+          example: "60d21b4667d0d8992e610c85"
+        title:
+          type: string
+          example: "My New Entry"
+        content:
+          type: string
+          example: "This is the content of my entry."
+        is_public:
+          type: boolean
+          example: true
+        date_posted:
+          type: string
+          example: "Wed, 11 Nov 1996 10:00:00 GMT"
+        new_record:
+          type: boolean
+          example: false
+        number_of_likes:
+          type: integer
+          example: 0
+        number_of_comments:
+          type: integer
+          example: 0

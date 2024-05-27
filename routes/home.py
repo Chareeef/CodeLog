@@ -10,6 +10,7 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from routes.auth import verify_token_in_redis
 import os
+from flasgger import swag_from
 
 # Create home Blueprint
 home_bp = Blueprint('home_bp', __name__)
@@ -29,6 +30,7 @@ def home():
 @home_bp.route('/log', methods=['POST'])
 @jwt_required()
 @verify_token_in_redis
+@swag_from('../documentation/home/log.yml')
 def log():
     """Log a new entry
     """
