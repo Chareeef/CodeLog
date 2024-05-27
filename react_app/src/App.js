@@ -15,13 +15,10 @@ function App() {
         <Navigation />
         <div className='content'>
           <Routes>
-            <Route path='/' element={<LandingPage/>} />
+            <Route path='/' element={<LandingPage />} />
             <Route path='/login' element={<SignIn />} />
             <Route path='/register' element={<SignUp />} />
             <Route path='/log' element={<Home />} />
-
-
-
           </Routes>
         </div>
         {/* <Footer /> */}

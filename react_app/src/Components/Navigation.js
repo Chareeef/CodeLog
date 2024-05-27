@@ -33,7 +33,6 @@ const Navigation = () => {
   return (
     <nav className='nav'>
       <a href='/' className='site-title'>
-
         SoftwareSphere
       </a>
       <div className='navbar-links-container'>
