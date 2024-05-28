@@ -77,6 +77,7 @@ function Home() {
           <div className='mb-4 flex items-center'>
             <input
               type='checkbox'
+              id='isPublic'
               checked={isPublic}
               onChange={(e) => setIsPublic(e.target.checked)}
               className='form-checkbox h-5 w-5 text-blue-600'
