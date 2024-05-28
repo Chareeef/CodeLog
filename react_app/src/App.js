@@ -23,10 +23,10 @@ function App() {
             <Route path='/login' element={<SignIn />} />
             <Route path='/register' element={<SignUp />} />
             <Route path='/log' element={<Home />} />
-            <Route path='/posts' component={<Posts />} />
-            <Route path='/profile' component={<Profile />} />
-            <Route path='/longest-streak' component={<LongestCodingStreaks/>} />
-            <Route path='/debug-corner' component={<CodeQuestions />} />
+            <Route path='/posts' element={<Posts />} />
+            <Route path='/profile' element={<Profile />} />
+            <Route path='/longest-streak' element={<LongestCodingStreaks/>} />
+            <Route path='/debug-corner' element={<CodeQuestions />} />
           </Routes>
         </div>
         {/* <Footer /> */}
