@@ -36,14 +36,9 @@ const Navigation = () => {
         SoftwareSphere
         </a>
         <Link to='/posts' className='site-navitem1 font-lg hover:font-xl hover:text-purple-700'>
-        Posts
+        Feed
       </Link>
-      <Link to='/longest-streak' className='site-navitem2 font-lg hover:font-xl hover:text-purple-700'>
-        Longest Streak
-      </Link>
-      <Link to='/debug-corner' className='site-navitem3 font-lg hover:font-xl hover:text-purple-700'>
-        Debug Corner
-      </Link>
+
       <Link to='/profile' className='site-navitem4 font-lg hover:font-xl hover:text-purple-700'>
         Profile
       </Link>

@@ -2,11 +2,11 @@ import axios from 'axios';
 
 // Create the backend client
 const hostIP = process.env.REACT_APP_HOST || '127.0.0.1';
-const apiClient = axios.create({
-  baseURL: `http://${hostIP}:5000`,
+const apiProfile = axios.create({
+  baseURL: `http://${hostIP}:5000/profile`, // Assuming backend routes are served under /profile
 });
 
-apiClient.interceptors.request.use(
+apiProfile.interceptors.request.use(
   (config) => {
     const accessToken = localStorage.getItem('jwt_access_token');
 
@@ -19,5 +19,4 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-
-export default apiClient;
+export default apiProfile;
