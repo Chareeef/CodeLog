@@ -38,22 +38,14 @@ const Navigation = () => {
       .get('/me/streaks')
       .then((res) => {
         setCurrStreaks(res.data.current_streak);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  });
-  useEffect(() => {
-    apiClient
-      .get('/me/streaks')
-      .then((res) => {
         setLongStreaks(res.data.longest_streak);
+
       })
       .catch((error) => {
         console.log(error);
       });
-  });
-
+  }, []);
+  
   return (
     <nav className='nav'>
       <a href='/' className='site-title'>
