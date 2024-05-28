@@ -1,55 +1,54 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f2e6ce;
-    color: #d96236;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .longest-streaks-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    padding: 20px;
-  }
-  
-  .coding-streaks-section,
-  .coding-today-section,
-  .code-post-section {
-    flex: 0 0 30%;
-    background-color: #f2e6ce;
-    padding: 20px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid #ddd;
-  }
-  
-  .coding-streaks-section h2,
-  .coding-today-section h2,
-  .code-post-section h2 {
-    color: #103b40;
-  }
-  
-  .coding-today-section input[type="checkbox"] {
-    margin-right: 10px;
-  }
-  
-  .code-post-section textarea {
-    width: 100%;
-    height: 150px;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #103b40;
-    border-radius: 5px;
-  }
-  
-  .code-post-section button {
-    background-color: #103b40;
-    color: #f2e6ce;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  
+  font-family: Arial, sans-serif;
+  background-color: #f2e6ce;
+  color: #d96236;
+  margin: 0;
+  padding: 0;
+}
+
+.longest-streaks-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.coding-streaks-section,
+.coding-today-section,
+.code-post-section {
+  flex: 0 0 30%;
+  background-color: #f2e6ce;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+}
+
+.coding-streaks-section h2,
+.coding-today-section h2,
+.code-post-section h2 {
+  color: #103b40;
+}
+
+.coding-today-section input[type='checkbox'] {
+  margin-right: 10px;
+}
+
+.code-post-section textarea {
+  width: 100%;
+  height: 150px;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #103b40;
+  border-radius: 5px;
+}
+
+.code-post-section button {
+  background-color: #103b40;
+  color: #f2e6ce;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}

@@ -8,7 +8,7 @@ body {
 }
 .nav {
   top: 0;
-  /* background-color: #333; */
+  background: linear-gradient(to right, rgb(255, 255, 255), rgb(128, 0, 128));
   color: white;
   display: flex;
   justify-content: space-between;
@@ -36,7 +36,7 @@ body {
   margin: 0;
   font-size: 2rem;
   text-decoration: none;
-  color: white;
+  color: purple;
 }
 .navbar-links-container a {
   color: inherit;

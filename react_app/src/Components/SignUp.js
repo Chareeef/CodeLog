@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import '../index.css';
 import apiClient from '../apiClient';
 
@@ -7,6 +8,7 @@ function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
+  const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
   const registerUser = async (event) => {
@@ -15,13 +17,13 @@ function SignUp() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!username) {
-      alert('Please enter your username');
+      setMessage('Please enter your username');
     } else if (!email) {
-      alert('Please enter you email');
+      setMessage('Please enter you email');
     } else if (!emailRegex.test(email)) {
-      alert('Invalid email');
+      setMessage('Invalid email');
     } else if (password.length < 6) {
-      alert('Password must include at least 6 characters');
+      setMessage('Password must include at least 6 characters');
     } else {
       const data = {
         username: username,
@@ -36,9 +38,9 @@ function SignUp() {
         navigate('/login');
       } catch (error) {
         if (error.response) {
-          alert(`Error: ${error.response.data.error}`);
+          setMessage(`Error: ${error.response.data.error}`);
         } else {
-          alert('An error occurred. Please try again later.');
+          setMessage('An error occurred. Please try again later.');
         }
       }
     }
@@ -54,29 +56,13 @@ function SignUp() {
         </div>
 
         <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
-          <form onSubmit={registerUser} className='space-y-6'>
-            <div>
-              <label
-                htmlFor='username'
-                className='block text-sm font-medium leading-6 text-white text-900'
-              >
-                Username
-              </label>
-              <div className='mt-2'>
-                <input
-                  onChange={(e) => setUsername(e.target.value)}
-                  value={username}
-                  placeholder='username'
-                  id='username'
-                  name='username'
-                  type='username'
-                  autoComplete='username'
-                  className='block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
-                  required
-                />
-              </div>
+          {message && (
+            <div className='alert alert-danger mb-2' role='alert'>
+              {message}
             </div>
+          )}
 
+          <form onSubmit={registerUser} className='space-y-6'>
             <div>
               <label
                 htmlFor='email'
@@ -93,6 +79,28 @@ function SignUp() {
                   name='email'
                   type='email'
                   autoComplete='email'
+                  className='block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor='username'
+                className='block text-sm font-medium leading-6 text-white text-900'
+              >
+                Username
+              </label>
+              <div className='mt-2'>
+                <input
+                  onChange={(e) => setUsername(e.target.value)}
+                  value={username}
+                  placeholder='username'
+                  id='username'
+                  name='username'
+                  type='username'
+                  autoComplete='username'
                   className='block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
                   required
                 />
@@ -118,6 +126,7 @@ function SignUp() {
                   name='password'
                   type='password'
                   autoComplete='current-password'
+                  minLength='6'
                   className='block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
                   required
                 />

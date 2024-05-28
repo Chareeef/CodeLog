@@ -3,6 +3,7 @@ import { faBars, faFire } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, useNavigate } from 'react-router-dom';
 
+import '../Assets/Navstyle.css';
 import apiClient from '../apiClient';
 
 const Navigation = () => {
@@ -50,6 +51,18 @@ const Navigation = () => {
     <nav className='nav'>
       <a href='/' className='site-title'>
         SoftwareSphere
+      </a>
+      <a href='/' className='site-navitem1 font-lg hover:font-xl hover:text-purple-700'>
+        Posts
+      </a>
+      <a href='/' className='site-navitem2 font-lg hover:font-xl hover:text-purple-700'>
+        Longest   Streak
+      </a>
+      <a href='/' className='site-navitem3 font-lg hover:font-xl hover:text-purple-700'>
+        Debug   Corner
+      </a>
+      <a href='/' className='site-navitem4 font-lg hover:font-xl hover:text-purple-700'>
+        Profile
       </a>
       <div className='navbar-links-container'>
         <ul className={showMenu ? 'open' : ''}>

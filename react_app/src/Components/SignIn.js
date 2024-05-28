@@ -1,22 +1,24 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import apiClient from '../apiClient';
+
 import '../index.css';
 import '../Assets/Signin.css';
+import apiClient from '../apiClient';
 
 function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const [message, setMessage] = useState('');
 
   const logInUser = async (event) => {
     event.preventDefault();
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      alert('Invalid email');
+      setMessage('Invalid email');
     } else if (password.length === 0) {
-      alert('Invalid password');
+      setMessage('Invalid password');
     } else {
       const data = {
         email: email,
@@ -34,9 +36,9 @@ function SignIn() {
         navigate('/');
       } catch (error) {
         if (error.response) {
-          alert(`Error: ${error.response.data.error}`);
+          setMessage(`Error: ${error.response.data.error}`);
         } else {
-          alert('An error occurred. Please try again later.');
+          setMessage('An error occurred. Please try again later.');
         }
       }
     }
@@ -52,6 +54,11 @@ function SignIn() {
         </div>
 
         <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
+          {message && (
+            <div className='alert alert-danger mb-2' role='alert'>
+              {message}
+            </div>
+          )}
           <form className='space-y-6' onSubmit={logInUser}>
             <div>
               <label
@@ -83,14 +90,6 @@ function SignIn() {
                 >
                   Password
                 </label>
-                <div className='text-sm'>
-                  <a
-                    href='#'
-                    className='font-semibold text-white-600 hover:text-white-500'
-                  >
-                    Forgot password?
-                  </a>
-                </div>
               </div>
               <div className='mt-2'>
                 <input
@@ -100,6 +99,7 @@ function SignIn() {
                   id='password'
                   name='password'
                   type='password'
+                  minLength='6'
                   autoComplete='current-password'
                   className='block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
                   min='6'

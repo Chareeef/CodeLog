@@ -1,0 +1,27 @@
+tags:
+  - Profile
+summary: Get User Info
+description: Get user's email and username
+parameters:
+  - in: header
+    name: Access Token
+    type: string
+    required: true
+    description: Bearer token for authorization
+responses:
+  200:
+    description: Successful retrieval of user information
+    schema:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "60d21b4667d0d8992e610c85"
+        email:
+          type: string
+          example: "user@example.com"
+        username:
+          type: string
+          example: "username123"
+  401:
+    description: Unauthorized - Invalid or missing token

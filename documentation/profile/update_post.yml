@@ -1,0 +1,31 @@
+tags:
+  - Profile
+summary: Update User Post
+description: Update a user's post
+parameters:
+  - in: header
+    name: Access Token
+    type: string
+    required: true
+    description: Bearer token for authorization
+  - in: body
+    name: post_id
+    description: Post to be updated
+    required: true
+    schema:
+      type: string
+      example: "60d21b4667d0d8992e610c85"
+responses:
+  400:
+    description: Bad Request - Missing or invalid data or post not found
+  401:
+    description: Unauthorized - Invalid or missing token
+  201:
+    description: Post updated successfully
+    schema:
+      type: object
+      properties:
+        success:
+          type: string
+          example: "post updated"
+
