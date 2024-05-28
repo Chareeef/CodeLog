@@ -7,7 +7,9 @@ import apiClient from '../apiClient';
 
 const Navigation = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const [streaks, setStreaks] = useState(0);
+  const [longStreaks, setLongStreaks] = useState(0);
+  const [currStreaks, setCurrStreaks] = useState(0);
+
   const navigate = useNavigate();
 
   const handleLogOut = async (event) => {
@@ -35,7 +37,17 @@ const Navigation = () => {
     apiClient
       .get('/me/streaks')
       .then((res) => {
-        setStreaks(res.data.longest_streak);
+        setCurrStreaks(res.data.current_streak);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  });
+  useEffect(() => {
+    apiClient
+      .get('/me/streaks')
+      .then((res) => {
+        setLongStreaks(res.data.longest_streak);
       })
       .catch((error) => {
         console.log(error);
@@ -52,10 +64,10 @@ const Navigation = () => {
           {localStorage.getItem('jwt_access_token') ? (
             <>
               <li>
-                <FontAwesomeIcon icon={faFire} /> (Longest {streaks})
+                <FontAwesomeIcon icon={faFire} /> (Longest {longStreaks})
               </li>
               <li>
-                <FontAwesomeIcon icon={faFire} /> (Current {streaks})
+                <FontAwesomeIcon icon={faFire} /> (Current {currStreaks})
               </li>
               <li>
                 <Link to='/home'>Home</Link>
