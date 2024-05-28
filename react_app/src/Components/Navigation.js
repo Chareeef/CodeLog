@@ -1,6 +1,5 @@
-import { useState } from 'react';
-
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { useEffect, useState } from 'react';
+import { faBars, faFire } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -9,6 +8,9 @@ import apiClient from '../apiClient';
 
 const Navigation = () => {
   const [showMenu, setShowMenu] = useState(false);
+  const [longStreaks, setLongStreaks] = useState(0);
+  const [currStreaks, setCurrStreaks] = useState(0);
+
   const navigate = useNavigate();
 
   const handleLogOut = async (event) => {
@@ -32,6 +34,19 @@ const Navigation = () => {
     }
   };
 
+  useEffect(() => {
+    apiClient
+      .get('/me/streaks')
+      .then((res) => {
+        setCurrStreaks(res.data.current_streak);
+        setLongStreaks(res.data.longest_streak);
+
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+  
   return (
     <nav className='nav'>
       <a href='/' className='site-title'>
@@ -54,7 +69,13 @@ const Navigation = () => {
           {localStorage.getItem('jwt_access_token') ? (
             <>
               <li>
-                <Link to='/log'>Home</Link>
+                <FontAwesomeIcon icon={faFire} /> (Longest {longStreaks})
+              </li>
+              <li>
+                <FontAwesomeIcon icon={faFire} /> (Current {currStreaks})
+              </li>
+              <li>
+                <Link to='/home'>Home</Link>
               </li>
               <li>
                 <Link to='/' onClick={handleLogOut}>

@@ -7,6 +7,7 @@ import apiClient from '../apiClient';
 function Home() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [isPublic, setIsPublic] = useState(false);
   const [message, setMessage] = useState('');
 
   const handleUserPost = async (event) => {
@@ -15,6 +16,7 @@ function Home() {
     const data = {
       title: title,
       content: content,
+      is_public: isPublic,
     };
 
     try {
@@ -28,7 +30,10 @@ function Home() {
 
       setTitle('');
       setContent('');
+      setIsPublic(false);
+
     } catch (error) {
+      console.error('Error:', error);
       setMessage(error.response.data.error);
     }
   };
@@ -69,6 +74,17 @@ function Home() {
               onChange={(e) => setContent(e.target.value)}
             ></textarea>
           </div>
+          <div className='mb-4 flex items-center'>
+            <input
+              type='checkbox'
+              id='isPublic'
+              checked={isPublic}
+              onChange={(e) => setIsPublic(e.target.checked)}
+              className='form-checkbox h-5 w-5 text-blue-600'
+            />
+            <label htmlFor='isPublic' className='ml-2 text-gray-700'>Public</label>
+          </div>
+
           <button
             className='inline-block bg-green hover:bg-glight text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-2'
             type='submit'
