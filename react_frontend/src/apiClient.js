@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 // Create the backend client
-const host = process.env.REACT_APP_HOST || '127.0.0.1:5000';
+const host = process.env.REACT_APP_HOST || 'http://127.0.0.1:5000';
 const apiClient = axios.create({
-  baseURL: `http://${host}/api`,
+  baseURL: `${host}/api/me`,
 });
 
 apiClient.interceptors.request.use(
