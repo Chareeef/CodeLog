@@ -1,0 +1,59 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f2e6ce;
+  color: #d96236;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.profile-card {
+  background-color: #f2e6ce;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 1000px; /* Adjust the max-width here */
+  width: 100%; /* Ensure card takes full width */
+}
+
+.profile-card h2 {
+  color: #103b40;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #103b40;
+}
+
+input[type='text'],
+input[type='email'],
+input[type='password'] {
+  width: calc(100% - 22px);
+  padding: 10px;
+  border: 1px solid #103b40;
+  border-radius: 5px;
+}
+
+input[type='submit'] {
+  background-color: #103b40;
+  color: #f2e6ce;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+input[type='submit']:hover {
+  background-color: #09302f;
+}

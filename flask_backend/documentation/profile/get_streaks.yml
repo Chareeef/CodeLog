@@ -1,0 +1,24 @@
+tags:
+  - Profile
+summary: Get User Streaks
+description: Get user's current and longest streaks
+parameters:
+  - in: header
+    name: Access Token
+    type: string
+    required: true
+    description: Bearer token for authorization
+responses:
+  200:
+    description: Successful retrieval of user streaks
+    schema:
+      type: object
+      properties:
+        longest_streak:
+          type: integer
+          example: 30
+        current_streak:
+          type: integer
+          example: 5
+  401:
+    description: Unauthorized - Invalid or missing token

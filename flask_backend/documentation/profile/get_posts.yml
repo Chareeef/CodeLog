@@ -1,0 +1,38 @@
+tags:
+  - Profile
+summary: Get User Posts
+description: Get the user's posts
+parameters:
+  - in: header
+    name: Access Token
+    type: string
+    required: true
+    description: Bearer token for authorization
+responses:
+  200:
+    description: Successful retrieval of user posts
+    schema:
+      type: array
+      items:
+        type: object
+        properties:
+          _id:
+            type: string
+            example: "60d21b4667d0d8992e610c85"
+          title:
+            type: string
+            example: "My First Post"
+          content:
+            type: string
+            example: "This is the content of my first post."
+          number_of_likes:
+            type: integer
+            example: 2
+          number_of_comments:
+            type: integer
+            example: 9
+          date_posted:
+            type: string
+            example: "Wed, 11 Nov 1996 10:00:00 GMT"
+  401:
+    description: Unauthorized - Invalid or missing token
