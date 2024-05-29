@@ -7,6 +7,8 @@ import SignUp from './Components/SignUp';
 import Home from './Components/Home';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navigation from './Components/Navigation';
+import Posts from './Components/Posts';
+import Profile from './Components/Profile';
 
 function App() {
   return (
@@ -16,9 +18,11 @@ function App() {
         <div className='content'>
           <Routes>
             <Route path='/' element={<LandingPage />} />
+            <Route path='/home' element={<Home />} />
             <Route path='/login' element={<SignIn />} />
             <Route path='/register' element={<SignUp />} />
-            <Route path='/home' element={<Home />} />
+            <Route path='/posts' element={<Posts />} />
+            <Route path='/profile' element={<Profile />} />
           </Routes>
         </div>
 
