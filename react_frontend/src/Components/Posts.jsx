@@ -1,11 +1,8 @@
-
-
 import React, { useState, useEffect } from 'react';
 import apiClient from '../apiClient';
 
 function Posts() {
   const [posts, setPosts] = useState([]);
-  const [newPostText, setNewPostText] = useState('');
   const [comments, setComments] = useState({});
   const [newCommentText, setNewCommentText] = useState('');
 
@@ -19,22 +16,6 @@ function Posts() {
     }
   };
 
-/*  // Function to handle posting a new post
-  const handlePostThought = async () => {
-    try {
-      const response = await apiClient.post('/post_thought', {
-        body: newPostText,
-      });
-      console.log('New post posted:', response.data);
-      // Fetch posts again to update the feed
-      fetchPosts();
-      // Clear the input field
-      setNewPostText('');
-    } catch (error) {
-      console.error('Error posting thoughts today:', error);
-    }
-  };
-*/
   // Function to handle liking a post
   const handleLikePost = async (postId) => {
     try {
@@ -100,25 +81,6 @@ function Posts() {
 
   return (
     <div className="container mx-auto mt-8">
-      <h1 className="text-2xl font-bold mb-4">Feed 👨‍💻👩‍💻</h1>
-      <h2 className="text-2xl font-bold mb-4">How was your Coding Journey today? Tell us all about it 🤗😊</h2>
-      {/* Input field to post a new thought */}
-      <div className="mb-4">
-        <textarea
-          className="w-full border border-gray-300 rounded p-2"
-          rows="3"
-          placeholder="What's on your mind?"
-          value={newPostText}
-          onChange={(e) => setNewPostText(e.target.value)}
-        ></textarea>
-        <button
-          className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
-          onClick={handlePostThought}
-        >
-          Post
-        </button>
-      </div>
-
       {/* Display posts */}
       <div>
         {posts.map((post) => (
