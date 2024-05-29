@@ -19,7 +19,7 @@ function Posts() {
     }
   };
 
-  // Function to handle posting a new post
+/*  // Function to handle posting a new post
   const handlePostThought = async () => {
     try {
       const response = await apiClient.post('/post_thought', {
@@ -34,7 +34,7 @@ function Posts() {
       console.error('Error posting thoughts today:', error);
     }
   };
-
+*/
   // Function to handle liking a post
   const handleLikePost = async (postId) => {
     try {
