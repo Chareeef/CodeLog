@@ -47,7 +47,7 @@ class TestRegister(unittest.TestCase):
             'username': 'minervahog67',
             'password': 'mcgonacat'
         }
-        response = self.client.post('/register', json=infos)
+        response = self.client.post('/api/register', json=infos)
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.get_json(),
@@ -77,7 +77,7 @@ class TestRegister(unittest.TestCase):
             'username': 'minervahog67',
             'password': 'mcgonacat'
         }
-        response = self.client.post('/register', json=infos)
+        response = self.client.post('/api/register', json=infos)
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.get_json(), {'error': 'Missing email'})
@@ -89,7 +89,7 @@ class TestRegister(unittest.TestCase):
             'email': 'leviosa@poud.com',
             'password': 'mcgonacat',
         }
-        response = self.client.post('/register', json=infos)
+        response = self.client.post('/api/register', json=infos)
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.get_json(), {'error': 'Missing username'})
@@ -101,7 +101,7 @@ class TestRegister(unittest.TestCase):
             'email': 'leviosa@poud.com',
             'username': 'minervahog67'
         }
-        response = self.client.post('/register', json=infos)
+        response = self.client.post('/api/register', json=infos)
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.get_json(), {'error': 'Missing password'})
@@ -114,7 +114,7 @@ class TestRegister(unittest.TestCase):
             'username': 'podalbus89',
             'password': 'hog478',
         }
-        response = self.client.post('/register', json=infos)
+        response = self.client.post('/api/register', json=infos)
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.get_json(), {'error': 'Email already used'})
@@ -127,7 +127,7 @@ class TestRegister(unittest.TestCase):
             'username': 'albushog99',
             'password': 'hog478',
         }
-        response = self.client.post('/register', json=infos)
+        response = self.client.post('/api/register', json=infos)
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.get_json(), {
@@ -165,7 +165,7 @@ class LoginTests(unittest.TestCase):
     def test_login_success(self):
         """ Test logging a user successfully  """
 
-        res = self.client.post('/login', json=self.login_detail)
+        res = self.client.post('/api/login', json=self.login_detail)
         data = res.get_json()
 
         self.assertEqual(res.status_code, 200)
@@ -179,7 +179,7 @@ class LoginTests(unittest.TestCase):
             'password': 'pass123'
         }
 
-        res = self.client.post('/login', json=login_detail)
+        res = self.client.post('/api/login', json=login_detail)
         data = res.get_json()
 
         self.assertEqual(res.status_code, 401)
@@ -196,7 +196,7 @@ class LoginTests(unittest.TestCase):
             'password': 'badpass'
         }
 
-        res = self.client.post('/login', json=login_detail)
+        res = self.client.post('/api/login', json=login_detail)
         data = res.get_json()
 
         self.assertEqual(res.status_code, 401)
@@ -212,7 +212,7 @@ class LoginTests(unittest.TestCase):
             'email': 'mohamed@example.com',
         }
 
-        res = self.client.post('/login', json=login_detail)
+        res = self.client.post('/api/login', json=login_detail)
         data = res.get_json()
 
         self.assertEqual(res.status_code, 400)
@@ -226,7 +226,7 @@ class LoginTests(unittest.TestCase):
             'password': 'pass123',
         }
 
-        res = self.client.post('/login', json=login_detail)
+        res = self.client.post('/api/login', json=login_detail)
         data = res.get_json()
 
         self.assertEqual(res.status_code, 400)
@@ -257,7 +257,7 @@ class LoggedInTests(unittest.TestCase):
             'email': 'mohamed@example.com',
             'password': 'pass123'
         }
-        res = self.client.post('/login', json=self.login_detail)
+        res = self.client.post('/api/login', json=self.login_detail)
         data = res.get_json()
 
         self.access_token = data['access_token']
@@ -274,7 +274,7 @@ class LoggedInTests(unittest.TestCase):
         headers = {
             'Authorization': f'Bearer {self.access_token}'
         }
-        res = self.client.get('/', headers=headers)
+        res = self.client.get('/api/', headers=headers)
         data = res.get_json()
 
         self.assertEqual(res.status_code, 200)
@@ -286,7 +286,7 @@ class LoggedInTests(unittest.TestCase):
         headers = {
             'Authorization': 'Bearer badtoken'
         }
-        res = self.client.get('/', headers=headers)
+        res = self.client.get('/api/', headers=headers)
         data = res.get_json()
 
         self.assertEqual(res.status_code, 401)
@@ -297,7 +297,7 @@ class LoggedInTests(unittest.TestCase):
     def test_access_protected_route_with_no_token(self):
         """ Test a logged in user has access
         to protected routes witha bad token """
-        res = self.client.get('/')
+        res = self.client.get('/api/')
         data = res.get_json()
 
         self.assertEqual(res.status_code, 401)
@@ -311,7 +311,7 @@ class LoggedInTests(unittest.TestCase):
         }
         rc.delete(str(self.user_id))
 
-        res = self.client.get('/', headers=headers)
+        res = self.client.get('/api/', headers=headers)
         data = res.get_json()
 
         self.assertEqual(res.status_code, 401)
@@ -322,7 +322,7 @@ class LoggedInTests(unittest.TestCase):
         headers = {
             'Authorization': f'Bearer {self.refresh_token}'
         }
-        res = self.client.post('/refresh', headers=headers)
+        res = self.client.post('/api/refresh', headers=headers)
         data = res.get_json()
 
         self.assertEqual(res.status_code, 200)
@@ -332,7 +332,7 @@ class LoggedInTests(unittest.TestCase):
             "Authorization": f"Bearer {data['new_access_token']}"
         }
 
-        res = self.client.get('/', headers=headers)
+        res = self.client.get('/api/', headers=headers)
 
         self.assertEqual(res.status_code, 200)
 
@@ -342,7 +342,7 @@ class LoggedInTests(unittest.TestCase):
             'Authorization': f'Bearer badrefreshtoken'
         }
 
-        res = self.client.post('/refresh', headers=headers)
+        res = self.client.post('/api/refresh', headers=headers)
         data = res.get_json()
 
         self.assertEqual(res.status_code, 401)
@@ -358,7 +358,7 @@ class LoggedInTests(unittest.TestCase):
         }
         rc.delete(str(self.user_id) + '_refresh')
 
-        res = self.client.post('/refresh', headers=headers)
+        res = self.client.post('/api/refresh', headers=headers)
         data = res.get_json()
 
         self.assertEqual(res.status_code, 401)
@@ -368,7 +368,7 @@ class LoggedInTests(unittest.TestCase):
     def test_get_new_access_token_fail_three(self):
         """ Test get new access token with an no refresh token. """
 
-        res = self.client.post('/refresh')
+        res = self.client.post('/api/refresh')
         data = res.get_json()
 
         self.assertEqual(res.status_code, 401)
@@ -381,14 +381,14 @@ class LoggedInTests(unittest.TestCase):
             'Authorization': f'Bearer {self.access_token}'
         }
 
-        res = self.client.post('/logout', headers=headers)
+        res = self.client.post('/api/logout', headers=headers)
 
         self.assertEqual(res.status_code, 204)
         self.assertIsNone(rc.get(str(self.user_id)))
 
     def test_logout_missing_token(self):
         """ Test logout users with a missing authorization header """
-        res = self.client.post('/logout')
+        res = self.client.post('/api/logout')
         data = res.get_json()
 
         self.assertEqual(res.status_code, 401)
@@ -402,7 +402,7 @@ class LoggedInTests(unittest.TestCase):
         }
         rc.delete(str(self.user_id))
 
-        res = self.client.post('/logout', headers=headers)
+        res = self.client.post('/api/logout', headers=headers)
         data = res.get_json()
 
         self.assertEqual(res.status_code, 401)

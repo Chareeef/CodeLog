@@ -62,7 +62,7 @@ class TestGetInfos(unittest.TestCase):
     def test_get_infos_with_no_token(self):
         """Test getting infos with no authentication
         """
-        response = self.client.get('/me/get_infos')
+        response = self.client.get('/api/me/get_infos')
 
         data = response.get_json()
 
@@ -74,7 +74,7 @@ class TestGetInfos(unittest.TestCase):
         """Test getting user's infos with wrong authentication
         """
         headers = {'Authorization': 'Bearer ' + self.access_token[:-2] + 'o3'}
-        response = self.client.get('/me/get_infos', headers=headers)
+        response = self.client.get('/api/me/get_infos', headers=headers)
 
         data = response.get_json()
 
@@ -86,7 +86,7 @@ class TestGetInfos(unittest.TestCase):
     def test_get_infos_initially(self):
         """Test getting a fresh user's infos
         """
-        response = self.client.get('/me/get_infos', headers={
+        response = self.client.get('/api/me/get_infos', headers={
             'Authorization': 'Bearer ' + self.access_token
         })
         data = response.get_json()
@@ -159,7 +159,7 @@ class TestGetStreaks(unittest.TestCase):
     def test_get_streaks_with_no_token(self):
         """Test getting streaks with no authentication
         """
-        response = self.client.get('/me/streaks')
+        response = self.client.get('/api/me/streaks')
 
         data = response.get_json()
 
@@ -171,7 +171,7 @@ class TestGetStreaks(unittest.TestCase):
         """Test getting user's streaks with wrong authentication
         """
         headers = {'Authorization': 'Bearer ' + self.access_token[:-2] + 'o3'}
-        response = self.client.get('/me/streaks', headers=headers)
+        response = self.client.get('/api/me/streaks', headers=headers)
 
         data = response.get_json()
 
@@ -183,7 +183,7 @@ class TestGetStreaks(unittest.TestCase):
     def test_get_streaks_initially(self):
         """Test getting a fresh user's streaks
         """
-        response = self.client.get('/me/streaks', headers={
+        response = self.client.get('/api/me/streaks', headers={
             'Authorization': 'Bearer ' + self.access_token
         })
         data = response.get_json()
@@ -200,7 +200,7 @@ class TestGetStreaks(unittest.TestCase):
         db.update_user_info(self.user_id, {'longest_streak': 69})
         rc.setex(self.cs_key, 2, 48)
 
-        response = self.client.get('/me/streaks', headers={
+        response = self.client.get('/api/me/streaks', headers={
             'Authorization': 'Bearer ' + self.access_token
         })
         data = response.get_json()
@@ -257,7 +257,7 @@ class TestUpdateInfos(unittest.TestCase):
     def test_update_infos_with_wrong_token(self):
         """Test updating user's infos with wrong authentication
         """
-        response = self.client.put('/me/update_infos')
+        response = self.client.put('/api/me/update_infos')
         data = response.get_json()
 
         # Verify response
@@ -267,7 +267,7 @@ class TestUpdateInfos(unittest.TestCase):
     def test_update_infos_with_wrong_token(self):
         """Test updating user's infos with wrong authentication
         """
-        response = self.client.put('/me/update_infos', headers={
+        response = self.client.put('/api/me/update_infos', headers={
             'Authorization': 'Bearer ' + self.access_token + '123'
         })
         data = response.get_json()
@@ -285,7 +285,7 @@ class TestUpdateInfos(unittest.TestCase):
                      'username': 'phoenix00',
                      'age': 348
                      }
-        response = self.client.put('/me/update_infos',
+        response = self.client.put('/api/me/update_infos',
                                    headers=headers,
                                    json=to_update)
 
@@ -300,7 +300,7 @@ class TestUpdateInfos(unittest.TestCase):
         """
         headers = {'Authorization': 'Bearer ' + self.access_token}
         to_update = {'email': 'albus@poud.com', 'username': 'phoenix00'}
-        response = self.client.put('/me/update_infos',
+        response = self.client.put('/api/me/update_infos',
                                    headers=headers,
                                    json=to_update)
 
@@ -374,7 +374,7 @@ class TestUpdatePassword(unittest.TestCase):
     def test_update_password_with_no_token(self):
         """Test updating user's password with no authentication
         """
-        response = self.client.put('/me/update_password')
+        response = self.client.put('/api/me/update_password')
         data = response.get_json()
 
         # Verify response
@@ -384,7 +384,7 @@ class TestUpdatePassword(unittest.TestCase):
     def test_update_password_with_wrong_token(self):
         """Test updating user's password with wrong authentication
         """
-        response = self.client.put('/me/update_password', headers={
+        response = self.client.put('/api/me/update_password', headers={
             'Authorization': 'Bearer ' + self.access_token + '123'
         })
         data = response.get_json()
@@ -400,7 +400,7 @@ class TestUpdatePassword(unittest.TestCase):
         headers = {'Authorization': f'Bearer {self.access_token}'}
         payload = {'old_password': 'gumbledore', 'new_password': 'phoenix3000'}
         response = self.client.put(
-            '/me/update_password', headers=headers, json=payload)
+            '/api/me/update_password', headers=headers, json=payload)
         data = response.get_json()
 
         # Verify response
@@ -417,7 +417,7 @@ class TestUpdatePassword(unittest.TestCase):
         headers = {'Authorization': f'Bearer {self.access_token}'}
         payload = {'new_password': 'gandalf'}
         response = self.client.put(
-            '/me/update_password', headers=headers, json=payload)
+            '/api/me/update_password', headers=headers, json=payload)
         data = response.get_json()
 
         # Verify response
@@ -430,7 +430,7 @@ class TestUpdatePassword(unittest.TestCase):
         headers = {'Authorization': f'Bearer {self.access_token}'}
         payload = {'old_password': 'gumbledore'}
         response = self.client.put(
-            '/me/update_password', headers=headers, json=payload)
+            '/api/me/update_password', headers=headers, json=payload)
         data = response.get_json()
 
         # Verify response
@@ -443,7 +443,7 @@ class TestUpdatePassword(unittest.TestCase):
         headers = {'Authorization': f'Bearer {self.access_token}'}
         payload = {'old_password': 'phoenix3000', 'new_password': 'gandalf'}
         response = self.client.put(
-            '/me/update_password', headers=headers, json=payload)
+            '/api/me/update_password', headers=headers, json=payload)
         data = response.get_json()
 
         # Verify response
@@ -528,7 +528,7 @@ class TestGetPosts(unittest.TestCase):
     def test_get_posts_with_no_token(self):
         """Test getting posts with no authentication
         """
-        response = self.client.get('/me/posts')
+        response = self.client.get('/api/me/posts')
 
         data = response.get_json()
 
@@ -539,7 +539,7 @@ class TestGetPosts(unittest.TestCase):
     def test_get_posts_with_wrong_token(self):
         """Test getting posts with wrong authentication
         """
-        response = self.client.get('/me/posts', headers={
+        response = self.client.get('/api/me/posts', headers={
             'Authorization': 'Bearer ' + self.access_token + 'k'
         })
         data = response.get_json()
@@ -552,7 +552,7 @@ class TestGetPosts(unittest.TestCase):
     def test_get_posts(self):
         """Test successefully getting posts
         """
-        response = self.client.get('/me/posts', headers={
+        response = self.client.get('/api/me/posts', headers={
             'Authorization': 'Bearer ' + self.access_token
         })
         data = response.get_json()
@@ -672,7 +672,7 @@ class TestUpdateLog(unittest.TestCase):
             'content': 'Here is my post'
         }
 
-        response = self.client.put('/me/update_post', json=payload)
+        response = self.client.put('/api/me/update_post', json=payload)
 
         data = response.get_json()
 
@@ -691,7 +691,7 @@ class TestUpdateLog(unittest.TestCase):
         }
 
         response = self.client.put(
-            '/me/update_post', headers=headers, json=payload)
+            '/api/me/update_post', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -710,7 +710,7 @@ class TestUpdateLog(unittest.TestCase):
         }
 
         response = self.client.put(
-            '/me/update_post', headers=headers, json=payload)
+            '/api/me/update_post', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -729,7 +729,7 @@ class TestUpdateLog(unittest.TestCase):
         }
 
         response = self.client.put(
-            '/me/update_post', headers=headers, json=payload)
+            '/api/me/update_post', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -747,7 +747,7 @@ class TestUpdateLog(unittest.TestCase):
         }
 
         response = self.client.put(
-            '/me/update_post', headers=headers, json=payload)
+            '/api/me/update_post', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -766,7 +766,7 @@ class TestUpdateLog(unittest.TestCase):
         }
 
         response = self.client.put(
-            '/me/update_post', headers=headers, json=payload)
+            '/api/me/update_post', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -787,7 +787,7 @@ class TestUpdateLog(unittest.TestCase):
         }
 
         response = self.client.put(
-            '/me/update_post', headers=headers, json=payload)
+            '/api/me/update_post', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -823,7 +823,7 @@ class TestUpdateLog(unittest.TestCase):
         }
 
         response = self.client.put(
-            '/me/update_post', headers=headers, json=payload)
+            '/api/me/update_post', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -872,7 +872,7 @@ class TestUpdateLog(unittest.TestCase):
             'is_public': True
         }
         response = self.client.put(
-            '/me/update_post', headers=headers, json=payload)
+            '/api/me/update_post', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -994,7 +994,7 @@ class TestDeleteLog(unittest.TestCase):
             'post_id': self.post_id1
         }
 
-        response = self.client.delete('/me/delete_post', json=payload)
+        response = self.client.delete('/api/me/delete_post', json=payload)
 
         data = response.get_json()
 
@@ -1011,7 +1011,7 @@ class TestDeleteLog(unittest.TestCase):
         }
 
         response = self.client.delete(
-            '/me/delete_post', headers=headers, json=payload)
+            '/api/me/delete_post', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -1026,7 +1026,7 @@ class TestDeleteLog(unittest.TestCase):
         headers = {'Authorization': 'Bearer ' + self.access_token}
 
         response = self.client.delete(
-            '/me/delete_post', headers=headers, json={})
+            '/api/me/delete_post', headers=headers, json={})
 
         data = response.get_json()
 
@@ -1043,7 +1043,7 @@ class TestDeleteLog(unittest.TestCase):
         }
 
         response = self.client.delete(
-            '/me/delete_post', headers=headers, json=payload)
+            '/api/me/delete_post', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -1068,7 +1068,7 @@ class TestDeleteLog(unittest.TestCase):
         }
 
         response1 = self.client.delete(
-            '/me/delete_post', headers=headers, json=payload1)
+            '/api/me/delete_post', headers=headers, json=payload1)
 
         data1 = response1.get_json()
 
@@ -1091,7 +1091,7 @@ class TestDeleteLog(unittest.TestCase):
         }
 
         response2 = self.client.delete(
-            '/me/delete_post', headers=headers, json=payload2)
+            '/api/me/delete_post', headers=headers, json=payload2)
 
         data2 = response2.get_json()
 
@@ -1202,7 +1202,7 @@ class TestDeleteUser(unittest.TestCase):
     def test_with_no_auth(self):
         """Test with no authentication
         """
-        response = self.client.delete('/me/delete_user')
+        response = self.client.delete('/api/me/delete_user')
 
         data = response.get_json()
 
@@ -1215,7 +1215,7 @@ class TestDeleteUser(unittest.TestCase):
         """
         headers = {'Authorization': 'Bearer ' + self.access_token[:-2] + 'o3'}
 
-        response = self.client.delete('/me/delete_user', headers=headers)
+        response = self.client.delete('/api/me/delete_user', headers=headers)
 
         data = response.get_json()
 
@@ -1235,7 +1235,7 @@ class TestDeleteUser(unittest.TestCase):
         # Make the call
         headers = {'Authorization': 'Bearer ' + self.access_token}
 
-        response = self.client.delete('/me/delete_user', headers=headers)
+        response = self.client.delete('/api/me/delete_user', headers=headers)
 
         data = response.get_json()
 
@@ -1259,7 +1259,7 @@ class TestDeleteUser(unittest.TestCase):
         # Make the call
         headers = {'Authorization': 'Bearer ' + self.another_access_token}
 
-        response = self.client.delete('/me/delete_user', headers=headers)
+        response = self.client.delete('/api/me/delete_user', headers=headers)
 
         data = response.get_json()
 
