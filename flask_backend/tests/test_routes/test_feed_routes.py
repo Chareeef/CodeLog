@@ -102,7 +102,7 @@ class TestGetFeedPosts(unittest.TestCase):
     def test_get_feed_with_no_token(self):
         """Test getting feed's posts with no authentication
         """
-        response = self.client.get('/feed/get_posts')
+        response = self.client.get('/api/feed/get_posts')
 
         data = response.get_json()
 
@@ -113,7 +113,7 @@ class TestGetFeedPosts(unittest.TestCase):
     def test_get_feed_with_wrong_token(self):
         """Test getting feed's posts with wrong authentication
         """
-        response = self.client.get('/feed/get_posts', headers={
+        response = self.client.get('/api/feed/get_posts', headers={
             'Authorization': 'Bearer ' + self.access_token + 'k'
         })
         data = response.get_json()
@@ -131,7 +131,7 @@ class TestGetFeedPosts(unittest.TestCase):
     def test_get_feed_without_pagination(self):
         """Test getting feed's posts without pagination
         """
-        response = self.client.get('/feed/get_posts', headers={
+        response = self.client.get('/api/feed/get_posts', headers={
             'Authorization': 'Bearer ' + self.access_token
         })
         data = response.get_json()
@@ -146,7 +146,7 @@ class TestGetFeedPosts(unittest.TestCase):
     def test_get_feed_page_1(self):
         """Test getting first feed's page
         """
-        response = self.client.get('/feed/get_posts?page=1', headers={
+        response = self.client.get('/api/feed/get_posts?page=1', headers={
             'Authorization': 'Bearer ' + self.access_token
         })
         data = response.get_json()
@@ -161,7 +161,7 @@ class TestGetFeedPosts(unittest.TestCase):
     def test_get_feed_page_2(self):
         """Test getting second feed's page
         """
-        response = self.client.get('/feed/get_posts?page=2', headers={
+        response = self.client.get('/api/feed/get_posts?page=2', headers={
             'Authorization': 'Bearer ' + self.access_token
         })
         data = response.get_json()
@@ -176,7 +176,7 @@ class TestGetFeedPosts(unittest.TestCase):
     def test_get_feed_page_3(self):
         """Test getting third feed's page
         """
-        response = self.client.get('/feed/get_posts?page=3', headers={
+        response = self.client.get('/api/feed/get_posts?page=3', headers={
             'Authorization': 'Bearer ' + self.access_token
         })
         data = response.get_json()
@@ -191,7 +191,7 @@ class TestGetFeedPosts(unittest.TestCase):
     def test_get_feed_page_4(self):
         """Test getting fourth feed's page
         """
-        response = self.client.get('/feed/get_posts?page=4', headers={
+        response = self.client.get('/api/feed/get_posts?page=4', headers={
             'Authorization': 'Bearer ' + self.access_token
         })
         data = response.get_json()
@@ -203,7 +203,7 @@ class TestGetFeedPosts(unittest.TestCase):
     def test_get_feed_invalid_page_0(self):
         """Test getting feed's with page=0
         """
-        response = self.client.get('/feed/get_posts?page=0', headers={
+        response = self.client.get('/api/feed/get_posts?page=0', headers={
             'Authorization': 'Bearer ' + self.access_token
         })
         data = response.get_json()
@@ -217,7 +217,7 @@ class TestGetFeedPosts(unittest.TestCase):
     def test_get_feed_negative_page(self):
         """Test getting feed's with page=-3
         """
-        response = self.client.get('/feed/get_posts?page=-3', headers={
+        response = self.client.get('/api/feed/get_posts?page=-3', headers={
             'Authorization': 'Bearer ' + self.access_token
         })
         data = response.get_json()
@@ -231,7 +231,7 @@ class TestGetFeedPosts(unittest.TestCase):
     def test_get_feed_invalid_page_type(self):
         """Test getting feed's with page=page_1
         """
-        response = self.client.get('/feed/get_posts?page=page_1', headers={
+        response = self.client.get('/api/feed/get_posts?page=page_1', headers={
             'Authorization': 'Bearer ' + self.access_token
         })
         data = response.get_json()
@@ -274,7 +274,7 @@ class TestLikeUnlike(unittest.TestCase):
             'email': 'mohamed@example.com',
             'password': 'pass123'
         }
-        res = self.client.post('/login', json=self.login_detail)
+        res = self.client.post('/api/login', json=self.login_detail)
         data = res.get_json()
 
         self.access_token = data['access_token']
@@ -296,7 +296,7 @@ class TestLikeUnlike(unittest.TestCase):
             'post_id': str(self.post_id),
         }
         res = self.client.post(
-            '/feed/like', headers=headers, data=json.dumps(dump)
+            '/api/feed/like', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -319,7 +319,7 @@ class TestLikeUnlike(unittest.TestCase):
             'post_id': str(self.post_id),
         }
         res = self.client.post(
-            '/feed/like', headers=headers, data=json.dumps(dump)
+            '/api/feed/like', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -332,7 +332,7 @@ class TestLikeUnlike(unittest.TestCase):
         self.assertIn(self.user_id, post['likes'])
 
         res = self.client.post(
-            '/feed/like', headers=headers, data=json.dumps(dump)
+            '/api/feed/like', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -355,7 +355,7 @@ class TestLikeUnlike(unittest.TestCase):
             'post_id': str(dummy_id),
         }
         res = self.client.post(
-            '/feed/like', headers=headers, data=json.dumps(dump)
+            '/api/feed/like', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -376,7 +376,7 @@ class TestLikeUnlike(unittest.TestCase):
             'post_id': str(self.post_id),
         }
         res = self.client.post(
-            '/feed/like', headers=headers, data=json.dumps(dump)
+            '/api/feed/like', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -395,7 +395,7 @@ class TestLikeUnlike(unittest.TestCase):
         }
 
         res = self.client.post(
-            '/feed/like', headers=headers, data=json.dumps(dump)
+            '/api/feed/like', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -407,7 +407,7 @@ class TestLikeUnlike(unittest.TestCase):
         self.assertEqual(post['number_of_likes'], 1)
 
         res = self.client.post(
-            '/feed/unlike', headers=headers, data=json.dumps(dump)
+            '/api/feed/unlike', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -431,7 +431,7 @@ class TestLikeUnlike(unittest.TestCase):
             'post_id': str(self.post_id),
         }
         res = self.client.post(
-            '/feed/unlike', headers=headers, data=json.dumps(dump)
+            '/api/feed/unlike', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -457,7 +457,7 @@ class TestLikeUnlike(unittest.TestCase):
             'post_id': str(dummy_id),
         }
         res = self.client.post(
-            '/feed/unlike', headers=headers, data=json.dumps(dump)
+            '/api/feed/unlike', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -478,7 +478,7 @@ class TestLikeUnlike(unittest.TestCase):
             'post_id': str(self.post_id),
         }
         res = self.client.post(
-            '/feed/unlike', headers=headers, data=json.dumps(dump)
+            '/api/feed/unlike', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -521,7 +521,7 @@ class TestComments(unittest.TestCase):
             'email': 'mohamed@example.com',
             'password': 'pass123'
         }
-        res = self.client.post('/login', json=self.login_detail)
+        res = self.client.post('/api/login', json=self.login_detail)
         data = res.get_json()
 
         self.access_token = data['access_token']
@@ -543,7 +543,7 @@ class TestComments(unittest.TestCase):
             'body': 'First Comment'
         }
         res = self.client.post(
-            '/feed/comment', headers=headers, data=json.dumps(dump)
+            '/api/feed/comment', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -561,7 +561,7 @@ class TestComments(unittest.TestCase):
             'body': 'First Comment'
         }
         res = self.client.post(
-            '/feed/comment', headers=headers, data=json.dumps(dump)
+            '/api/feed/comment', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -588,7 +588,7 @@ class TestComments(unittest.TestCase):
             'body': 'First Comment'
         }
         res = self.client.post(
-            '/feed/comment', headers=headers, data=json.dumps(dump)
+            '/api/feed/comment', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -606,7 +606,7 @@ class TestComments(unittest.TestCase):
             'body': 'First Comment'
         }
         res = self.client.post(
-            '/feed/comment', headers=headers, data=json.dumps(dump)
+            '/api/feed/comment', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -629,7 +629,7 @@ class TestComments(unittest.TestCase):
             'body': 'Updated comment'
         }
         res = self.client.put(
-            '/feed/update_comment',
+            '/api/feed/update_comment',
             headers=headers,
             data=json.dumps(updated_comment)
         )
@@ -654,7 +654,7 @@ class TestComments(unittest.TestCase):
             'body': 'First Comment'
         }
         res = self.client.post(
-            '/feed/comment', headers=headers, data=json.dumps(dump)
+            '/api/feed/comment', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -676,7 +676,7 @@ class TestComments(unittest.TestCase):
             'comment_id': str(post['comments'][0]),
         }
         res = self.client.put(
-            '/feed/update_comment',
+            '/api/feed/update_comment',
             headers=headers,
             data=json.dumps(updated_comment)
         )
@@ -698,7 +698,7 @@ class TestComments(unittest.TestCase):
             'body': 'First Comment'
         }
         res = self.client.post(
-            '/feed/comment', headers=headers, data=json.dumps(dump)
+            '/api/feed/comment', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -720,7 +720,7 @@ class TestComments(unittest.TestCase):
             'body': 'Updated comment'
         }
         res = self.client.put(
-            '/feed/update_comment',
+            '/api/feed/update_comment',
             headers=headers,
             data=json.dumps(updated_comment)
         )
@@ -742,7 +742,7 @@ class TestComments(unittest.TestCase):
             'body': 'First Comment'
         }
         res = self.client.post(
-            '/feed/comment', headers=headers, data=json.dumps(dump)
+            '/api/feed/comment', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -764,7 +764,7 @@ class TestComments(unittest.TestCase):
             'body': 'Updated comment'
         }
         res = self.client.put(
-            '/feed/update_comment',
+            '/api/feed/update_comment',
             headers=headers,
             data=json.dumps(updated_comment)
         )
@@ -786,7 +786,7 @@ class TestComments(unittest.TestCase):
             'body': 'First Comment'
         }
         res = self.client.post(
-            '/feed/comment', headers=headers, data=json.dumps(dump)
+            '/api/feed/comment', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -800,7 +800,7 @@ class TestComments(unittest.TestCase):
         }
 
         res = self.client.delete(
-            '/feed/delete_comment', headers=headers, data=json.dumps(dump)
+            '/api/feed/delete_comment', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -823,7 +823,7 @@ class TestComments(unittest.TestCase):
             'body': 'First Comment'
         }
         res = self.client.post(
-            '/feed/comment', headers=headers, data=json.dumps(dump)
+            '/api/feed/comment', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -836,7 +836,7 @@ class TestComments(unittest.TestCase):
         }
 
         res = self.client.delete(
-            '/feed/delete_comment', headers=headers, data=json.dumps(dump)
+            '/api/feed/delete_comment', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -860,7 +860,7 @@ class TestComments(unittest.TestCase):
             'body': 'First Comment'
         }
         res = self.client.post(
-            '/feed/comment', headers=headers, data=json.dumps(dump)
+            '/api/feed/comment', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -885,7 +885,7 @@ class TestComments(unittest.TestCase):
             'body': 'First Comment'
         }
         res = self.client.post(
-            '/feed/comment', headers=headers, data=json.dumps(dump)
+            '/api/feed/comment', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 
@@ -909,7 +909,7 @@ class TestComments(unittest.TestCase):
             'body': 'Second Comment'
         }
         res_1 = self.client.post(
-            '/feed/comment', headers=headers, data=json.dumps(dump)
+            '/api/feed/comment', headers=headers, data=json.dumps(dump)
         )
         data_1 = res_1.get_json()
 
@@ -918,7 +918,7 @@ class TestComments(unittest.TestCase):
             'body': 'First Comment'
         }
         res_2 = self.client.post(
-            '/feed/comment', headers=headers, data=json.dumps(dump)
+            '/api/feed/comment', headers=headers, data=json.dumps(dump)
         )
         data_2 = res_2.get_json()
 
@@ -932,7 +932,7 @@ class TestComments(unittest.TestCase):
             'post_id': str(self.post_id),
         }
         res = self.client.get(
-            '/feed/post_comments', headers=headers, data=json.dumps(dump)
+            '/api/feed/post_comments', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
 

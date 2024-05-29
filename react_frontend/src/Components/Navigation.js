@@ -13,6 +13,22 @@ const Navigation = () => {
 
   const navigate = useNavigate();
 
+  async () => {
+    try {
+      const res = await apiClient.get('/');
+      console.log(res.data);
+    } catch (error) {
+      try {
+        const res = await apiClient.post('/refresh');
+        console.log(res.data);
+        localStorage.setItem('jwt_access_token', res.data.new_access_token);
+      } catch (error) {
+        localStorage.removeItem('jwt_access_token');
+        localStorage.removeItem('jwt_refresh_token');
+      }
+    }
+  };
+
   const handleLogOut = async (event) => {
     event.preventDefault();
 
@@ -40,28 +56,39 @@ const Navigation = () => {
       .then((res) => {
         setCurrStreaks(res.data.current_streak);
         setLongStreaks(res.data.longest_streak);
-
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
-  
+
   return (
     <nav className='nav'>
       <a href='/' className='site-title'>
         SoftwareSphere
       </a>
-      <a href='/' className='site-navitem1 font-lg hover:font-xl hover:text-purple-700'>
+      <a
+        href='/'
+        className='site-navitem1 font-lg hover:font-xl hover:text-purple-700'
+      >
         Posts
       </a>
-      <a href='/' className='site-navitem2 font-lg hover:font-xl hover:text-purple-700'>
-        Longest   Streak
+      <a
+        href='/'
+        className='site-navitem2 font-lg hover:font-xl hover:text-purple-700'
+      >
+        Longest Streak
       </a>
-      <a href='/' className='site-navitem3 font-lg hover:font-xl hover:text-purple-700'>
-        Debug   Corner
+      <a
+        href='/'
+        className='site-navitem3 font-lg hover:font-xl hover:text-purple-700'
+      >
+        Debug Corner
       </a>
-      <a href='/' className='site-navitem4 font-lg hover:font-xl hover:text-purple-700'>
+      <a
+        href='/'
+        className='site-navitem4 font-lg hover:font-xl hover:text-purple-700'
+      >
         Profile
       </a>
       <div className='navbar-links-container'>

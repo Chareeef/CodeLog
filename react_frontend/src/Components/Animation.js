@@ -62,8 +62,6 @@ function Animation() {
         </div>
       </div>
     </div>
-  
-
   );
 }
 

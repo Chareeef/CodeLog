@@ -78,7 +78,7 @@ class TestCreateLog(unittest.TestCase):
             'content': 'Here is my post'
         }
 
-        response = self.client.post('/log', headers=headers, json=payload)
+        response = self.client.post('/api/log', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -128,7 +128,7 @@ class TestCreateLog(unittest.TestCase):
             'is_public': True
         }
 
-        response = self.client.post('/log', headers=headers, json=payload)
+        response = self.client.post('/api/log', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -176,7 +176,7 @@ class TestCreateLog(unittest.TestCase):
             'content': 'Here is my post'
         }
 
-        response = self.client.post('/log', json=payload)
+        response = self.client.post('/api/log', json=payload)
 
         data = response.get_json()
 
@@ -193,7 +193,7 @@ class TestCreateLog(unittest.TestCase):
             'content': 'Here is my post'
         }
 
-        response = self.client.post('/log', headers=headers, json=payload)
+        response = self.client.post('/api/log', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -210,7 +210,7 @@ class TestCreateLog(unittest.TestCase):
             'content': 'Here is my post'
         }
 
-        response = self.client.post('/log', headers=headers, json=payload)
+        response = self.client.post('/api/log', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -226,7 +226,7 @@ class TestCreateLog(unittest.TestCase):
             'title': 'My post'
         }
 
-        response = self.client.post('/log', headers=headers, json=payload)
+        response = self.client.post('/api/log', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -245,7 +245,7 @@ class TestCreateLog(unittest.TestCase):
             'is_public': 'true'
         }
 
-        response = self.client.post('/log', headers=headers, json=payload)
+        response = self.client.post('/api/log', headers=headers, json=payload)
 
         data = response.get_json()
 
@@ -264,7 +264,7 @@ class TestCreateLog(unittest.TestCase):
             'content': 'Here is my post 1'
         }
 
-        response1 = self.client.post('/log', headers=headers, json=payload1)
+        response1 = self.client.post('/api/log', headers=headers, json=payload1)
 
         data1 = response1.get_json()
 
@@ -277,7 +277,7 @@ class TestCreateLog(unittest.TestCase):
             'content': 'Here is my post 2'
         }
 
-        response2 = self.client.post('/log', headers=headers, json=payload2)
+        response2 = self.client.post('/api/log', headers=headers, json=payload2)
 
         data2 = response2.get_json()
 
@@ -303,7 +303,7 @@ class TestCreateLog(unittest.TestCase):
             'content': 'Here is my post 1'
         }
 
-        response1 = self.client.post('/log', headers=headers, json=payload1)
+        response1 = self.client.post('/api/log', headers=headers, json=payload1)
 
         # Second log
         payload2 = {
@@ -311,7 +311,7 @@ class TestCreateLog(unittest.TestCase):
             'content': 'Here is my post 2'
         }
 
-        response2 = self.client.post('/log', headers=headers, json=payload2)
+        response2 = self.client.post('/api/log', headers=headers, json=payload2)
 
         data2 = response2.get_json()
 
@@ -343,7 +343,7 @@ class TestCreateLog(unittest.TestCase):
             'content': 'Here is my post 1'
         }
 
-        response1 = self.client.post('/log', headers=headers, json=payload1)
+        response1 = self.client.post('/api/log', headers=headers, json=payload1)
 
         data1 = response1.get_json()
 
@@ -370,7 +370,7 @@ class TestCreateLog(unittest.TestCase):
             'content': 'Here is my post 2'
         }
 
-        response2 = self.client.post('/log', headers=headers, json=payload2)
+        response2 = self.client.post('/api/log', headers=headers, json=payload2)
 
         data2 = response2.get_json()
 

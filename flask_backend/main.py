@@ -33,10 +33,10 @@ def create_app(config=Config):
     app.url_map.strict_slashes = False
 
     # Register blueprints
-    app.register_blueprint(auth_bp)
-    app.register_blueprint(home_bp)
-    app.register_blueprint(feed_bp, url_prefix='/feed')
-    app.register_blueprint(profile_bp, url_prefix='/me')
+    app.register_blueprint(auth_bp, url_prefix='/api')
+    app.register_blueprint(home_bp, url_prefix='/api')
+    app.register_blueprint(feed_bp, url_prefix='/api/feed')
+    app.register_blueprint(profile_bp, url_prefix='/api/me')
 
     @jwt.invalid_token_loader
     def unauthorized_response(callback):

@@ -31,7 +31,6 @@ function Home() {
       setTitle('');
       setContent('');
       setIsPublic(false);
-
     } catch (error) {
       console.error('Error:', error);
       setMessage(error.response.data.error);
@@ -82,7 +81,9 @@ function Home() {
               onChange={(e) => setIsPublic(e.target.checked)}
               className='form-checkbox h-5 w-5 text-blue-600'
             />
-            <label htmlFor='isPublic' className='ml-2 text-gray-700'>Public</label>
+            <label htmlFor='isPublic' className='ml-2 text-gray-700'>
+              Public
+            </label>
           </div>
 
           <button
