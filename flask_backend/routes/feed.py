@@ -268,7 +268,7 @@ def delete_comment():
     return jsonify({"error": "Post not found."}), 404
 
 
-@feed_bp.route('/post_comments', methods=['GET'])
+@feed_bp.route('/post_comments', methods=['POST'])
 @jwt_required()
 @verify_token_in_redis
 @swag_from('../documentation/feed/post_comments.yml')

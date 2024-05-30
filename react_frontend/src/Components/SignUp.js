@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import '../index.css';
 import apiClient from '../apiClient';
+import Footer from './Footer';
 
 function SignUp() {
   const [email, setEmail] = useState('');
@@ -47,10 +48,10 @@ function SignUp() {
   };
 
   return (
-    <>
-      <div className='flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
+    <div className='d-flex flex-column min-vh-100'>
+      <div className='bg-beige flex-1 flex-grow-1 d-flex flex-column justify-content-center'>
         <div className='sm:mx-auto sm:w-full sm:max-w-sm'>
-          <h2 className='mt-10 text-center text-2xl font-bold leading-9 tracking-tight  text-white	text-900'>
+          <h2 className='mt-10 text-center text-2xl font-bold leading-9 tracking-tight  text-black	text-900'>
             Create your account
           </h2>
         </div>
@@ -66,7 +67,7 @@ function SignUp() {
             <div>
               <label
                 htmlFor='email'
-                className='block text-sm font-medium leading-6 text-white text-900'
+                className='block text-sm font-medium leading-6 text-black text-900'
               >
                 Email address
               </label>
@@ -88,7 +89,7 @@ function SignUp() {
             <div>
               <label
                 htmlFor='username'
-                className='block text-sm font-medium leading-6 text-white text-900'
+                className='block text-sm font-medium leading-6 text-black text-900'
               >
                 Username
               </label>
@@ -111,7 +112,7 @@ function SignUp() {
               <div className='flex items-center justify-between'>
                 <label
                   htmlFor='password'
-                  className='block text-sm font-medium leading-6 text-white text-900'
+                  className='block text-sm font-medium leading-6 text-black text-900'
                 >
                   Password
                 </label>
@@ -144,17 +145,19 @@ function SignUp() {
           </form>
 
           <p className='mt-10 text-center text-sm text-black text-500'>
-            Already have an account?{' '}
+            Already have an account?
+            <br />
             <a
               href='/login'
-              className='font-bold leading-6 text-white text-600 hover:text-indigo-500'
+              className='font-bold leading-6 text-orange text-600 hover:text-indigo-500'
             >
               Log in
             </a>
           </p>
         </div>
       </div>
-    </>
+      <Footer />
+    </div>
   );
 }
 

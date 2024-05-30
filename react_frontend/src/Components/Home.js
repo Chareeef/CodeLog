@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 import '../index.css';
 import apiClient from '../apiClient';
+import Footer from './Footer';
 
 function Home() {
   const [title, setTitle] = useState('');
@@ -38,14 +39,14 @@ function Home() {
   };
   return (
     <>
-      <div className='flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
-        <h2 className='mt-10 text-center text-3xl font-bold leading-9 tracking-wide text-white'>
+      <div className='bg-beige flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 post-log'>
+        <h2 className='mt-10 text-center text-3xl font-bold leading-9 tracking-wide text-black'>
           Behind the Code: Your Journey Matters
         </h2>
         <form onSubmit={handleUserPost}>
           <div className='mb-4'>
             <label
-              className='block text-white text-sm font-bold mb-2'
+              className='block text-black text-sm font-bold mb-2'
               htmlFor='title'
             >
               Title
@@ -99,6 +100,7 @@ function Home() {
           </div>
         )}
       </div>
+      <Footer />
     </>
   );
 }
