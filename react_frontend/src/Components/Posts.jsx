@@ -45,7 +45,9 @@ function Posts() {
       // Update comments state
       setComments({
         ...comments,
-        [postId]: comments[postId] ? [...comments[postId], response.data] : [response.data]
+        [postId]: comments[postId]
+          ? [...comments[postId], response.data]
+          : [response.data],
       });
     } catch (error) {
       console.error('Error posting comment:', error);
@@ -67,7 +69,9 @@ function Posts() {
       // Remove the deleted comment from state
       setComments({
         ...comments,
-        [postId]: comments[postId].filter(comment => comment._id !== commentId)
+        [postId]: comments[postId].filter(
+          (comment) => comment._id !== commentId
+        ),
       });
     } catch (error) {
       console.error('Error deleting comment:', error);
@@ -80,56 +84,68 @@ function Posts() {
   }, []); // Empty dependency array ensures the effect runs only once on component mount
 
   return (
-    <div className="container mx-auto mt-8">
+    <div className='container mx-auto mt-8'>
       {/* Display posts */}
       <div>
         {posts.map((post) => (
-          <div key={post._id} className="border border-gray-300 rounded p-4 mb-4">
+          <div
+            key={post._id}
+            className='border border-gray-300 rounded p-4 mb-4'
+          >
             <p>{post.body}</p>
-            <p className="text-sm text-gray-500">Posted by {post.user} on {new Date(post.datePosted).toLocaleString()}</p>
+            <p className='text-sm text-gray-500'>
+              Posted by {post.user} on{' '}
+              {new Date(post.datePosted).toLocaleString()}
+            </p>
 
             {/* Like button */}
             <button
-              className="bg-blue-500 text-white px-2 py-1 rounded mt-2 mr-2"
+              className='bg-blue-500 text-white px-2 py-1 rounded mt-2 mr-2'
               onClick={() => handleLikePost(post._id)}
             >
               Like
             </button>
-            
+
             {/* Comment input field */}
-            <div className="mb-2">
+            <div className='mb-2'>
               <textarea
-                className="w-full border border-gray-300 rounded p-2"
-                rows="2"
-                placeholder="Leave a comment"
+                className='w-full border border-gray-300 rounded p-2'
+                rows='2'
+                placeholder='Leave a comment'
                 value={newCommentText}
                 onChange={(e) => setNewCommentText(e.target.value)}
               ></textarea>
               <button
-                className="bg-gray-500 text-white px-2 py-1 rounded mt-2"
+                className='bg-gray-500 text-white px-2 py-1 rounded mt-2'
                 onClick={() => handlePostComment(post._id)}
               >
                 Comment
               </button>
             </div>
-            
+
             {/* Display comments */}
             <div>
-              {comments[post._id] && comments[post._id].map((comment) => (
-                <div key={comment._id} className="border border-gray-300 rounded p-2 mb-2">
-                  <p>{comment.body}</p>
-                  <p className="text-xs text-gray-500">Posted by {comment.user} on {new Date(comment.datePosted).toLocaleString()}</p>
-                  {/* Add delete comment button */}
-                  <button
-                    className="text-xs text-red-500 mt-1"
-                    onClick={() => handleDeleteComment(post._id, comment._id)}
+              {comments[post._id] &&
+                comments[post._id].map((comment) => (
+                  <div
+                    key={comment._id}
+                    className='border border-gray-300 rounded p-2 mb-2'
                   >
-                    Delete
-                  </button>
-                </div>
-              ))}
+                    <p>{comment.body}</p>
+                    <p className='text-xs text-gray-500'>
+                      Posted by {comment.user} on{' '}
+                      {new Date(comment.datePosted).toLocaleString()}
+                    </p>
+                    {/* Add delete comment button */}
+                    <button
+                      className='text-xs text-red-500 mt-1'
+                      onClick={() => handleDeleteComment(post._id, comment._id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))}
             </div>
-            
           </div>
         ))}
       </div>

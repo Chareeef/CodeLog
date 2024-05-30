@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 // Create the backend client
-const hostIP = process.env.REACT_APP_HOST || 'http://code-log.site';
+const host = process.env.REACT_APP_HOST || 'http://127.0.0.1:5000';
 const apiProfile = axios.create({
-  baseURL: `${hostIP}:5000/profile`, 
+  baseURL: `${host}/api/me`,
 });
 
 apiProfile.interceptors.request.use(
