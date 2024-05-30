@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import '../index.css';
-import '../Assets/Signin.css';
 import apiClient from '../apiClient';
+import Footer from './Footer';
 
 function SignIn() {
   const [email, setEmail] = useState('');
@@ -33,7 +33,7 @@ function SignIn() {
         localStorage.setItem('jwt_refresh_token', response.data.refresh_token);
 
         alert("It's nice to see you!");
-        navigate('/');
+        navigate('/home');
       } catch (error) {
         if (error.response) {
           setMessage(`Error: ${error.response.data.error}`);
@@ -45,10 +45,10 @@ function SignIn() {
   };
 
   return (
-    <>
-      <div className=' container flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
+    <div className='d-flex flex-column min-vh-100'>
+      <div className='bg-beige flex-1 flex-grow-1 d-flex flex-column justify-content-center'>
         <div className='sm:mx-auto sm:w-full sm:max-w-sm'>
-          <h2 className='mt-10 text-center text-2xl font-bold leading-9 tracking-tight  text-white	text-900'>
+          <h2 className='mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-black	text-900'>
             Sign in to your account
           </h2>
         </div>
@@ -63,7 +63,7 @@ function SignIn() {
             <div>
               <label
                 htmlFor='email'
-                className='block text-sm font-medium leading-6 text-white text-900'
+                className='block text-sm font-medium leading-6 text-black text-900'
               >
                 Email address
               </label>
@@ -86,7 +86,7 @@ function SignIn() {
               <div className='flex items-center justify-between'>
                 <label
                   htmlFor='password'
-                  className='block text-sm font-medium leading-6 text-white text-900'
+                  className='block text-sm font-medium leading-6 text-black text-900'
                 >
                   Password
                 </label>
@@ -119,17 +119,19 @@ function SignIn() {
           </form>
 
           <p className='mt-10 text-center text-sm text-black text-500'>
-            Not a member?{' '}
+            Not a member?
+            <br />
             <a
               href='/register'
-              className='font-semibold leading-6 text-white text-600 hover:text-indigo-500'
+              className='font-semibold leading-6 text-orange text-600 hover:text-indigo-500'
             >
               Sign up
             </a>
           </p>
         </div>
       </div>
-    </>
+      <Footer />
+    </div>
   );
 }
 

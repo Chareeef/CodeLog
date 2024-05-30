@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
+import nl2br from 'react-nl2br';
+
 import apiClient from '../apiClient';
+import Footer from './Footer';
 
 function Profile() {
   const [userInfo, setUserInfo] = useState(null);
@@ -47,46 +50,52 @@ function Profile() {
   };
 
   return (
-    <div className='container mx-auto px-4 py-8'>
-      <h1 className='text-3xl font-semibold mb-4'>
-        Welcome, {userInfo && userInfo.username}
-      </h1>
+    <div className='d-flex flex-column min-vh-100'>
+      <div className='bg-beige flex-1 flex-grow-1 d-flex flex-column justify-content-center p-3'>
+        <h1 className='text-3xl font-semibold mb-4 mt-2'>
+          Welcome to your space {userInfo && userInfo.username}!
+        </h1>
 
-      <div className='bg-white rounded-lg shadow-lg p-6 mb-8'>
-        {userInfo ? (
-          <>
-            <h2 className='text-xl font-semibold'>User Profile</h2>
-            <p>Email: {userInfo.email}</p>
-            <p>Username: {userInfo.username}</p>
-            <button
-              onClick={handleDeleteAccount}
-              className='bg-red-500 text-white px-4 py-2 mt-4 rounded-lg'
-            >
-              Delete Account
-            </button>
-          </>
-        ) : (
-          <p>Loading user information...</p>
-        )}
-      </div>
+        <div className='bg-white rounded-lg shadow-lg p-6 mb-8'>
+          {userInfo ? (
+            <>
+              <h2 className='text-xl font-semibold'>User Profile</h2>
+              <p>Email: {userInfo.email}</p>
+              <p>Username: {userInfo.username}</p>
+              <button
+                onClick={handleDeleteAccount}
+                className='bg-red-500 text-white px-4 py-2 mt-4 rounded-lg'
+              >
+                Delete Account
+              </button>
+            </>
+          ) : (
+            <p>Loading user information...</p>
+          )}
+        </div>
 
-      <div className='bg-white rounded-lg shadow-lg p-6'>
-        <h2 className='text-xl font-semibold'>User Posts</h2>
-        {userPosts.length > 0 ? (
-          <ul>
-            {userPosts.map((post) => (
-              <li className='card' key={post._id}>
-                <div className='card-body'>
-                  <h3 className='card-title'>{post.title}</h3>
-                  <p className='card-text'>{post.content}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No posts found.</p>
-        )}
+        <div className='bg-white rounded-lg shadow-lg p-6'>
+          <h2 className='text-xl font-semibold'>User Posts</h2>
+          {userPosts.length > 0 ? (
+            <ul>
+              {userPosts.map((post) => (
+                <li className='card m-2' key={post._id}>
+                  <div className='card-body'>
+                    <h3 className='card-title font-bold'>{post.title}</h3>
+                    <p className='text-sm text-gray-500'>
+                      Posted on {new Date(post.datePosted).toLocaleString()}
+                    </p>
+                    <p className='card-text mt-2'>{nl2br(post.content)}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No posts found.</p>
+          )}
+        </div>
       </div>
+      <Footer />
     </div>
   );
 }
