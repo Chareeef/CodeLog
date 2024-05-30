@@ -50,8 +50,7 @@ function Animation() {
               className='animated-square'
               animate={{
                 rotate: [0, 360],
-                x: ['100vw', '-200vw'],
-                // x: [0, 200, 200, 0, -200, -200, 0],
+                x: ['100vw', '-100vw'],
               }}
               initial={{ x: '100vw' }}
               transition={{ repeat: Infinity, duration: 11 }}

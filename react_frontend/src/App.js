@@ -1,11 +1,11 @@
 import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
-import LandingPage from './Components/LandingPage';
 import './Assets/Navstyle.css';
+import LandingPage from './Components/LandingPage';
 import SignIn from './Components/SignIn';
 import SignUp from './Components/SignUp';
 import Home from './Components/Home';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navigation from './Components/Navigation';
 import Posts from './Components/Posts';
 import Profile from './Components/Profile';
@@ -25,8 +25,6 @@ function App() {
             <Route path='/profile' element={<Profile />} />
           </Routes>
         </div>
-
-        {/* <Footer /> */}
       </div>
     </Router>
   );

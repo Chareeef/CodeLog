@@ -14,6 +14,7 @@
   align-items: center;
   background: linear-gradient(180deg, rgb(0, 4, 255), #d0e);
 }
+
 .heading-container {
   margin-right: 35%;
   margin-top: 6%;
@@ -35,10 +36,9 @@
   flex-direction: column;
   justify-content: center;
   align-items: flex-end;
-  /* background: linear-gradient(180deg, #f08, #d0e); */
   text-align: center;
-  /* flex-grow: 1; */
 }
+
 .animated-square {
   background-color: white;
   border-radius: 50px;
@@ -48,8 +48,8 @@
   margin-bottom: 0;
   margin-right: 20px;
   object-fit: cover;
-  /* padding: 20px; */
 }
+
 .animated-square img {
   object-fit: cover;
 }

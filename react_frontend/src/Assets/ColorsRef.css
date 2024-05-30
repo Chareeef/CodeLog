@@ -1,0 +1,49 @@
+.Dolce-Niddy-1-hex {
+  color: #103b40;
+}
+.Dolce-Niddy-2-hex {
+  color: #f2e6ce;
+}
+.Dolce-Niddy-3-hex {
+  color: #d98c5f;
+}
+.Dolce-Niddy-4-hex {
+  color: #593c2c;
+}
+.Dolce-Niddy-5-hex {
+  color: #d96236;
+}
+
+/* Color Theme Swatches in RGBA */
+.Dolce-Niddy-1-rgba {
+  color: rgba(15, 58, 63, 1);
+}
+.Dolce-Niddy-2-rgba {
+  color: rgba(242, 229, 205, 1);
+}
+.Dolce-Niddy-3-rgba {
+  color: rgba(216, 139, 95, 1);
+}
+.Dolce-Niddy-4-rgba {
+  color: rgba(89, 60, 43, 1);
+}
+.Dolce-Niddy-5-rgba {
+  color: rgba(216, 97, 54, 1);
+}
+
+/* Color Theme Swatches in HSLA */
+.Dolce-Niddy-1-hsla {
+  color: hsla(185, 60, 15, 1);
+}
+.Dolce-Niddy-2-hsla {
+  color: hsla(39, 58, 87, 1);
+}
+.Dolce-Niddy-3-hsla {
+  color: hsla(22, 61, 61, 1);
+}
+.Dolce-Niddy-4-hsla {
+  color: hsla(22, 34, 26, 1);
+}
+.Dolce-Niddy-5-hsla {
+  color: hsla(16, 68, 53, 1);
+}
