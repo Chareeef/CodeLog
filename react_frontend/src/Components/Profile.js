@@ -36,7 +36,7 @@ function Profile() {
 
   const handleDeleteAccount = async () => {
     try {
-      const response = await apiProfile.delete('/me/delete_user');
+      const response = await apiClient.delete('/me/delete_user');
 
       if (response.status === 200) {
         // Handle success, e.g., redirect to login page
@@ -75,11 +75,11 @@ function Profile() {
         {userPosts.length > 0 ? (
           <ul>
             {userPosts.map((post) => (
-              <li className="card" key={post._id}>
-	      <div className="card-body">
-		<h3 className="card-title">{post.title}</h3>
-                <p className="card-text">{post.content}</p>
-		</div>
+              <li className='card' key={post._id}>
+                <div className='card-body'>
+                  <h3 className='card-title'>{post.title}</h3>
+                  <p className='card-text'>{post.content}</p>
+                </div>
               </li>
             ))}
           </ul>

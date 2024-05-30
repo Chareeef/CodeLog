@@ -9,7 +9,7 @@ function Posts() {
   // Function to fetch posts from the backend API
   const fetchPosts = async () => {
     try {
-      const response = await apiClient.get('/get_posts');
+      const response = await apiClient.get('/feed/get_posts');
       setPosts(response.data);
     } catch (error) {
       console.error('Error fetching posts:', error);
@@ -19,7 +19,7 @@ function Posts() {
   // Function to handle liking a post
   const handleLikePost = async (postId) => {
     try {
-      const response = await apiClient.post('/like', {
+      const response = await apiClient.post('/feed/like', {
         post_id: postId,
       });
       console.log('Post liked:', response.data);
@@ -32,8 +32,9 @@ function Posts() {
 
   // Function to handle posting a new comment
   const handlePostComment = async (postId) => {
+    console.log('postId'.postId);
     try {
-      const response = await apiClient.post('/comment', {
+      const response = await apiClient.post('/feed/comment', {
         post_id: postId,
         body: newCommentText,
       });
@@ -57,7 +58,7 @@ function Posts() {
   // Function to handle deleting a comment
   const handleDeleteComment = async (postId, commentId) => {
     try {
-      const response = await apiClient.delete('/delete_comment', {
+      const response = await apiClient.delete('/feed/delete_comment', {
         data: {
           post_id: postId,
           comment_id: commentId,
@@ -92,19 +93,12 @@ function Posts() {
             key={post._id}
             className='border border-gray-300 rounded p-4 mb-4'
           >
-            <p>{post.body}</p>
+            <p>{post.title}</p>
             <p className='text-sm text-gray-500'>
-              Posted by {post.user} on{' '}
+              Posted by {post.username} on{' '}
               {new Date(post.datePosted).toLocaleString()}
             </p>
-
-            {/* Like button */}
-            <button
-              className='bg-blue-500 text-white px-2 py-1 rounded mt-2 mr-2'
-              onClick={() => handleLikePost(post._id)}
-            >
-              Like
-            </button>
+            <p>{post.content}</p>
 
             {/* Comment input field */}
             <div className='mb-2'>
@@ -115,6 +109,15 @@ function Posts() {
                 value={newCommentText}
                 onChange={(e) => setNewCommentText(e.target.value)}
               ></textarea>
+
+              {/* Like button */}
+              <button
+                className='bg-blue-500 text-white px-2 py-1 rounded mt-2 mr-2'
+                onClick={() => handleLikePost(post._id)}
+              >
+                Like
+              </button>
+
               <button
                 className='bg-gray-500 text-white px-2 py-1 rounded mt-2'
                 onClick={() => handlePostComment(post._id)}
@@ -125,8 +128,8 @@ function Posts() {
 
             {/* Display comments */}
             <div>
-              {comments[post._id] &&
-                comments[post._id].map((comment) => (
+              {post.comment &&
+                post.comments.map((comment) => (
                   <div
                     key={comment._id}
                     className='border border-gray-300 rounded p-2 mb-2'
