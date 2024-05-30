@@ -81,10 +81,13 @@ class TestGetFeedPosts(unittest.TestCase):
             else:
                 post['username'] = 'tomdemort67'
 
-            if i % 2 == 0:
-                cls.public_posts.append(post.copy())
-
             db.insert_post(post)
+
+            if i % 2 == 0:
+                p = post.copy()
+                p['_id'] = str(p['_id'])
+                cls.public_posts.append(p)
+
 
         # Sort posts from the most to the less recent
         cls.public_posts.sort(key=lambda x: x['datePosted'], reverse=True)

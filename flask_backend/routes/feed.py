@@ -19,8 +19,6 @@ feed_bp = Blueprint('feed_bp', __name__)
 def get_feed():
     """ Return all the public posts """
     posts = list(filter(lambda p: p['is_public'] is True, db.find_all_posts()))
-    for p in posts:
-        del p['_id']
 
     # Sort posts from the most to the less recent
     posts.sort(key=lambda x: x['datePosted'], reverse=True)

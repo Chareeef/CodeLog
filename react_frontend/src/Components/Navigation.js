@@ -36,18 +36,13 @@ const Navigation = () => {
       const response = await apiClient.post('/logout');
 
       console.log(response);
-      if (response.status == 204) {
-        localStorage.removeItem('jwt_access_token');
-        localStorage.removeItem('jwt_refresh_token');
-        alert('Successfully Logged Out');
-        navigate('/login');
-      } else {
-        alert('Failed to Log Out');
-      }
     } catch (error) {
-      alert('Failed to Log Out');
       console.error(error);
     }
+    localStorage.removeItem('jwt_access_token');
+    localStorage.removeItem('jwt_refresh_token');
+    navigate('/login');
+    alert('Successfully Logged Out');
   };
 
   useEffect(() => {

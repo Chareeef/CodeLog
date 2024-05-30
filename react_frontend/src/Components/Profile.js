@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import apiProfile from '../apiProfile';
+import apiClient from '../apiClient';
 
 function Profile() {
   const [userInfo, setUserInfo] = useState(null);
@@ -8,7 +8,7 @@ function Profile() {
   useEffect(() => {
     const fetchProfileInfo = async () => {
       try {
-        const response = await apiProfile.get('/get_infos');
+        const response = await apiClient.get('/me/get_infos');
 
         if (response.status === 200) {
           setUserInfo(response.data);
@@ -20,7 +20,7 @@ function Profile() {
 
     const fetchUserPosts = async () => {
       try {
-        const response = await apiProfile.get('/posts');
+        const response = await apiClient.get('/me/posts');
 
         if (response.status === 200) {
           setUserPosts(response.data);
@@ -36,7 +36,7 @@ function Profile() {
 
   const handleDeleteAccount = async () => {
     try {
-      const response = await apiProfile.delete('/delete_user');
+      const response = await apiClient.delete('/me/delete_user');
 
       if (response.status === 200) {
         // Handle success, e.g., redirect to login page
@@ -75,9 +75,11 @@ function Profile() {
         {userPosts.length > 0 ? (
           <ul>
             {userPosts.map((post) => (
-              <li key={post._id}>
-                <h3>{post.title}</h3>
-                <p>{post.body}</p>
+              <li className='card' key={post._id}>
+                <div className='card-body'>
+                  <h3 className='card-title'>{post.title}</h3>
+                  <p className='card-text'>{post.content}</p>
+                </div>
               </li>
             ))}
           </ul>
