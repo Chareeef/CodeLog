@@ -1,5 +1,8 @@
+import React from 'react';
 import Navigation from './Navigation';
 import Animation from './Animation';
+import AnimationSecTwo from './AnimationSecTwo';
+import AnimationSecThree from './AnimationSecThree';
 
 import '../App.css';
 // import AnimationSecTwo from './AnimationSecTwo';
@@ -12,9 +15,9 @@ function LandingPage() {
       <div className='home-container'>
         <Navigation />
         <Animation />
-        {/* <AnimationSecTwo /> 
+        <AnimationSecTwo /> 
         <AnimationSecThree />
-        <Footer /> */}
+        {/* <Footer />  */}
       </div>
     </>
   );

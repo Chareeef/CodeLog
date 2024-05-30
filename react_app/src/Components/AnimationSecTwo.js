@@ -1,53 +1,24 @@
-// import React from 'react';
-// import { motion } from 'framer-motion';
-// import "../Assets/AnimationSecTwo.css"
-// import Pic from "../Assets/sciene.png"
-// import Pic2 from "../Assets/python.png"
-// import Pic3 from "../Assets/linux.png"
-// import Pic4 from "../Assets/java.png"
-// import Pic5 from "../Assets/agile.png"
+import React from 'react';
+import Community from '../Assets/images/com.jpg';
+import '../index.css';
+import Typography from '@mui/material/Typography';
 
-// const images =[
-//     {src: Pic, alt:'react'},
-//     {src: Pic2, alt:'python'},
-//     {src: Pic3, alt:'linux'},
-//     {src: Pic4, alt:'java'},
-//     {src: Pic5, alt:'agile'},
-// ]
 
-// function AnimationSecTwo() {
-//   return (
+function AnimationSecTwo() {
+  return (
+    <figure className="relative flex justify-center">
+      <img
+        className="h-3/3 w-9/12 rounded-xl object-cover object-center mt-12"
+        src={Community}
+        alt="community"
+      />
+      <figcaption className='flex justify-center items-center pr-50 absolute bottom-1/2 left-2/4 flex w-[calc(100%-23.9rem)] -translate-x-2/4  rounded-xl border border-white bg-white/75 py-4 px-6 shadow-lg shadow-black/5 saturate-200 backdrop-blur-sm'>
+          <Typography variant="h1"  fontWeight="bold" className='mr-15 font-extrabold text-green text-xl'>
+            We Are Community
+          </Typography>
+      </figcaption>
+    </figure>
+  );
+}
 
-//         <div className='animation'>
-
-//             <div className='square-container'>
-//                 <div className='heading-container'>
-//                     <h1 className='heading-one'>Your home Your space Your zone</h1>
-//                     <h2 className='heading-two'>Share with us Your stories, worries and coding journeys! </h2>
-//                 </div>
-//                 <div className='square'>
-//                 {images.map((image, index) => (
-//                     <motion.div
-//                     key={index + 1}
-//                     className='animated-square'
-//                     animate={{
-//                         rotate: [0, 360],
-//                         x:['100vw', '-200vw'],
-//                         // x: [0, 200, 200, 0, -200, -200, 0],
-//                     }}
-//                         initial= {{x: '100vw'}}
-//                     transition={{ repeat: Infinity, duration:5 + index * 2}}
-//                     >
-//                         <img src={image.src} alt={image.alt} width='90' height='90'/>
-//                     </motion.div>
-
-//                 ))}
-//                 </div>
-
-//             </div>
-//         </div>
-
-//   )
-// }
-
-// export default AnimationSecTwo
+export default AnimationSecTwo;
