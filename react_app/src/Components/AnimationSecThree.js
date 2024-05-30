@@ -1,12 +1,12 @@
 import React from 'react';
-import {link, PuzzlePieceIcon, megaphone, users} from '@heroicons/react'
-
+import { LinkIcon, PuzzlePieceIcon, MegaphoneIcon, UsersIcon } from '@heroicons/react/24/outline'
+import '../index.css'
 const features = [
   {
     name: 'Connect with Peers',
     description:
       'Network with like-minded developers, share your experiences, and build meaningful professional relationships.',
-    icon: link,
+    icon: LinkIcon,
   },
   {
     name: 'Express Your Needs',
@@ -18,13 +18,13 @@ const features = [
     name: 'Share Your Thoughts',
     description:
       'Engage in insightful discussions, share your knowledge, and stay updated with the latest trends and best practices in the industry.',
-    icon: megaphone,
+    icon: MegaphoneIcon,
   },
   {
     name: 'Collaborate on Projects',
     description:
       'Team up with other developers to work on exciting projects, learn new skills, and create something amazing together.',
-    icon: users,
+    icon: UsersIcon,
   },
 ]
 function AnimationSecThree() {
@@ -32,10 +32,10 @@ function AnimationSecThree() {
     <div className=' bg-beige my-4'>
       <div className=' w-screen mx-auto  px-6 lg:px-8  container-three'>
         <div className='mx-auto max-w-2xl lg:text-center'>
-          <h2 className='mt-2 pt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl'>
-            Be a Member in our community
+          <h2 className='mt-2 pt-4 text-8xl font-bold tracking-tight text-brown sm:text-6xl'>
+            Become A Memeber
           </h2>
-          <p className='mt-6 text-lg leading-8 text-gray-600'>
+          <p className='mt-6 text-lg leading-8 text-gray-800'>
             we build this space to let developers connect with each other,
             express their needs, share their toughts and why not collaborate
             with each other to create an amazing project.
@@ -45,10 +45,12 @@ function AnimationSecThree() {
           <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-2 lg:gap-y-16">
             {features.map((feature) => (
               <div key={feature.name} className="relative pl-16">
-                <dt className="text-base font-semibold leading-7 text-gray-900">
-                  <div className="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600">
+                <dt className=" font-semibold leading-7 text-brown text-lg">
+                  {feature.icon && (
+                  <div className="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-orange">
                     <feature.icon className="h-6 w-6 text-white" aria-hidden="true" />
                   </div>
+                  )}
                   {feature.name}
                 </dt>
                 <dd className="mt-2 text-base leading-7 text-gray-600">{feature.description}</dd>
