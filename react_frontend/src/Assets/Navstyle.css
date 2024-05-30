@@ -8,7 +8,7 @@ body {
 }
 .nav {
   top: 0;
-  background: linear-gradient(to right, rgb(255, 255, 255), rgb(128, 0, 128));
+  /* background: linear-gradient(to right, rgb(255, 255, 255), rgb(128, 0, 128)); */
   color: white;
   display: flex;
   justify-content: space-between;
@@ -35,8 +35,9 @@ body {
   padding: 0;
   margin: 0;
   font-size: 2rem;
+  font-weight: bold;
   text-decoration: none;
-  color: purple;
+  color: white;
 }
 .navbar-links-container a {
   color: inherit;
@@ -70,6 +71,9 @@ body {
     align-items: start;
     padding-bottom: 10px;
   }
+  .navbar-links-container {
+    background-color: #d96236;
+  }
   .navbar-links-container ul {
     display: none;
     flex-direction: column;
@@ -85,11 +89,12 @@ body {
   }
   .navbar-links-container ul li a {
     margin: 0.2rem 0.5rem;
+    background-color: #d96236;
   }
   a.site-title {
     font-size: 30px;
     display: block;
-    margin-right: 8rem;
+    margin-right: 18rem;
     padding-top: 10px;
   }
 }

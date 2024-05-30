@@ -12,6 +12,7 @@
 div {
   font-family: Reem Kufi;
 }
+
 /* }
 .first{
   margin-top: 48px;
@@ -38,6 +39,3 @@ div {
     padding: 0;
     direction: ltr;
     background-color: white;*/
-.content {
-  background: linear-gradient(to right, rgb(255, 255, 255), rgb(128, 0, 128));
-}
