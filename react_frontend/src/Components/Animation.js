@@ -51,7 +51,6 @@ function Animation() {
               animate={{
                 rotate: [0, 360],
                 x: ['100vw', '-100vw'],
-                // x: [0, 200, 200, 0, -200, -200, 0],
               }}
               initial={{ x: '100vw' }}
               transition={{ repeat: Infinity, duration: 11 }}
