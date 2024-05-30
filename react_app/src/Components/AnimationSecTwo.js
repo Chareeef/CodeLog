@@ -8,7 +8,7 @@ function AnimationSecTwo() {
   return (
     <figure className="relative flex justify-center">
       <img
-        className="h-3/3 w-9/12 rounded-xl object-cover object-center mt-12"
+        className="h-3/3 w-9/12 rounded-xl object-cover object-center mt-2"
         src={Community}
         alt="community"
       />

@@ -3,6 +3,7 @@ import Navigation from './Navigation';
 import Animation from './Animation';
 import AnimationSecTwo from './AnimationSecTwo';
 import AnimationSecThree from './AnimationSecThree';
+import Footer from './Footer';
 
 import '../App.css';
 // import AnimationSecTwo from './AnimationSecTwo';
@@ -17,7 +18,7 @@ function LandingPage() {
         <Animation />
         <AnimationSecTwo /> 
         <AnimationSecThree />
-        {/* <Footer />  */}
+        <Footer /> 
       </div>
     </>
   );

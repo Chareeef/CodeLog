@@ -1,6 +1,8 @@
 import React from 'react';
 import { LinkIcon, PuzzlePieceIcon, MegaphoneIcon, UsersIcon } from '@heroicons/react/24/outline'
-import '../index.css'
+import '../index.css';
+// import { motion } from 'framer-motion';
+
 const features = [
   {
     name: 'Connect with Peers',
@@ -29,7 +31,7 @@ const features = [
 ]
 function AnimationSecThree() {
   return (
-    <div className=' bg-beige my-4'>
+    <div className=' bg-beige'>
       <div className=' w-screen mx-auto  px-6 lg:px-8  container-three'>
         <div className='mx-auto max-w-2xl lg:text-center'>
           <h2 className='mt-2 pt-4 text-8xl font-bold tracking-tight text-brown sm:text-6xl'>
@@ -42,7 +44,7 @@ function AnimationSecThree() {
           </p>
         </div>
         <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-4xl">
-          <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-2 lg:gap-y-16">
+          <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-2 lg:gap-y-16 pb-4">
             {features.map((feature) => (
               <div key={feature.name} className="relative pl-16">
                 <dt className=" font-semibold leading-7 text-brown text-lg">
