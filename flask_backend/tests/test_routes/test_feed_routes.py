@@ -505,6 +505,7 @@ class TestComments(unittest.TestCase):
             'longest_streak': 0
         }
 
+        self.username = info['username']
         self.user_id = db.insert_user(info)
 
         self.dummy_user = ObjectId()
@@ -551,7 +552,7 @@ class TestComments(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data['msg'], 'Comment created successfully.')
 
     def test_find_comment(self):
@@ -569,7 +570,7 @@ class TestComments(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data['msg'], 'Comment created successfully.')
 
         post = db.find_post({'_id': self.post_id})
@@ -577,7 +578,7 @@ class TestComments(unittest.TestCase):
         self.assertNotEqual(post['comments'], [])
         self.assertNotEqual(post['number_of_comments'], 0)
 
-        comment = db.find_comment(post['comments'][0], self.user_id)
+        comment = db.find_comment(post['comments'][0]['_id'], self.username)
 
         self.assertIsNotNone(comment)
         self.assertEqual(data['data'], comment)
@@ -614,7 +615,7 @@ class TestComments(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data['msg'], 'Comment created successfully.')
 
         post = db.find_post({'_id': self.post_id})
@@ -622,14 +623,14 @@ class TestComments(unittest.TestCase):
         self.assertNotEqual(post['comments'], [])
         self.assertNotEqual(post['number_of_comments'], 0)
 
-        comment = db.find_comment(post['comments'][0], self.user_id)
+        comment = db.find_comment(post['comments'][0]['_id'], self.username)
 
         self.assertIsNotNone(comment)
         self.assertEqual(data['data'], comment)
 
         updated_comment = {
             'post_id': str(self.post_id),
-            'comment_id': str(post['comments'][0]),
+            'comment_id': post['comments'][0]['_id'],
             'body': 'Updated comment'
         }
         res = self.client.put(
@@ -642,7 +643,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['msg'], 'Comment updated successfully.')
 
-        comment = db.find_comment(post['comments'][0], self.user_id)
+        comment = db.find_comment(post['comments'][0]['_id'], self.username)
 
         self.assertEqual(post['number_of_comments'], 1)
         self.assertEqual(data['data'], comment)
@@ -662,7 +663,7 @@ class TestComments(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data['msg'], 'Comment created successfully.')
 
         post = db.find_post({'_id': self.post_id})
@@ -670,14 +671,14 @@ class TestComments(unittest.TestCase):
         self.assertNotEqual(post['comments'], [])
         self.assertNotEqual(post['number_of_comments'], 0)
 
-        comment = db.find_comment(post['comments'][0], self.user_id)
+        comment = db.find_comment(post['comments'][0]['_id'], self.username)
 
         self.assertIsNotNone(comment)
         self.assertEqual(data['data'], comment)
 
         updated_comment = {
             'post_id': str(self.post_id),
-            'comment_id': str(post['comments'][0]),
+            'comment_id': post['comments'][0]['_id']
         }
         res = self.client.put(
             '/api/feed/update_comment',
@@ -685,7 +686,7 @@ class TestComments(unittest.TestCase):
             data=json.dumps(updated_comment)
         )
         data = res.get_json()
-        comment = db.find_comment(post['comments'][0], self.user_id)
+        comment = db.find_comment(post['comments'][0]['_id'], self.username)
 
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data['error'], 'Missing body')
@@ -706,7 +707,7 @@ class TestComments(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data['msg'], 'Comment created successfully.')
 
         post = db.find_post({'_id': self.post_id})
@@ -714,13 +715,13 @@ class TestComments(unittest.TestCase):
         self.assertNotEqual(post['comments'], [])
         self.assertNotEqual(post['number_of_comments'], 0)
 
-        comment = db.find_comment(post['comments'][0], self.user_id)
+        comment = db.find_comment(post['comments'][0]['_id'], self.username)
 
         self.assertIsNotNone(comment)
         self.assertEqual(data['data'], comment)
 
         updated_comment = {
-            'comment_id': str(post['comments'][0]),
+            'comment_id': post['comments'][0]['_id'],
             'body': 'Updated comment'
         }
         res = self.client.put(
@@ -729,7 +730,7 @@ class TestComments(unittest.TestCase):
             data=json.dumps(updated_comment)
         )
         data = res.get_json()
-        comment = db.find_comment(post['comments'][0], self.user_id)
+        comment = db.find_comment(post['comments'][0]['_id'], self.username)
 
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data['error'], 'Missing post_id')
@@ -750,7 +751,7 @@ class TestComments(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data['msg'], 'Comment created successfully.')
 
         post = db.find_post({'_id': self.post_id})
@@ -758,7 +759,7 @@ class TestComments(unittest.TestCase):
         self.assertNotEqual(post['comments'], [])
         self.assertNotEqual(post['number_of_comments'], 0)
 
-        comment = db.find_comment(post['comments'][0], self.user_id)
+        comment = db.find_comment(post['comments'][0]['_id'], self.username)
 
         self.assertIsNotNone(comment)
         self.assertEqual(data['data'], comment)
@@ -773,7 +774,7 @@ class TestComments(unittest.TestCase):
             data=json.dumps(updated_comment)
         )
         data = res.get_json()
-        comment = db.find_comment(post['comments'][0], self.user_id)
+        comment = db.find_comment(post['comments'][0]['_id'], self.username)
 
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data['error'], 'Missing comment_id')
@@ -794,7 +795,7 @@ class TestComments(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data['msg'], 'Comment created successfully.')
 
         comment_id = data['data']['_id']
@@ -814,7 +815,7 @@ class TestComments(unittest.TestCase):
         post = db.find_post({"_id": self.post_id})
 
         self.assertEqual(post['number_of_comments'], 0)
-        self.assertNotIn(comment_id, post['comments'])
+        self.assertEqual(len(post['comments']), 0)
 
     def test_delete_comment_with_no_commentid(self):
         """ Test delete comment. """
@@ -831,7 +832,7 @@ class TestComments(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data['msg'], 'Comment created successfully.')
 
         comment_id = data['data']['_id']
@@ -850,7 +851,7 @@ class TestComments(unittest.TestCase):
         post = db.find_post({"_id": self.post_id})
 
         self.assertEqual(post['number_of_comments'], 1)
-        self.assertIn(ObjectId(comment_id), post['comments'])
+        self.assertEqual(comment_id, post['comments'][0]['_id'])
 
     def test_delete_post_comment(self):
         """ Test deleting a post also
@@ -868,7 +869,7 @@ class TestComments(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data['msg'], 'Comment created successfully.')
 
         deleted = db.delete_post(self.post_id, self.user_id)
@@ -893,7 +894,7 @@ class TestComments(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data['msg'], 'Comment created successfully.')
 
         deleted = db.delete_user(self.user_id)
@@ -926,16 +927,16 @@ class TestComments(unittest.TestCase):
         )
         data_2 = res_2.get_json()
 
-        self.assertEqual(res_1.status_code, 200)
+        self.assertEqual(res_1.status_code, 201)
         self.assertEqual(data_1['msg'], 'Comment created successfully.')
 
-        self.assertEqual(res_2.status_code, 200)
+        self.assertEqual(res_2.status_code, 201)
         self.assertEqual(data_2['msg'], 'Comment created successfully.')
 
         dump = {
             'post_id': str(self.post_id),
         }
-        res = self.client.get(
+        res = self.client.post(
             '/api/feed/post_comments', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()

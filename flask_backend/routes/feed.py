@@ -168,7 +168,7 @@ def comment():
         }
 
         comment_id = db.insert_comment(comment_document, post_id)
-        comment = db.find_comment(comment_id, user_id)
+        comment = db.find_comment(comment_id, user['username'])
 
         if comment_id:
             return jsonify(
@@ -193,8 +193,9 @@ def update_comment():
     # Get the post id
     post_id = data.get('post_id')
 
-    # Get the current user's id
+    # Get the current user
     user_id = get_jwt_identity()
+    user = db.find_user({"_id": ObjectId(user_id)})
 
     # comment id
     comment_id = data.get('comment_id')
@@ -218,7 +219,7 @@ def update_comment():
     # Check if the post exist.
     if post:
 
-        updated_comment = db.update_comment(comment_id, user_id, comment_body)
+        updated_comment = db.update_comment(comment_id, user['username'], comment_body)
         if updated_comment:
             return jsonify(
                 {
@@ -242,8 +243,9 @@ def delete_comment():
     # Get the post id
     post_id = data.get('post_id')
 
-    # Get the current user's id
+    # Get the current user
     user_id = get_jwt_identity()
+    user = db.find_user({"_id": ObjectId(user_id)})
 
     # comment id
     comment_id = data.get('comment_id')
@@ -262,7 +264,7 @@ def delete_comment():
     # Check if the post exist.
     if post:
 
-        deleted = db.delete_comment(comment_id, user_id, post_id)
+        deleted = db.delete_comment(comment_id, user['username'], post_id)
 
         if deleted:
             return jsonify({"msg": "Comment deleted successfully."}), 200

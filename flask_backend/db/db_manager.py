@@ -263,7 +263,7 @@ class DBStorage:
         comments = self._db['comments']
 
         new_comment = comments.insert_one(document)
-        document['_id'] = str(document['id'])
+        document['_id'] = str(document['_id'])
         posts.update_one(
             {"_id": ObjectId(post_id)},
             {
@@ -276,7 +276,7 @@ class DBStorage:
     def find_comment(
             self,
             comment_id: str,
-            user_id: str
+            username: str
     ) -> Optional[Dict[str, Any]]:
         """ find and return a comment document  """
         comments = self._db['comments']
@@ -284,7 +284,7 @@ class DBStorage:
             comment = comments.find(
                 {
                     '_id': ObjectId(comment_id),
-                    'user_id': ObjectId(user_id)
+                    'username': username
                 }
             )
             return serialize_ObjectId(list(comment)[0])
@@ -294,14 +294,14 @@ class DBStorage:
     def update_comment(
             self,
             comment_id: str,
-            user_id: str,
+            username: str,
             body: Dict[str, Any]
     ) -> Optional[Dict[str, Any]]:
         """ Updates a comment document. """
         comments = self._db['comments']
         try:
             updated_comment = comments.find_one_and_update(
-                {'_id': ObjectId(comment_id), 'user_id': ObjectId(user_id)},
+                {'_id': ObjectId(comment_id), 'username': username},
                 {'$set': {'body': body}},
                 return_document=ReturnDocument.AFTER
             )
@@ -313,7 +313,7 @@ class DBStorage:
     def delete_comment(
             self,
             comment_id: str,
-            user_id: str,
+            username: str,
             post_id: str
     ) -> bool:
         """ deletes a comments and remove it from the post. """
@@ -322,19 +322,20 @@ class DBStorage:
         try:
             comments.delete_one({
                 '_id': ObjectId(comment_id),
-                'user_id': ObjectId(user_id)
+                'username': username
             })
             post = posts.find_one({"_id": ObjectId(post_id)})
 
-            if ObjectId(comment_id) in post['comments']:
-                posts.update_one(
-                    {"_id": ObjectId(post_id)},
-                    {
-                        "$inc": {"number_of_comments": -1},
-                        "$pull": {"comments": ObjectId(comment_id)}
-                    }
-                )
-            return True
+            for c in post['comments']:
+                if comment_id == c['_id']:
+                    posts.update_one(
+                        {"_id": ObjectId(post_id)},
+                        {
+                            "$inc": {"number_of_comments": -1},
+                            "$pull": {"comments": {'_id': comment_id}}
+                        }
+                    )
+                return True
         except Exception as e:
             return False
 
