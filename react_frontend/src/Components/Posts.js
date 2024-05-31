@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import nl2br from 'react-nl2br';
+
 import apiClient from '../apiClient';
+import Footer from './Footer';
 
 function Posts() {
   const [posts, setPosts] = useState([]);
@@ -9,8 +12,24 @@ function Posts() {
   // Function to fetch posts from the backend API
   const fetchPosts = async () => {
     try {
-      const response = await apiClient.get('/feed/get_posts');
-      setPosts(response.data);
+      const res = await apiClient.get('/feed/get_posts');
+      const posts = res.data;
+      // fetch comments
+      posts.forEach(async (p) => {
+        console.log(posts);
+        if (p.comments) {
+          try {
+            const res = await apiClient.post('/feed/post_comments', {
+              post_id: p._id,
+            });
+            p.comments = res.data.data;
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      });
+      console.log('final  :', posts);
+      setPosts(posts);
     } catch (error) {
       console.error('Error fetching posts:', error);
     }
@@ -85,73 +104,80 @@ function Posts() {
   }, []); // Empty dependency array ensures the effect runs only once on component mount
 
   return (
-    <div className='container mx-auto mt-8'>
+    <div className='d-flex flex-column min-vh-100'>
       {/* Display posts */}
-      <div>
+      <div className='bg-beige flex-1 flex-grow-1 d-flex flex-column justify-content-center p-3'>
         {posts.map((post) => (
           <div
             key={post._id}
-            className='border border-gray-300 rounded p-4 mb-4'
+            className='card m-2 border border-gray-300 rounded p-4'
           >
-            <p>{post.title}</p>
-            <p className='text-sm text-gray-500'>
-              Posted by {post.username} on{' '}
-              {new Date(post.datePosted).toLocaleString()}
-            </p>
-            <p>{post.content}</p>
+            <div className='card-body'>
+              <div className='border-orange rounded p-2 mb-2'>
+                <h3 className='card-title font-bold'>{post.title}</h3>
+                <p className='text-sm text-gray-500'>
+                  Posted by {post.username} on{' '}
+                  {new Date(post.datePosted).toLocaleString()}
+                </p>
+                <p className='card-text p-2 mb-2'>{nl2br(post.content)}</p>
+              </div>
 
-            {/* Comment input field */}
-            <div className='mb-2'>
-              <textarea
-                className='w-full border border-gray-300 rounded p-2'
-                rows='2'
-                placeholder='Leave a comment'
-                value={newCommentText}
-                onChange={(e) => setNewCommentText(e.target.value)}
-              ></textarea>
+              {/* Comment input field */}
+              <div className='mb-2'>
+                <textarea
+                  className='w-full border-orange rounded p-2'
+                  rows='2'
+                  placeholder='Leave a comment'
+                  value={newCommentText}
+                  onChange={(e) => setNewCommentText(e.target.value)}
+                ></textarea>
 
-              {/* Like button */}
-              <button
-                className='bg-blue-500 text-white px-2 py-1 rounded mt-2 mr-2'
-                onClick={() => handleLikePost(post._id)}
-              >
-                Like
-              </button>
+                {/* Like button */}
+                <button
+                  className='bg-blue-500 text-white px-2 py-1 rounded mt-2 mr-2'
+                  onClick={() => handleLikePost(post._id)}
+                >
+                  Like
+                </button>
 
-              <button
-                className='bg-gray-500 text-white px-2 py-1 rounded mt-2'
-                onClick={() => handlePostComment(post._id)}
-              >
-                Comment
-              </button>
-            </div>
+                <button
+                  className='bg-gray-500 text-white px-2 py-1 rounded mt-2'
+                  onClick={() => handlePostComment(post._id)}
+                >
+                  Comment
+                </button>
+              </div>
 
-            {/* Display comments */}
-            <div>
-              {post.comment &&
-                post.comments.map((comment) => (
-                  <div
-                    key={comment._id}
-                    className='border border-gray-300 rounded p-2 mb-2'
-                  >
-                    <p>{comment.body}</p>
-                    <p className='text-xs text-gray-500'>
-                      Posted by {comment.user} on{' '}
-                      {new Date(comment.datePosted).toLocaleString()}
-                    </p>
-                    {/* Add delete comment button */}
-                    <button
-                      className='text-xs text-red-500 mt-1'
-                      onClick={() => handleDeleteComment(post._id, comment._id)}
+              {/* Display comments */}
+              <div>
+                {post.comments &&
+                  post.comments.map((comment) => (
+                    <div
+                      key={comment._id}
+                      className='border border-gray-300 rounded p-2 mb-2'
                     >
-                      Delete
-                    </button>
-                  </div>
-                ))}
+                      <p>body-0> {nl2br(comment.body)}</p>
+                      <p className='text-xs text-gray-500'>
+                        Posted by {comment.username} on{' '}
+                        {new Date(comment.date_posted).toLocaleString()}
+                      </p>
+                      {/* Add delete comment button */}
+                      <button
+                        className='text-xs text-red-500 mt-1'
+                        onClick={() =>
+                          handleDeleteComment(post._id, comment._id)
+                        }
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  ))}
+              </div>
             </div>
           </div>
         ))}
       </div>
+      <Footer />
     </div>
   );
 }

@@ -6,7 +6,6 @@ import {
   UsersIcon,
 } from '@heroicons/react/24/outline';
 import '../index.css';
-// import { motion } from 'framer-motion';
 
 const features = [
   {
@@ -34,16 +33,17 @@ const features = [
     icon: UsersIcon,
   },
 ];
+
 function AnimationSecThree() {
   return (
-    <div className=' bg-beige'>
-      <div className=' w-screen mx-auto  px-6 lg:px-8  container-three'>
+    <div className='bg-beige'>
+      <div className='w-screen mx-auto  px-6 lg:px-8  container-three'>
         <div className='mx-auto max-w-2xl lg:text-center'>
           <h2 className='mt-2 pt-4 text-8xl font-bold tracking-tight text-brown sm:text-6xl'>
-            Become A Memeber
+            Become A Member
           </h2>
           <p className='mt-6 text-lg leading-8 text-gray-800'>
-            we build this space to let developers connect with each other,
+            We build this space to let developers connect with each other,
             express their needs, share their toughts and why not collaborate
             with each other to create an amazing project.
           </p>
