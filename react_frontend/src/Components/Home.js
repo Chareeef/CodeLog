@@ -1,5 +1,6 @@
 // create home page to let user share a post
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import '../index.css';
 import apiClient from '../apiClient';
@@ -10,6 +11,8 @@ function Home() {
   const [content, setContent] = useState('');
   const [isPublic, setIsPublic] = useState(false);
   const [message, setMessage] = useState('');
+
+  const navigate = useNavigate();
 
   const handleUserPost = async (event) => {
     event.preventDefault();
@@ -37,6 +40,25 @@ function Home() {
       setMessage(error.response.data.error);
     }
   };
+
+  useEffect(() => {
+    const check_auth = async () => {
+      try {
+        await apiClient.get('/');
+      } catch (error) {
+        console.error(error);
+        navigate('/login');
+        alert(
+          'Sorry, it seems your Authentication was lost or corrupted. Please log in again.'
+        );
+        localStorage.removeItem('jwt_access_token');
+        localStorage.removeItem('jwt_refresh_token');
+      }
+    };
+
+    check_auth();
+  }, []);
+
   return (
     <>
       <div className='bg-beige flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 post-log'>

@@ -13,22 +13,6 @@ const Navigation = () => {
 
   const navigate = useNavigate();
 
-  async () => {
-    try {
-      const res = await apiClient.get('/');
-      console.log(res.data);
-    } catch (error) {
-      try {
-        const res = await apiClient.post('/refresh');
-        console.log(res.data);
-        localStorage.setItem('jwt_access_token', res.data.new_access_token);
-      } catch (error) {
-        localStorage.removeItem('jwt_access_token');
-        localStorage.removeItem('jwt_refresh_token');
-      }
-    }
-  };
-
   const handleLogOut = async (event) => {
     event.preventDefault();
 
@@ -47,15 +31,17 @@ const Navigation = () => {
   };
 
   useEffect(() => {
-    apiClient
-      .get('/me/streaks')
-      .then((res) => {
+    const get_streaks = async () => {
+      try {
+        const res = await apiClient.get('/me/streaks');
         setCurrStreaks(res.data.current_streak);
         setLongStreaks(res.data.longest_streak);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    get_streaks();
   }, []);
 
   return (

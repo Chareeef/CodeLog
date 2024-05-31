@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import nl2br from 'react-nl2br';
 
 import apiClient from '../apiClient';
@@ -8,6 +9,7 @@ function Posts() {
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState({});
   const [newCommentText, setNewCommentText] = useState('');
+  const navigate = useNavigate();
 
   // Function to fetch posts from the backend API
   const fetchPosts = async () => {
@@ -83,8 +85,23 @@ function Posts() {
     }
   };
 
+  const check_auth = async () => {
+    try {
+      await apiClient.get('/');
+    } catch (error) {
+      console.error(error);
+      alert(
+        'Sorry, it seems your Authentication was lost or corrupted. Please log in again.'
+      );
+      localStorage.removeItem('jwt_access_token');
+      localStorage.removeItem('jwt_refresh_token');
+      navigate('/login');
+    }
+  };
+
   // useEffect hook to fetch posts when the component mounts
   useEffect(() => {
+    check_auth();
     fetchPosts();
   }, []); // Empty dependency array ensures the effect runs only once on component mount
 

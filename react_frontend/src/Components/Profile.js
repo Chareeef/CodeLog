@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import nl2br from 'react-nl2br';
 
 import apiClient from '../apiClient';
@@ -7,32 +8,48 @@ import Footer from './Footer';
 function Profile() {
   const [userInfo, setUserInfo] = useState(null);
   const [userPosts, setUserPosts] = useState([]);
+  const navigate = useNavigate();
+
+  const check_auth = async () => {
+    try {
+      await apiClient.get('/');
+    } catch (error) {
+      console.error(error);
+      alert(
+        'Sorry, it seems your Authentication was lost or corrupted. Please log in again.'
+      );
+      localStorage.removeItem('jwt_access_token');
+      localStorage.removeItem('jwt_refresh_token');
+      navigate('/login');
+    }
+  };
+
+  const fetchProfileInfo = async () => {
+    try {
+      const response = await apiClient.get('/me/get_infos');
+
+      if (response.status === 200) {
+        setUserInfo(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching profile information:', error);
+    }
+  };
+
+  const fetchUserPosts = async () => {
+    try {
+      const response = await apiClient.get('/me/posts');
+
+      if (response.status === 200) {
+        setUserPosts(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching user posts:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchProfileInfo = async () => {
-      try {
-        const response = await apiClient.get('/me/get_infos');
-
-        if (response.status === 200) {
-          setUserInfo(response.data);
-        }
-      } catch (error) {
-        console.error('Error fetching profile information:', error);
-      }
-    };
-
-    const fetchUserPosts = async () => {
-      try {
-        const response = await apiClient.get('/me/posts');
-
-        if (response.status === 200) {
-          setUserPosts(response.data);
-        }
-      } catch (error) {
-        console.error('Error fetching user posts:', error);
-      }
-    };
-
+    check_auth();
     fetchProfileInfo();
     fetchUserPosts();
   }, []);
