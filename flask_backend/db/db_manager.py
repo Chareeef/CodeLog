@@ -324,7 +324,7 @@ class DBStorage:
                 '_id': ObjectId(comment_id),
                 'username': username
             })
-            post = posts.find_one({"_id": ObjectId(post_id)})
+            post = posts.find_one({'_id': ObjectId(post_id)})
 
             for c in post['comments']:
                 if comment_id == c['_id']:
@@ -335,9 +335,11 @@ class DBStorage:
                             "$pull": {"comments": {'_id': comment_id}}
                         }
                     )
-                return True
+                    return True
         except Exception as e:
+            print(e)
             return False
+        return False
 
     def get_post_comments(self, post_id: str):
         """ return all the comment documents
