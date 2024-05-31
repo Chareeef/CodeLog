@@ -14,21 +14,6 @@ function Posts() {
     try {
       const res = await apiClient.get('/feed/get_posts');
       const posts = res.data;
-      // fetch comments
-      posts.forEach(async (p) => {
-        console.log(posts);
-        if (p.comments) {
-          try {
-            const res = await apiClient.post('/feed/post_comments', {
-              post_id: p._id,
-            });
-            p.comments = res.data.data;
-          } catch (error) {
-            console.error(error);
-          }
-        }
-      });
-      console.log('final  :', posts);
       setPosts(posts);
     } catch (error) {
       console.error('Error fetching posts:', error);
@@ -137,7 +122,7 @@ function Posts() {
                   className='bg-blue-500 text-white px-2 py-1 rounded mt-2 mr-2'
                   onClick={() => handleLikePost(post._id)}
                 >
-                  Like
+                  {post.number_of_likes} Like
                 </button>
 
                 <button

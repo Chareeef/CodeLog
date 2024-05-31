@@ -7,7 +7,7 @@ import SignIn from './Components/SignIn';
 import SignUp from './Components/SignUp';
 import Home from './Components/Home';
 import Navigation from './Components/Navigation';
-import Posts from './Components/Posts';
+import Feed from './Components/Feed';
 import Profile from './Components/Profile';
 
 function App() {
@@ -21,7 +21,7 @@ function App() {
             <Route path='/home' element={<Home />} />
             <Route path='/login' element={<SignIn />} />
             <Route path='/register' element={<SignUp />} />
-            <Route path='/posts' element={<Posts />} />
+            <Route path='/feed' element={<Feed />} />
             <Route path='/profile' element={<Profile />} />
           </Routes>
         </div>

@@ -73,6 +73,10 @@ class TestGetFeedPosts(unittest.TestCase):
                 'title': title,
                 'content': content,
                 'is_public': is_public,
+                'likes': [],
+                'number_of_likes': 0,
+                'comments': [],
+                'number_of_comments': 0,
                 'datePosted': datePosted
             }
 
@@ -87,7 +91,6 @@ class TestGetFeedPosts(unittest.TestCase):
                 p = post.copy()
                 p['_id'] = str(p['_id'])
                 cls.public_posts.append(p)
-
 
         # Sort posts from the most to the less recent
         cls.public_posts.sort(key=lambda x: x['datePosted'], reverse=True)

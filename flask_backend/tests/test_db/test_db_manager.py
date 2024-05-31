@@ -327,13 +327,13 @@ class TestComment(unittest.TestCase):
 
         self.assertIsInstance(comment_id, ObjectId)
 
-
         post = self.db.find_post({'_id': self.inserted_post_id})
 
         self.assertEqual(post['number_of_comments'], 1)
         self.assertEqual(str(comment_id), post['comments'][0]['_id'])
 
-        comment = self.db.find_comment(str(comment_id), self.user_document['username'])
+        comment = self.db.find_comment(
+            str(comment_id), self.user_document['username'])
 
         self.assertEqual(
             ObjectId(comment['user_id']), comment_document['user_id']
@@ -355,7 +355,8 @@ class TestComment(unittest.TestCase):
         self.assertIsInstance(comment_id, ObjectId)
 
         post = self.db.find_post({'_id': self.inserted_post_id})
-        comment = self.db.find_comment(str(comment_id), self.user_document['username'])
+        comment = self.db.find_comment(
+            str(comment_id), self.user_document['username'])
 
         self.assertEqual(comment['body'], comment_document['body'])
         self.assertEqual(post['number_of_comments'], 1)
@@ -369,7 +370,8 @@ class TestComment(unittest.TestCase):
             comment_id, self.user_document['username'], body
         )
 
-        comment = self.db.find_comment(str(comment_id), self.user_document['username'])
+        comment = self.db.find_comment(
+            str(comment_id), self.user_document['username'])
 
         self.assertEqual(comment['body'], updated_comment['body'])
         self.assertEqual(post['number_of_comments'], 1)
@@ -390,20 +392,24 @@ class TestComment(unittest.TestCase):
         self.assertIsInstance(comment_id, ObjectId)
 
         post = self.db.find_post({'_id': self.inserted_post_id})
-        comment = self.db.find_comment(str(comment_id), self.user_document['username'])
+        comment = self.db.find_comment(
+            str(comment_id), self.user_document['username'])
 
         self.assertEqual(comment['body'], comment_document['body'])
         self.assertEqual(post['number_of_comments'], 1)
         self.assertEqual(str(comment_id), post['comments'][0]['_id'])
 
         deleted = self.db.delete_comment(
-            str(comment_id), self.user_document['username'], self.inserted_post_id
+            str(comment_id),
+            self.user_document['username'],
+            self.inserted_post_id
         )
 
         self.assertTrue(deleted)
 
         post = self.db.find_post({'_id': self.inserted_post_id})
-        comment = self.db.find_comment(str(comment_id), self.user_document['username'])
+        comment = self.db.find_comment(
+            str(comment_id), self.user_document['username'])
 
         self.assertIsNone(comment)
         self.assertEqual(post['number_of_comments'], 0)

@@ -69,7 +69,7 @@ const Navigation = () => {
             <>
               <li>
                 <Link
-                  to='/posts'
+                  to='/feed'
                   className='site-navitem1 font-lg hover:font-xl hover:text-purple-700'
                 >
                   Feed
