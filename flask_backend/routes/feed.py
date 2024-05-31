@@ -87,7 +87,7 @@ def like():
         if liked:
             return jsonify({"error": "User has already liked the post."}), 400
 
-        return jsonify({"success": "Post liked successfully."}), 200
+        return jsonify({"success": "Post liked successfully."}), 201
 
     return jsonify({"error": "Post not found."}), 404
 
@@ -141,8 +141,9 @@ def comment():
     # Get the post id
     post_id = data.get('post_id')
 
-    # Get the current user's id
+    # Get the current user
     user_id = get_jwt_identity()
+    user = db.find_user({"_id": ObjectId(user_id)})
 
     # comment body
     comment_body = data.get('body')
@@ -158,6 +159,7 @@ def comment():
     if post:
         comment_document = {
             'user_id': ObjectId(user_id),
+            'username': user['username'],
             'post_id': ObjectId(post_id),
             'body': comment_body,
             'date_posted': datetime.utcnow().strftime(
@@ -166,7 +168,7 @@ def comment():
         }
 
         comment_id = db.insert_comment(comment_document, post_id)
-        comment = db.find_comment(comment_id, user_id)
+        comment = db.find_comment(comment_id, user['username'])
 
         if comment_id:
             return jsonify(
@@ -174,7 +176,7 @@ def comment():
                     'data': comment,
                     "msg": "Comment created successfully."
                 }
-            ), 200
+            ), 201
 
     return jsonify({"error": "Post not found."}), 404
 
@@ -191,8 +193,9 @@ def update_comment():
     # Get the post id
     post_id = data.get('post_id')
 
-    # Get the current user's id
+    # Get the current user
     user_id = get_jwt_identity()
+    user = db.find_user({"_id": ObjectId(user_id)})
 
     # comment id
     comment_id = data.get('comment_id')
@@ -216,7 +219,7 @@ def update_comment():
     # Check if the post exist.
     if post:
 
-        updated_comment = db.update_comment(comment_id, user_id, comment_body)
+        updated_comment = db.update_comment(comment_id, user['username'], comment_body)
         if updated_comment:
             return jsonify(
                 {
@@ -240,8 +243,9 @@ def delete_comment():
     # Get the post id
     post_id = data.get('post_id')
 
-    # Get the current user's id
+    # Get the current user
     user_id = get_jwt_identity()
+    user = db.find_user({"_id": ObjectId(user_id)})
 
     # comment id
     comment_id = data.get('comment_id')
@@ -260,7 +264,7 @@ def delete_comment():
     # Check if the post exist.
     if post:
 
-        deleted = db.delete_comment(comment_id, user_id, post_id)
+        deleted = db.delete_comment(comment_id, user['username'], post_id)
 
         if deleted:
             return jsonify({"msg": "Comment deleted successfully."}), 200
@@ -268,7 +272,7 @@ def delete_comment():
     return jsonify({"error": "Post not found."}), 404
 
 
-@feed_bp.route('/post_comments', methods=['GET'])
+@feed_bp.route('/post_comments', methods=['POST'])
 @jwt_required()
 @verify_token_in_redis
 @swag_from('../documentation/feed/post_comments.yml')

@@ -156,7 +156,7 @@ function Posts() {
                       key={comment._id}
                       className='border border-gray-300 rounded p-2 mb-2'
                     >
-                      <p>body-0> {nl2br(comment.body)}</p>
+                      <p>{nl2br(comment.body)}</p>
                       <p className='text-xs text-gray-500'>
                         Posted by {comment.username} on{' '}
                         {new Date(comment.date_posted).toLocaleString()}

@@ -259,6 +259,7 @@ class TestLikeUnlike(unittest.TestCase):
             'longest_streak': 0
         }
 
+        self.username = info['username']
         self.user_id = db.insert_user(info)
 
         self.dummy_user = ObjectId()
@@ -289,7 +290,7 @@ class TestLikeUnlike(unittest.TestCase):
         rc.flushall()
 
     def test_like_post(self):
-        """" Test for liking posts for authed users """
+        """ Test for liking posts for authed users """
 
         headers = {
             'Content-Type': 'application/json',
@@ -299,20 +300,20 @@ class TestLikeUnlike(unittest.TestCase):
             'post_id': str(self.post_id),
         }
         res = self.client.post(
-            '/api/feed/like', headers=headers, data=json.dumps(dump)
+            '/api/feed/like', headers=headers, json=dump
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data, {'success': 'Post liked successfully.'})
 
         post = db.find_post({'_id': self.post_id, 'user_id': self.dummy_user})
 
         self.assertEqual(post['number_of_likes'], 1)
-        self.assertIn(self.user_id, post['likes'])
+        self.assertIn(self.username, post['likes'])
 
     def test_like_post_twice(self):
-        """" Test for liking posts that's already liked by the current user """
+        """ Test for liking posts that's already liked by the current user """
 
         headers = {
             'Content-Type': 'application/json',
@@ -326,13 +327,13 @@ class TestLikeUnlike(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data, {'success': 'Post liked successfully.'})
 
         post = db.find_post({'_id': self.post_id, 'user_id': self.dummy_user})
 
         self.assertEqual(post['number_of_likes'], 1)
-        self.assertIn(self.user_id, post['likes'])
+        self.assertIn(self.username, post['likes'])
 
         res = self.client.post(
             '/api/feed/like', headers=headers, data=json.dumps(dump)
@@ -346,8 +347,8 @@ class TestLikeUnlike(unittest.TestCase):
 
         self.assertEqual(post['number_of_likes'], 1)
 
-    def test_like_none_existing_post(self):
-        """" Test for liking posts that's does not exists. """
+    def test_like_non_existing_post(self):
+        """ Test liking a post that does not exist """
 
         headers = {
             'Content-Type': 'application/json',
@@ -370,7 +371,7 @@ class TestLikeUnlike(unittest.TestCase):
         self.assertIsNone(post)
 
     def test_like_post_anonymous_user(self):
-        """" Test for liking posts with an unathanticated user. """
+        """ Test for liking posts with an unathanticated user. """
 
         headers = {
             'Content-Type': 'application/json',
@@ -387,7 +388,7 @@ class TestLikeUnlike(unittest.TestCase):
         self.assertEqual(data, {'error': 'Missing Authorization Header'})
 
     def test_unlike_post(self):
-        """" Test for unliking posts for authed users """
+        """ Test for unliking posts for authed users """
 
         headers = {
             'Content-Type': 'application/json',
@@ -402,7 +403,7 @@ class TestLikeUnlike(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data, {'success': 'Post liked successfully.'})
 
         post = db.find_post({'_id': self.post_id, 'user_id': self.dummy_user})
@@ -420,10 +421,10 @@ class TestLikeUnlike(unittest.TestCase):
         post = db.find_post({'_id': self.post_id, 'user_id': self.dummy_user})
 
         self.assertEqual(post['number_of_likes'], 0)
-        self.assertNotIn(self.user_id, post['likes'])
+        self.assertNotIn(self.username, post['likes'])
 
     def test_unlike_post_twice(self):
-        """" Test for unliking posts that's
+        """ Test for unliking posts that's
         already unliked by the current user """
 
         headers = {
@@ -446,10 +447,10 @@ class TestLikeUnlike(unittest.TestCase):
         post = db.find_post({'_id': self.post_id, 'user_id': self.dummy_user})
 
         self.assertEqual(post['number_of_likes'], 0)
-        self.assertNotIn(self.user_id, post['likes'])
+        self.assertNotIn(self.username, post['likes'])
 
-    def test_unlike_none_existing_post(self):
-        """" Test for unliking posts that's does not exists. """
+    def test_unlike_non_existing_post(self):
+        """ Test unliking a post that's does not exist """
 
         headers = {
             'Content-Type': 'application/json',
@@ -472,7 +473,7 @@ class TestLikeUnlike(unittest.TestCase):
         self.assertIsNone(post)
 
     def test_unlike_post_anonymous_user(self):
-        """" Test for unliking posts with an unathanticated user. """
+        """ Test for unliking posts with an unathanticated user. """
 
         headers = {
             'Content-Type': 'application/json',
@@ -504,6 +505,7 @@ class TestComments(unittest.TestCase):
             'longest_streak': 0
         }
 
+        self.username = info['username']
         self.user_id = db.insert_user(info)
 
         self.dummy_user = ObjectId()
@@ -550,7 +552,7 @@ class TestComments(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data['msg'], 'Comment created successfully.')
 
     def test_find_comment(self):
@@ -568,7 +570,7 @@ class TestComments(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data['msg'], 'Comment created successfully.')
 
         post = db.find_post({'_id': self.post_id})
@@ -576,7 +578,7 @@ class TestComments(unittest.TestCase):
         self.assertNotEqual(post['comments'], [])
         self.assertNotEqual(post['number_of_comments'], 0)
 
-        comment = db.find_comment(post['comments'][0], self.user_id)
+        comment = db.find_comment(post['comments'][0]['_id'], self.username)
 
         self.assertIsNotNone(comment)
         self.assertEqual(data['data'], comment)
@@ -613,7 +615,7 @@ class TestComments(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data['msg'], 'Comment created successfully.')
 
         post = db.find_post({'_id': self.post_id})
@@ -621,14 +623,14 @@ class TestComments(unittest.TestCase):
         self.assertNotEqual(post['comments'], [])
         self.assertNotEqual(post['number_of_comments'], 0)
 
-        comment = db.find_comment(post['comments'][0], self.user_id)
+        comment = db.find_comment(post['comments'][0]['_id'], self.username)
 
         self.assertIsNotNone(comment)
         self.assertEqual(data['data'], comment)
 
         updated_comment = {
             'post_id': str(self.post_id),
-            'comment_id': str(post['comments'][0]),
+            'comment_id': post['comments'][0]['_id'],
             'body': 'Updated comment'
         }
         res = self.client.put(
@@ -641,7 +643,7 @@ class TestComments(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['msg'], 'Comment updated successfully.')
 
-        comment = db.find_comment(post['comments'][0], self.user_id)
+        comment = db.find_comment(post['comments'][0]['_id'], self.username)
 
         self.assertEqual(post['number_of_comments'], 1)
         self.assertEqual(data['data'], comment)
@@ -661,7 +663,7 @@ class TestComments(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data['msg'], 'Comment created successfully.')
 
         post = db.find_post({'_id': self.post_id})
@@ -669,14 +671,14 @@ class TestComments(unittest.TestCase):
         self.assertNotEqual(post['comments'], [])
         self.assertNotEqual(post['number_of_comments'], 0)
 
-        comment = db.find_comment(post['comments'][0], self.user_id)
+        comment = db.find_comment(post['comments'][0]['_id'], self.username)
 
         self.assertIsNotNone(comment)
         self.assertEqual(data['data'], comment)
 
         updated_comment = {
             'post_id': str(self.post_id),
-            'comment_id': str(post['comments'][0]),
+            'comment_id': post['comments'][0]['_id']
         }
         res = self.client.put(
             '/api/feed/update_comment',
@@ -684,7 +686,7 @@ class TestComments(unittest.TestCase):
             data=json.dumps(updated_comment)
         )
         data = res.get_json()
-        comment = db.find_comment(post['comments'][0], self.user_id)
+        comment = db.find_comment(post['comments'][0]['_id'], self.username)
 
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data['error'], 'Missing body')
@@ -705,7 +707,7 @@ class TestComments(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data['msg'], 'Comment created successfully.')
 
         post = db.find_post({'_id': self.post_id})
@@ -713,13 +715,13 @@ class TestComments(unittest.TestCase):
         self.assertNotEqual(post['comments'], [])
         self.assertNotEqual(post['number_of_comments'], 0)
 
-        comment = db.find_comment(post['comments'][0], self.user_id)
+        comment = db.find_comment(post['comments'][0]['_id'], self.username)
 
         self.assertIsNotNone(comment)
         self.assertEqual(data['data'], comment)
 
         updated_comment = {
-            'comment_id': str(post['comments'][0]),
+            'comment_id': post['comments'][0]['_id'],
             'body': 'Updated comment'
         }
         res = self.client.put(
@@ -728,7 +730,7 @@ class TestComments(unittest.TestCase):
             data=json.dumps(updated_comment)
         )
         data = res.get_json()
-        comment = db.find_comment(post['comments'][0], self.user_id)
+        comment = db.find_comment(post['comments'][0]['_id'], self.username)
 
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data['error'], 'Missing post_id')
@@ -749,7 +751,7 @@ class TestComments(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data['msg'], 'Comment created successfully.')
 
         post = db.find_post({'_id': self.post_id})
@@ -757,7 +759,7 @@ class TestComments(unittest.TestCase):
         self.assertNotEqual(post['comments'], [])
         self.assertNotEqual(post['number_of_comments'], 0)
 
-        comment = db.find_comment(post['comments'][0], self.user_id)
+        comment = db.find_comment(post['comments'][0]['_id'], self.username)
 
         self.assertIsNotNone(comment)
         self.assertEqual(data['data'], comment)
@@ -772,7 +774,7 @@ class TestComments(unittest.TestCase):
             data=json.dumps(updated_comment)
         )
         data = res.get_json()
-        comment = db.find_comment(post['comments'][0], self.user_id)
+        comment = db.find_comment(post['comments'][0]['_id'], self.username)
 
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data['error'], 'Missing comment_id')
@@ -793,7 +795,7 @@ class TestComments(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data['msg'], 'Comment created successfully.')
 
         comment_id = data['data']['_id']
@@ -813,7 +815,7 @@ class TestComments(unittest.TestCase):
         post = db.find_post({"_id": self.post_id})
 
         self.assertEqual(post['number_of_comments'], 0)
-        self.assertNotIn(comment_id, post['comments'])
+        self.assertEqual(len(post['comments']), 0)
 
     def test_delete_comment_with_no_commentid(self):
         """ Test delete comment. """
@@ -830,7 +832,7 @@ class TestComments(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data['msg'], 'Comment created successfully.')
 
         comment_id = data['data']['_id']
@@ -849,7 +851,7 @@ class TestComments(unittest.TestCase):
         post = db.find_post({"_id": self.post_id})
 
         self.assertEqual(post['number_of_comments'], 1)
-        self.assertIn(ObjectId(comment_id), post['comments'])
+        self.assertEqual(comment_id, post['comments'][0]['_id'])
 
     def test_delete_post_comment(self):
         """ Test deleting a post also
@@ -867,7 +869,7 @@ class TestComments(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data['msg'], 'Comment created successfully.')
 
         deleted = db.delete_post(self.post_id, self.user_id)
@@ -892,7 +894,7 @@ class TestComments(unittest.TestCase):
         )
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertEqual(data['msg'], 'Comment created successfully.')
 
         deleted = db.delete_user(self.user_id)
@@ -925,16 +927,16 @@ class TestComments(unittest.TestCase):
         )
         data_2 = res_2.get_json()
 
-        self.assertEqual(res_1.status_code, 200)
+        self.assertEqual(res_1.status_code, 201)
         self.assertEqual(data_1['msg'], 'Comment created successfully.')
 
-        self.assertEqual(res_2.status_code, 200)
+        self.assertEqual(res_2.status_code, 201)
         self.assertEqual(data_2['msg'], 'Comment created successfully.')
 
         dump = {
             'post_id': str(self.post_id),
         }
-        res = self.client.get(
+        res = self.client.post(
             '/api/feed/post_comments', headers=headers, data=json.dumps(dump)
         )
         data = res.get_json()
