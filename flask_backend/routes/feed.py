@@ -87,7 +87,7 @@ def like():
         if liked:
             return jsonify({"error": "User has already liked the post."}), 400
 
-        return jsonify({"success": "Post liked successfully."}), 200
+        return jsonify({"success": "Post liked successfully."}), 201
 
     return jsonify({"error": "Post not found."}), 404
 
@@ -141,8 +141,9 @@ def comment():
     # Get the post id
     post_id = data.get('post_id')
 
-    # Get the current user's id
+    # Get the current user
     user_id = get_jwt_identity()
+    user = db.find_user({"_id": ObjectId(user_id)})
 
     # comment body
     comment_body = data.get('body')
@@ -158,6 +159,7 @@ def comment():
     if post:
         comment_document = {
             'user_id': ObjectId(user_id),
+            'username': user['username'],
             'post_id': ObjectId(post_id),
             'body': comment_body,
             'date_posted': datetime.utcnow().strftime(
@@ -174,7 +176,7 @@ def comment():
                     'data': comment,
                     "msg": "Comment created successfully."
                 }
-            ), 200
+            ), 201
 
     return jsonify({"error": "Post not found."}), 404
 

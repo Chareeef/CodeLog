@@ -221,15 +221,16 @@ class DBStorage:
     def like_post(self, user_id: str, post_id: str) -> bool:
         """ add likes to a post document. """
         posts = self._db['posts']
-        post = posts.find_one({"_id": ObjectId(post_id)})
-        user_id = str(ObjectId(user_id))
+        post = posts.find_one({'_id': ObjectId(post_id)})
+        users = self._db['users']
+        user = users.find_one({'_id': ObjectId(user_id)})
 
-        if user_id not in post['likes']:
+        if user['username'] not in post['likes']:
             posts.update_one(
                 {"_id": ObjectId(post_id)},
                 {
                     "$inc": {"number_of_likes": 1},
-                    "$addToSet": {"likes": user_id}
+                    "$addToSet": {"likes": user['username']}
                 }
             )
             return False
@@ -238,14 +239,15 @@ class DBStorage:
     def unlike_post(self, user_id: str, post_id: str) -> bool:
         posts = self._db['posts']
         post = posts.find_one({"_id": ObjectId(post_id)})
-        user_id = str(ObjectId(user_id))
+        users = self._db['users']
+        user = users.find_one({'_id': ObjectId(user_id)})
 
-        if user_id in post['likes']:
+        if user['username'] in post['likes']:
             posts.update_one(
                 {"_id": ObjectId(post_id)},
                 {
                     "$inc": {"number_of_likes": -1},
-                    "$pull": {"likes": user_id}
+                    "$pull": {"likes": user['username']}
                 }
             )
             return False
@@ -261,11 +263,12 @@ class DBStorage:
         comments = self._db['comments']
 
         new_comment = comments.insert_one(document)
+        document['_id'] = str(document['id'])
         posts.update_one(
             {"_id": ObjectId(post_id)},
             {
                 "$inc": {"number_of_comments": 1},
-                "$addToSet": {"comments": str(new_comment.inserted_id)}
+                "$addToSet": {"comments": document}
             }
         )
         return new_comment.inserted_id
