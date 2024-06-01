@@ -251,6 +251,7 @@ class LoggedInTests(unittest.TestCase):
             'current_streak': 0,
             'longest_streak': 0
         }
+        self.username = info['username']
         self.user_id = db.insert_user(info)
 
         self.login_detail = {
@@ -278,7 +279,7 @@ class LoggedInTests(unittest.TestCase):
         data = res.get_json()
 
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(data, {'success': f'logged in as {self.user_id}'})
+        self.assertEqual(data, {'user_id': str(self.user_id), 'username': self.username})
 
     def test_access_protected_route_with_bad_token(self):
         """ Test a logged in user has access

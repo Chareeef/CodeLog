@@ -504,6 +504,10 @@ class TestGetPosts(unittest.TestCase):
                 'title': title,
                 'content': content,
                 'is_public': is_public,
+                'likes': [],
+                'number_of_likes': 0,
+                'comments': [],
+                'number_of_comments': 0,
                 'datePosted': datePosted
             }
 
