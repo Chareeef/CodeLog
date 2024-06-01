@@ -49,6 +49,8 @@ function Profile() {
     }
   };
 
+
+
   return (
     <div className='d-flex flex-column min-vh-100'>
       <div className='bg-beige flex-1 flex-grow-1 d-flex flex-column justify-content-center p-3'>
@@ -64,10 +66,27 @@ function Profile() {
               <p>Username: {userInfo.username}</p>
               <button
                 onClick={handleDeleteAccount}
-                className='bg-red-500 text-white px-4 py-2 mt-4 rounded-lg'
+                className='inline-block bg-orange hover:bg-olight text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-2 mt-3'
               >
                 Delete Account
               </button>
+              <button
+                // onClick={handleDeleteAccount}
+                className='inline-block bg-orange hover:bg-olight text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-2 ml-4'
+              >
+                <a
+                href='/update_password'>Update Password</a>
+                
+              </button>
+              <button
+                // onClick={handleDeleteAccount}
+                className='inline-block bg-orange hover:bg-olight text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-2 ml-4'
+              >
+                <a
+                href='/update_infos'>Update Information</a>
+                
+              </button>
+              
             </>
           ) : (
             <p>Loading user information...</p>
