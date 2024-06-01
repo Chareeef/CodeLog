@@ -20,7 +20,10 @@ function AnimationSecTwo() {
         >
           Join A Wonderful Community
         </Typography>
-        <Link to='/register' className='p-2 text-white font-semibold text-lg hover:underline bg-green border border-black rounded'>
+        <Link
+          to='/register'
+          className='p-2 text-white font-semibold text-lg hover:underline bg-green border border-black rounded'
+        >
           Sign Up Now
         </Link>
       </figcaption>
