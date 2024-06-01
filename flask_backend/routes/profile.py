@@ -7,6 +7,7 @@ from datetime import datetime
 from db import db, redis_client as rc
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from routes.auth import verify_token_in_redis
+from routes.feed import serialize_comment
 from flasgger import swag_from
 
 # Create profile Blueprint
@@ -82,6 +83,8 @@ def get_posts():
         del p['_id']
         del p['user_id']
         p['datePosted'] = p['datePosted'].strftime('%Y/%m/%d %H:%M:%S')
+        for i in range(len(p['comments'])):
+            p['comments'][i] = serialize_comment(p['comments'][i])
 
     return jsonify(posts)
 

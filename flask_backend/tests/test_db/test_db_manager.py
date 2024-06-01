@@ -254,6 +254,7 @@ class TestDBStorage(unittest.TestCase):
 
 class TestComment(unittest.TestCase):
     """ Tests for the comment document """
+
     @patch('db.db_manager.MongoClient', new=mongomock.MongoClient)
     def setUp(self):
         """Set up a mock MongoDB client before each test."""
@@ -273,7 +274,6 @@ class TestComment(unittest.TestCase):
             'email': 'youssef@example.com',
             'password': 'password123',
             'longest_streak': 0
-
         }
         self.inserted_second_user_id = self.db.insert_user(
             self.second_user_document
@@ -298,9 +298,9 @@ class TestComment(unittest.TestCase):
         """ Test create a new comment """
         comment_document = {
             'user_id': self.inserted_user_id,
+            'username': self.user_document['username'],
             'body': 'First comment',
             'post_id': self.inserted_post_id
-
         }
         comment_id = self.db.insert_comment(
             comment_document, self.inserted_post_id
@@ -311,12 +311,13 @@ class TestComment(unittest.TestCase):
         post = self.db.find_post({'_id': self.inserted_post_id})
 
         self.assertEqual(post['number_of_comments'], 1)
-        self.assertIn(comment_id, post['comments'])
+        self.assertEqual(str(comment_id), post['comments'][0]['_id'])
 
     def test_find_comment(self):
-        """ Test create a new comment """
+        """ Test find a comment """
         comment_document = {
             'user_id': self.inserted_user_id,
+            'username': self.user_document['username'],
             'body': 'First comment',
             'post_id': self.inserted_post_id
         }
@@ -329,9 +330,10 @@ class TestComment(unittest.TestCase):
         post = self.db.find_post({'_id': self.inserted_post_id})
 
         self.assertEqual(post['number_of_comments'], 1)
-        self.assertIn(comment_id, post['comments'])
+        self.assertEqual(str(comment_id), post['comments'][0]['_id'])
 
-        comment = self.db.find_comment(comment_id, self.inserted_user_id)
+        comment = self.db.find_comment(
+            str(comment_id), self.user_document['username'])
 
         self.assertEqual(
             ObjectId(comment['user_id']), comment_document['user_id']
@@ -342,6 +344,7 @@ class TestComment(unittest.TestCase):
         """ Test updating a comment documment """
         comment_document = {
             'user_id': self.inserted_user_id,
+            'username': self.user_document['username'],
             'body': 'Second comment',
             'post_id': self.inserted_post_id
         }
@@ -352,29 +355,33 @@ class TestComment(unittest.TestCase):
         self.assertIsInstance(comment_id, ObjectId)
 
         post = self.db.find_post({'_id': self.inserted_post_id})
-        comment = self.db.find_comment(comment_id, self.inserted_user_id)
+        comment = self.db.find_comment(
+            str(comment_id), self.user_document['username'])
 
         self.assertEqual(comment['body'], comment_document['body'])
         self.assertEqual(post['number_of_comments'], 1)
-        self.assertIn(comment_id, post['comments'])
+        self.assertEqual(str(comment_id), post['comments'][0]['_id'])
+
         body = {
             'body': 'Updated comment'
         }
 
         updated_comment = self.db.update_comment(
-            comment_id, self.inserted_user_id, body
+            comment_id, self.user_document['username'], body
         )
 
-        comment = self.db.find_comment(comment_id, self.inserted_user_id)
+        comment = self.db.find_comment(
+            str(comment_id), self.user_document['username'])
 
         self.assertEqual(comment['body'], updated_comment['body'])
         self.assertEqual(post['number_of_comments'], 1)
-        self.assertIn(comment_id, post['comments'])
+        self.assertEqual(str(comment_id), post['comments'][0]['_id'])
 
     def test_delete_comment(self):
         """ Test deleting a comment documment """
         comment_document = {
             'user_id': self.inserted_user_id,
+            'username': self.user_document['username'],
             'body': 'Second comment',
             'post_id': self.inserted_post_id
         }
@@ -385,35 +392,41 @@ class TestComment(unittest.TestCase):
         self.assertIsInstance(comment_id, ObjectId)
 
         post = self.db.find_post({'_id': self.inserted_post_id})
-        comment = self.db.find_comment(comment_id, self.inserted_user_id)
+        comment = self.db.find_comment(
+            str(comment_id), self.user_document['username'])
 
         self.assertEqual(comment['body'], comment_document['body'])
         self.assertEqual(post['number_of_comments'], 1)
-        self.assertIn(comment_id, post['comments'])
+        self.assertEqual(str(comment_id), post['comments'][0]['_id'])
 
         deleted = self.db.delete_comment(
-            comment_id, self.inserted_user_id, self.inserted_post_id
+            str(comment_id),
+            self.user_document['username'],
+            self.inserted_post_id
         )
 
         self.assertTrue(deleted)
 
         post = self.db.find_post({'_id': self.inserted_post_id})
-        comment = self.db.find_comment(comment_id, self.inserted_user_id)
+        comment = self.db.find_comment(
+            str(comment_id), self.user_document['username'])
 
         self.assertIsNone(comment)
         self.assertEqual(post['number_of_comments'], 0)
-        self.assertNotIn(comment_id, post['comments'])
+        self.assertEqual(len(post['comments']), 0)
 
     def test_get_post_comments(self):
         """ Test to return all comments associated with a post """
         comment_document_1 = {
             'user_id': self.inserted_user_id,
+            'username': self.user_document['username'],
             'body': 'Second comment',
             'post_id': self.inserted_post_id
 
         }
         comment_document_2 = {
             'user_id': self.inserted_second_user_id,
+            'username': self.second_user_document['username'],
             'body': 'Second comment',
             'post_id': self.inserted_post_id
         }
@@ -430,8 +443,8 @@ class TestComment(unittest.TestCase):
         post = self.db.find_post({'_id': self.inserted_post_id})
 
         self.assertEqual(post['number_of_comments'], 2)
-        self.assertIn(comment_id_1, post['comments'])
-        self.assertIn(comment_id_2, post['comments'])
+        self.assertEqual(str(comment_id_1), post['comments'][0]['_id'])
+        self.assertEqual(str(comment_id_2), post['comments'][1]['_id'])
 
         comments = self.db.get_post_comments(post['_id'])
 

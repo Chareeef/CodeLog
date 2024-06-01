@@ -22,9 +22,12 @@ home_bp = Blueprint('home_bp', __name__)
 def home():
     """Display the home page
     """
-    user = get_jwt_identity()
+
+    # Get the user
+    user_id = get_jwt_identity()
+    user = db.find_user({'_id': ObjectId(user_id)})
     if user:
-        return jsonify({'success': f'logged in as {user}'}), 200
+        return jsonify({'user_id': user_id, 'username': user['username']}), 200
 
 
 @home_bp.route('/log', methods=['POST'])

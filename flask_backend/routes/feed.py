@@ -5,11 +5,20 @@ from datetime import datetime
 from db import db
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from routes.auth import verify_token_in_redis
+from typing import Dict
 from bson import ObjectId
 from flasgger import swag_from
 
 # Create feed Blueprint
 feed_bp = Blueprint('feed_bp', __name__)
+
+
+def serialize_comment(comment: Dict) -> Dict:
+    """Serialize a comment
+    """
+    comment['post_id'] = str(comment['post_id'])
+    comment['user_id'] = str(comment['user_id'])
+    return comment
 
 
 @feed_bp.route('/get_posts', methods=['GET'])
@@ -26,6 +35,8 @@ def get_feed():
     # Stringify datePosted
     for p in posts:
         p['datePosted'] = p['datePosted'].strftime('%Y/%m/%d %H:%M:%S')
+        for i in range(len(p['comments'])):
+            p['comments'][i] = serialize_comment(p['comments'][i])
 
     # If a page is queried, paginate with 20 posts per page
     page = request.args.get('page')
@@ -173,7 +184,7 @@ def comment():
         if comment_id:
             return jsonify(
                 {
-                    'data': comment,
+                    'data': serialize_comment(comment),
                     "msg": "Comment created successfully."
                 }
             ), 201
@@ -219,11 +230,12 @@ def update_comment():
     # Check if the post exist.
     if post:
 
-        updated_comment = db.update_comment(comment_id, user['username'], comment_body)
+        updated_comment = db.update_comment(
+            comment_id, user['username'], comment_body)
         if updated_comment:
             return jsonify(
                 {
-                    'data': updated_comment,
+                    'data': serialize_comment(updated_comment),
                     "msg": "Comment updated successfully."
                 }
             ), 200
@@ -296,6 +308,9 @@ def post_comments():
 
         # Get comments from db
         comments = db.get_post_comments(post_id)
+
+        for i in range(len(comments)):
+            comments[i] = serialize_comment(comments[i])
 
         if comments:
             return jsonify(
