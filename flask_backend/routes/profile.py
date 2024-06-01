@@ -51,6 +51,7 @@ def get_streaks():
     # Get current streak
     cs_key = user['username'] + '_CS'
     current_streak = rc.get(cs_key)
+
     if not current_streak:
         current_streak = 0
     else:

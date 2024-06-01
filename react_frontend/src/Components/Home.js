@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import '../index.css';
 import apiClient from '../apiClient';
+import { formatTime } from '../utils';
 import Footer from './Footer';
 
 function Home() {
@@ -32,12 +33,15 @@ function Home() {
         alert('Something went wrong');
       }
 
-      setTitle('');
-      setContent('');
-      setIsPublic(false);
+      navigate('/profile');
     } catch (error) {
-      console.error('Error:', error);
-      setMessage(error.response.data.error);
+      const ttl = error.response.data.ttl;
+      if (ttl) {
+        const timeString = formatTime(ttl);
+        setMessage(`You must wait ${timeString} to post again.`);
+      } else {
+        setMessage(error.response.data.error);
+      }
     }
   };
 

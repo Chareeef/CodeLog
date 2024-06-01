@@ -322,7 +322,8 @@ class TestCreateLog(unittest.TestCase):
         # Verify responses
         self.assertEqual(response1.status_code, 201)
         self.assertEqual(response2.status_code, 400)
-        self.assertEqual(data2, {'error': 'Only one post per day is allowed'})
+        self.assertEqual(data2['error'], 'Only one post per day is allowed')
+        self.assertIs(type(data2['ttl']), int)
 
         # Verify current streak
         self.assertEqual(int(rc.get(self.cs_key).decode('utf-8')), 1)

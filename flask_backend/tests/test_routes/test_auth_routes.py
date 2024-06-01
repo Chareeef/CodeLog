@@ -279,7 +279,8 @@ class LoggedInTests(unittest.TestCase):
         data = res.get_json()
 
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(data, {'user_id': str(self.user_id), 'username': self.username})
+        self.assertEqual(data, {'user_id': str(
+            self.user_id), 'username': self.username})
 
     def test_access_protected_route_with_bad_token(self):
         """ Test a logged in user has access

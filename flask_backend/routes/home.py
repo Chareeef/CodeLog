@@ -59,7 +59,8 @@ def log():
     if not current_streak:
         current_streak = 0
     elif rc.ttl(cs_key) > max_allowed_ttl:
-        return jsonify({'error': 'Only one post per day is allowed'}), 400
+        return jsonify({'error': 'Only one post per day is allowed',
+                        'ttl': rc.ttl(cs_key) - max_allowed_ttl}), 400
     else:
         current_streak = int(current_streak.decode('utf-8'))
 
