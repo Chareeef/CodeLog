@@ -9,6 +9,7 @@ function Posts() {
   const [username, setUsername] = useState('');
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState({});
+  const [showAllLikes, setShowAllLikes] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [newCommentText, setNewCommentText] = useState('');
   const navigate = useNavigate();
@@ -147,49 +148,69 @@ function Posts() {
                 {/* Like OR Unlike button */}
                 {post.likes.includes(username) ? (
                   <button
-                    className='bg-white-500 text-blue-500 border border-blue-500 px-2 py-1 rounded mt-2 mr-1 mb-2'
+                    className='bg-white-500 text-blue-500 border border-blue-500 px-2 py-1 rounded mt-2 mr-1'
                     onClick={() => handleUnlikePost(post._id)}
                   >
-                    {post.number_of_likes} Unlike
+                    Unlike
                   </button>
                 ) : (
                   <button
-                    className='bg-blue-500 text-white px-2 py-1 rounded mt-2 mr-1 mb-2'
+                    className='bg-blue-500 text-white px-2 py-1 rounded mt-2 mr-1'
                     onClick={() => handleLikePost(post._id)}
                   >
-                    {post.number_of_likes} Like
+                    Like
                   </button>
                 )}
 
-                {post.number_of_comments > 0 ? (
-                showComments === false ? (
-                  <button
-                    className='text-orange underline px-2 py-1 rounded mt-2 mb-2'
-                    onClick={() => setShowComments(true)}
-                  >
-                    Show {post.number_of_comments} Comment
-                    {post.number_of_comments > 1 && 's'}
-                  </button>
-                  ) : (
-                  <button
-                    className='text-black underline px-2 py-1 rounded mt-2 mb-2'
-                    onClick={() => setShowComments(false)}
-                  >
-                    Hide Comment
-                    {post.number_of_comments > 1 && 's'}
-                  </button>
-                  )
-                ) : (
-                  <p className='text-gray underline inline px-2 py-1 rounded mt-2 mb-2'>
-                    No Comments
-                  </p>
-                )}
+                {/* Display usernames of users who liked the post */}
+                <p className='text-sm inline text-gray-700 mt-2'>
+                  {post.number_of_likes > 0 && (
+                    <>
+                      Liked by {post.likes[0]}
+                      {post.number_of_likes > 1 && (
+                        <>
+                          {' '}
+                          {!showAllLikes && (
+                            <>
+                              and {post.number_of_likes - 1} other
+                              {post.number_of_likes > 2 ? 's' : ''}.
+                              <button
+                                className='text-orange underline ml-1'
+                                onClick={() => setShowAllLikes(true)}
+                              >
+                                Show all
+                              </button>
+                            </>
+                          )}
+                          {showAllLikes && (
+                            <>
+                              {', '}
+                              {post.likes.slice(1).map((like, index) => (
+                                <span key={like}>
+                                  {like}
+                                  {index < post.number_of_likes - 2
+                                    ? ', '
+                                    : '.'}
+                                </span>
+                              ))}
+                              <button
+                                className='text-black underline ml-1'
+                                onClick={() => setShowAllLikes(false)}
+                              >
+                                Hide
+                              </button>
+                            </>
+                          )}
+                        </>
+                      )}
+                    </>
+                  )}
+                  {post.number_of_likes === 0 && <span>No likes yet</span>}
+                </p>
 
                 {/* Comment input field */}
-                {showComments === true &&
-                <>
                 <textarea
-                  className='w-full border-orange rounded p-2'
+                  className='w-full border-orange rounded p-2 mt-3'
                   rows='2'
                   placeholder='Leave a comment'
                   value={newCommentText}
@@ -204,34 +225,62 @@ function Posts() {
                   Comment
                 </button>
 
-              {/* Display comments */}
-              <div>
-                {post.comments &&
-                  post.comments.map((comment) => (
-                    <div
-                      key={comment._id}
-                      className='border border-gray-300 rounded p-2 mb-2'
+                {/* Show/Hide comments */}
+                {post.number_of_comments > 0 ? (
+                  showComments === false ? (
+                    <button
+                      className='text-orange underline px-2 py-1 rounded mt-2 mb-2'
+                      onClick={() => setShowComments(true)}
                     >
-                      <p className='text-xs text-gray-700'>
-                        Posted by {comment.username} on{' '}
-                        {new Date(comment.date_posted).toLocaleString()}
-                      </p>
-                      <p>{nl2br(comment.body)}</p>
+                      Show {post.number_of_comments} Comment
+                      {post.number_of_comments > 1 && 's'}
+                    </button>
+                  ) : (
+                    <button
+                      className='text-black underline px-2 py-1 rounded mt-2 mb-2'
+                      onClick={() => setShowComments(false)}
+                    >
+                      Hide Comment
+                      {post.number_of_comments > 1 && 's'}
+                    </button>
+                  )
+                ) : (
+                  <p className='text-gray underline inline px-2 py-1 rounded mt-2 mb-2'>
+                    No Comments
+                  </p>
+                )}
+                {showComments === true && (
+                  <>
+                    {/* Display comments */}
+                    <div>
+                      {post.comments &&
+                        post.comments.map((comment) => (
+                          <div
+                            key={comment._id}
+                            className='border border-gray-300 rounded p-2 mb-2'
+                          >
+                            <p className='text-xs text-gray-700'>
+                              Posted by {comment.username} on{' '}
+                              {new Date(comment.date_posted).toLocaleString()}
+                            </p>
+                            <p>{nl2br(comment.body)}</p>
 
-                      {/* Add delete comment button */}
-                      <button
-                        className='text-xs text-red-500 mt-1'
-                        onClick={() =>
-                          handleDeleteComment(post._id, comment._id)
-                        }
-                      >
-                        Delete
-                      </button>
+                            {/* Add delete comment button */}
+                            <button
+                              className='text-xs text-red-500 mt-1'
+                              onClick={() =>
+                                handleDeleteComment(post._id, comment._id)
+                              }
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        ))}
                     </div>
-                  ))}
+                  </>
+                )}
               </div>
-            </>}
-          </div>
+            </div>
           </div>
         ))}
       </div>
