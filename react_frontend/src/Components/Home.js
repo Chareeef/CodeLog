@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import '../index.css';
 import apiClient from '../apiClient';
+import { formatTime } from '../utils';
 import Footer from './Footer';
 
 function Home() {
@@ -13,33 +14,6 @@ function Home() {
   const [message, setMessage] = useState('');
 
   const navigate = useNavigate();
-
-  const handleUserPost = async (event) => {
-    event.preventDefault();
-
-    const data = {
-      title: title,
-      content: content,
-      is_public: isPublic,
-    };
-
-    try {
-      const response = await apiClient.post('/log', data);
-
-      if (response.status == 201) {
-        alert('Posted successfully!');
-      } else {
-        alert('Something went wrong');
-      }
-
-      setTitle('');
-      setContent('');
-      setIsPublic(false);
-    } catch (error) {
-      console.error('Error:', error);
-      setMessage(error.response.data.error);
-    }
-  };
 
   useEffect(() => {
     const check_auth = async () => {
@@ -59,6 +33,60 @@ function Home() {
     check_auth();
   }, []);
 
+  useEffect(() => {
+    const fetchStreaks = async () => {
+      try {
+        const response = await apiClient.get('/me/streaks');
+        const ttl = response.data.ttl;
+
+        if (ttl > 8 * 3600) {
+          const expirationTimestamp = new Date().getTime() + (ttl - 8 * 3600) * 1000;
+          let remainingTime = expirationTimestamp - new Date().getTime();
+
+          const countdownInterval = setInterval(() => {
+            remainingTime -= 1000;
+            if (remainingTime <= 0) {
+              clearInterval(countdownInterval);
+              setMessage('');
+            } else {
+              const timeString = formatTime(remainingTime);
+              setMessage(`You must wait ${timeString} to post again.`);
+            }
+          }, 1000);
+
+          return () => clearInterval(countdownInterval);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchStreaks();
+  }, []);
+
+  const handleUserPost = async (event) => {
+    event.preventDefault();
+
+    const data = {
+      title: title,
+      content: content,
+      is_public: isPublic,
+    };
+
+    try {
+      const response = await apiClient.post('/log', data);
+
+      if (response.status == 201) {
+        alert('Posted successfully!');
+      } else {
+        alert('Something went wrong');
+      }
+
+      navigate('/profile');
+    } catch (error) {
+      alert(error.response.data.error);
+    }
+  };
   return (
     <>
       <div className='bg-beige flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 post-log'>

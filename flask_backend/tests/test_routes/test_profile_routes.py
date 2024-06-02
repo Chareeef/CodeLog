@@ -190,7 +190,7 @@ class TestGetStreaks(unittest.TestCase):
 
         # Verify response
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(data, {'longest_streak': 0, 'current_streak': 0})
+        self.assertEqual(data, {'longest_streak': 0, 'current_streak': 0, 'ttl': 0})
 
     def test_get_streaks_of_a_disciplined_user(self):
         """Test getting a disciplined user's streaks
@@ -207,7 +207,7 @@ class TestGetStreaks(unittest.TestCase):
 
         # Verify response
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(data, {'longest_streak': 69, 'current_streak': 48})
+        self.assertEqual(data, {'longest_streak': 69, 'current_streak': 48, 'ttl': 2})
 
 
 class TestUpdateInfos(unittest.TestCase):
