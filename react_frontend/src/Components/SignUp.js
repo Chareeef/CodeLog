@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import '../index.css';
 import apiClient from '../apiClient';
+import Navigation from './Navigation';
 import Footer from './Footer';
 
 function SignUp() {
@@ -48,116 +49,119 @@ function SignUp() {
   };
 
   return (
-    <div className='d-flex flex-column min-vh-100'>
-      <div className='bg-beige flex-1 flex-grow-1 d-flex flex-column justify-content-center'>
-        <div className='sm:mx-auto sm:w-full sm:max-w-sm'>
-          <h2 className='mt-10 text-center text-2xl font-bold leading-9 tracking-tight  text-black	text-900'>
-            Create your account
-          </h2>
-        </div>
+    <>
+      <Navigation publicComp={true} />
+      <div className='d-flex flex-column min-vh-100'>
+        <div className='bg-beige flex-1 flex-grow-1 d-flex flex-column justify-content-center'>
+          <div className='sm:mx-auto sm:w-full sm:max-w-sm'>
+            <h2 className='mt-10 text-center text-2xl font-bold leading-9 tracking-tight  text-black	text-900'>
+              Create your account
+            </h2>
+          </div>
 
-        <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
-          {message && (
-            <div className='alert alert-danger mb-2' role='alert'>
-              {message}
-            </div>
-          )}
-
-          <form onSubmit={registerUser} className='space-y-6'>
-            <div>
-              <label
-                htmlFor='email'
-                className='block text-sm font-medium leading-6 text-black text-900'
-              >
-                Email address
-              </label>
-              <div className='mt-2'>
-                <input
-                  onChange={(e) => setEmail(e.target.value)}
-                  value={email}
-                  placeholder='email'
-                  id='email'
-                  name='email'
-                  type='email'
-                  autoComplete='email'
-                  className='block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
-                  required
-                />
+          <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
+            {message && (
+              <div className='alert alert-danger mb-2' role='alert'>
+                {message}
               </div>
-            </div>
+            )}
 
-            <div>
-              <label
-                htmlFor='username'
-                className='block text-sm font-medium leading-6 text-black text-900'
-              >
-                Username
-              </label>
-              <div className='mt-2'>
-                <input
-                  onChange={(e) => setUsername(e.target.value)}
-                  value={username}
-                  placeholder='username'
-                  id='username'
-                  name='username'
-                  type='username'
-                  autoComplete='username'
-                  className='block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
-                  required
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className='flex items-center justify-between'>
+            <form onSubmit={registerUser} className='space-y-6'>
+              <div>
                 <label
-                  htmlFor='password'
+                  htmlFor='email'
                   className='block text-sm font-medium leading-6 text-black text-900'
                 >
-                  Password
+                  Email address
                 </label>
-                <div className='text-sm'></div>
+                <div className='mt-2'>
+                  <input
+                    onChange={(e) => setEmail(e.target.value)}
+                    value={email}
+                    placeholder='email'
+                    id='email'
+                    name='email'
+                    type='email'
+                    autoComplete='email'
+                    className='block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+                    required
+                  />
+                </div>
               </div>
-              <div className='mt-2'>
-                <input
-                  onChange={(e) => setPassword(e.target.value)}
-                  value={password}
-                  placeholder='password'
-                  id='password'
-                  name='password'
-                  type='password'
-                  autoComplete='current-password'
-                  minLength='6'
-                  className='block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
-                  required
-                />
-              </div>
-            </div>
 
-            <div>
-              <button
-                type='submit'
-                className='flex w-full justify-center rounded-md bg-green px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-glight focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+              <div>
+                <label
+                  htmlFor='username'
+                  className='block text-sm font-medium leading-6 text-black text-900'
+                >
+                  Username
+                </label>
+                <div className='mt-2'>
+                  <input
+                    onChange={(e) => setUsername(e.target.value)}
+                    value={username}
+                    placeholder='username'
+                    id='username'
+                    name='username'
+                    type='username'
+                    autoComplete='username'
+                    className='block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <div className='flex items-center justify-between'>
+                  <label
+                    htmlFor='password'
+                    className='block text-sm font-medium leading-6 text-black text-900'
+                  >
+                    Password
+                  </label>
+                  <div className='text-sm'></div>
+                </div>
+                <div className='mt-2'>
+                  <input
+                    onChange={(e) => setPassword(e.target.value)}
+                    value={password}
+                    placeholder='password'
+                    id='password'
+                    name='password'
+                    type='password'
+                    autoComplete='current-password'
+                    minLength='6'
+                    className='block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <button
+                  type='submit'
+                  className='flex w-full justify-center rounded-md bg-green px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-glight focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                >
+                  Sign up
+                </button>
+              </div>
+            </form>
+
+            <p className='mt-10 text-center text-sm text-black text-500'>
+              Already have an account?
+              <br />
+              <a
+                href='/login'
+                className='font-bold leading-6 text-orange text-600 hover:text-indigo-500'
               >
-                Sign up
-              </button>
-            </div>
-          </form>
-
-          <p className='mt-10 text-center text-sm text-black text-500'>
-            Already have an account?
-            <br />
-            <a
-              href='/login'
-              className='font-bold leading-6 text-orange text-600 hover:text-indigo-500'
-            >
-              Log in
-            </a>
-          </p>
+                Log in
+              </a>
+            </p>
+          </div>
         </div>
       </div>
       <Footer />
-    </div>
+    </>
   );
 }
 

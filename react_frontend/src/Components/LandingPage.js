@@ -10,7 +10,7 @@ function LandingPage() {
   return (
     <>
       <div className='home-container'>
-        <Navigation />
+        <Navigation publicComp={true} />
         <Animation />
         <AnimationSecTwo />
         <AnimationSecThree />

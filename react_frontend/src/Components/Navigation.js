@@ -5,17 +5,25 @@ import {
   faFireFlameCurved,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import '../Assets/Navstyle.css';
 import { formatTime } from '../utils';
+import { checkAuth } from '../utils';
 import apiClient from '../apiClient';
 
-const Navigation = () => {
+const Navigation = ({ publicComp }) => {
   const [longStreaks, setLongStreaks] = useState(0);
   const [currStreaks, setCurrStreaks] = useState(0);
   const [expireTime, setExpireTime] = useState(0);
   const [remainingTime, setRemainingTime] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (publicComp !== true) {
+      checkAuth(navigate);
+    }
+  }, []);
 
   useEffect(() => {
     const getStreaks = async () => {
@@ -114,10 +122,10 @@ const Navigation = () => {
           ) : (
             <>
               <li>
-                <Link to='/login'>Sign-in</Link>
+                <Link to='/login'>Sign In</Link>
               </li>
               <li>
-                <Link to='/register'>Sign-up</Link>
+                <Link to='/register'>Sign Up</Link>
               </li>
             </>
           )}
@@ -125,6 +133,14 @@ const Navigation = () => {
       </div>
     </nav>
   );
+};
+
+Navigation.propTypes = {
+  publicComp: PropTypes.bool,
+};
+
+Navigation.defaultProps = {
+  publicComp: false,
 };
 
 export default Navigation;

@@ -6,7 +6,6 @@ import LandingPage from './Components/LandingPage';
 import SignIn from './Components/SignIn';
 import SignUp from './Components/SignUp';
 import Home from './Components/Home';
-import Navigation from './Components/Navigation';
 import Feed from './Components/Feed';
 import Profile from './Components/Profile';
 import UpdatePassword from './Components/UpdatePassword';
@@ -16,7 +15,6 @@ function App() {
   return (
     <Router>
       <div className='App'>
-        <Navigation />
         <div className='content'>
           <Routes>
             <Route path='/' element={<LandingPage />} />
@@ -27,7 +25,6 @@ function App() {
             <Route path='/profile' element={<Profile />} />
             <Route path='/update_password' element={<UpdatePassword />} />
             <Route path='/update_infos' element={<UpdateInfo />} />
-
           </Routes>
         </div>
       </div>
