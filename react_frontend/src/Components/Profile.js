@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import nl2br from 'react-nl2br';
 
 import apiClient from '../apiClient';
@@ -9,7 +9,17 @@ import Footer from './Footer';
 function Profile() {
   const [userInfo, setUserInfo] = useState(null);
   const [userPosts, setUserPosts] = useState([]);
+  const [message, setMessage] = useState('');
+
   const navigate = useNavigate();
+  const locate = useLocation();
+
+  useEffect(() => {
+    const successMessage = locate.state?.successMessage;
+    if (successMessage) {
+      setMessage(successMessage);
+    }
+  }, []);
 
   const fetchProfileInfo = async () => {
     try {
@@ -94,6 +104,13 @@ function Profile() {
 
           <div className='bg-white rounded-lg shadow-lg p-6'>
             <h2 className='text-xl font-semibold'>User Posts</h2>
+
+            {message && (
+              <div className='alert alert-success mb-2' role='alert'>
+                {message}
+              </div>
+            )}
+
             {userPosts.length > 0 ? (
               <ul>
                 {userPosts.map((post) => (

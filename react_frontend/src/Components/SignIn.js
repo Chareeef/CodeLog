@@ -9,15 +9,23 @@ import Footer from './Footer';
 function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
 
   const navigate = useNavigate();
   const locate = useLocation();
 
   useEffect(() => {
+    const successMessage = locate.state?.successMessage;
+    if (successMessage) {
+      setSuccessMessage(successMessage);
+    }
+  }, []);
+
+  useEffect(() => {
     const alertMessage = locate.state?.alertMessage;
     if (alertMessage) {
-      setMessage(alertMessage);
+      setAlertMessage(alertMessage);
     }
   }, []);
 
@@ -26,9 +34,9 @@ function SignIn() {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setMessage('Invalid email');
+      setAlertMessage('Invalid email');
     } else if (password.length === 0) {
-      setMessage('Invalid password');
+      setAlertMessage('Invalid password');
     } else {
       const data = {
         email: email,
@@ -42,13 +50,14 @@ function SignIn() {
         localStorage.setItem('jwt_access_token', response.data.access_token);
         localStorage.setItem('jwt_refresh_token', response.data.refresh_token);
 
-        alert("It's nice to see you!");
-        navigate('/home');
+        navigate('/home', {
+          state: { successMessage: "It's nice to see you!" },
+        });
       } catch (error) {
         if (error.response) {
-          setMessage(`Error: ${error.response.data.error}`);
+          setAlertMessage(`Error: ${error.response.data.error}`);
         } else {
-          setMessage('An error occurred. Please try again later.');
+          setAlertMessage('An error occurred. Please try again later.');
         }
       }
     }
@@ -66,9 +75,15 @@ function SignIn() {
           </div>
 
           <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
-            {message && (
+            {successMessage && (
+              <div className='alert alert-success mb-2' role='alert'>
+                {successMessage}
+              </div>
+            )}
+
+            {alertMessage && (
               <div className='alert alert-danger mb-2' role='alert'>
-                {message}
+                {alertMessage}
               </div>
             )}
             <form className='space-y-6' onSubmit={logInUser}>

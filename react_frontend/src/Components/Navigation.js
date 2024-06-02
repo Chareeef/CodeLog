@@ -74,8 +74,9 @@ const Navigation = ({ publicComp }) => {
     localStorage.removeItem('jwt_access_token');
     localStorage.removeItem('jwt_refresh_token');
 
-    navigate('/login');
-    alert('Successfully Logged Out');
+    navigate('/login', {
+      state: { successMessage: 'Successfully Logged Out' },
+    });
   };
 
   return (
