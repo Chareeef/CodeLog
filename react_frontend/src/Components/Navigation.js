@@ -99,8 +99,8 @@ const Navigation = () => {
                 <FontAwesomeIcon icon={faFireFlameCurved} /> {longStreaks}
               </li>
               <li>
-                <FontAwesomeIcon icon={faFireFlameSimple} /> {currStreaks} (
-                {remainingTime > 0 && formatTime(remainingTime)})
+                <FontAwesomeIcon icon={faFireFlameSimple} /> {currStreaks}{' '}
+                {remainingTime > 0 && `(${formatTime(remainingTime)})`}
               </li>
               <li>
                 <Link to='/home'>Home</Link>

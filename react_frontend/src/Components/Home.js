@@ -15,6 +15,55 @@ function Home() {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const check_auth = async () => {
+      try {
+        await apiClient.get('/');
+      } catch (error) {
+        console.error(error);
+        navigate('/login');
+        alert(
+          'Sorry, it seems your Authentication was lost or corrupted. Please log in again.'
+        );
+        localStorage.removeItem('jwt_access_token');
+        localStorage.removeItem('jwt_refresh_token');
+      }
+    };
+
+    check_auth();
+  }, []);
+
+  useEffect(() => {
+    const fetchStreaks = async () => {
+      try {
+        const response = await apiClient.get('/me/streaks');
+        const ttl = response.data.ttl;
+
+        if (ttl > 8 * 3600) {
+          const expirationTimestamp = new Date().getTime() + (ttl - 8 * 3600) * 1000;
+          let remainingTime = expirationTimestamp - new Date().getTime();
+
+          const countdownInterval = setInterval(() => {
+            remainingTime -= 1000;
+            if (remainingTime <= 0) {
+              clearInterval(countdownInterval);
+              setMessage('');
+            } else {
+              const timeString = formatTime(remainingTime);
+              setMessage(`You must wait ${timeString} to post again.`);
+            }
+          }, 1000);
+
+          return () => clearInterval(countdownInterval);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchStreaks();
+  }, []);
+
   const handleUserPost = async (event) => {
     event.preventDefault();
 
@@ -35,34 +84,9 @@ function Home() {
 
       navigate('/profile');
     } catch (error) {
-      const ttl = error.response.data.ttl;
-      if (ttl) {
-        const timeString = formatTime(ttl);
-        setMessage(`You must wait ${timeString} to post again.`);
-      } else {
-        setMessage(error.response.data.error);
-      }
+      alert(error.response.data.error);
     }
   };
-
-  useEffect(() => {
-    const check_auth = async () => {
-      try {
-        await apiClient.get('/');
-      } catch (error) {
-        console.error(error);
-        navigate('/login');
-        alert(
-          'Sorry, it seems your Authentication was lost or corrupted. Please log in again.'
-        );
-        localStorage.removeItem('jwt_access_token');
-        localStorage.removeItem('jwt_refresh_token');
-      }
-    };
-
-    check_auth();
-  }, []);
-
   return (
     <>
       <div className='bg-beige flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 post-log'>
