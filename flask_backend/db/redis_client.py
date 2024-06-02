@@ -5,7 +5,9 @@ import redis
 import os
 
 
-if os.getenv('MODE') == 'TEST':
+if os.getenv('MODE') == 'DEV':
+    db_num = 2
+elif os.getenv('MODE') == 'TEST':
     db_num = 1
 else:
     db_num = 0

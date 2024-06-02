@@ -61,16 +61,24 @@ class DBStorage:
 
         try:
             self._client.admin.command('ismaster')
-            if with_uri:
-                print(f"Connected to remote MongoDB")
+
+            if os.getenv('MODE') == 'DEV':
+                db_name = os.getenv('DB_DATABASE', 'swe_journal_dev')
+            elif os.getenv('MODE') == 'TEST':
+                db_name = os.getenv('DB_DATABASE', 'swe_journal_test')
             else:
-                print(f"Connected to MongoDB: host={db_host}, port={db_port}")
+                db_name = os.getenv('DB_DATABASE', 'swe_journal')
+
+            self._db = self._client[db_name]
+
+            if with_uri:
+                print(f"Connected to remote MongoDB, db={db_name}")
+            else:
+                print(f"Connected to MongoDB: {db_host}:{db_port}/{db_name}")
+
         except ConnectionFailure as err:
             print(f"Connection failed: {err}")
             raise
-
-        db_name = os.getenv('DB_DATABASE', 'swe_journal')
-        self._db = self._client[db_name]
 
     # INSERT
 

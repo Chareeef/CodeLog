@@ -47,9 +47,11 @@ def log():
     # Current streak key in Redis
     cs_key = f"{user['username']}_CS"
 
-    # Define 20h as the minimum interval between two entries (0 < ttl < 8h)
-    # or 2 seconds when testing
-    if os.getenv('MODE') == 'TEST':
+    # Define 20h as the minimum interval between two entries (0 < ttl < 8h),
+    # or 1 minute for development, or 2 seconds for testing
+    if os.getenv('MODE') == 'DEV':
+        max_allowed_ttl = 60
+    elif os.getenv('MODE') == 'TEST':
         max_allowed_ttl = 2
     else:
         max_allowed_ttl = 8 * 3600
@@ -104,9 +106,12 @@ def log():
     # Response will return if the user marks a new longest streak
     response['new_record'] = False
 
-    # Reset user's current streak key in Redis for 28h (4 seconds if testing)
+    # Reset user's current streak key in Redis for 28h,
+    # or 2 minutes for development, or 4 seconds for testing
     new_current_streak = current_streak + 1
-    if os.getenv('MODE') == 'TEST':
+    if os.getenv('MODE') == 'DEV':
+        rc.setex(cs_key, 120, new_current_streak)
+    elif os.getenv('MODE') == 'TEST':
         rc.setex(cs_key, 4, new_current_streak)
     else:
         rc.setex(cs_key, 28 * 3600, new_current_streak)
