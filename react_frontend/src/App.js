@@ -7,7 +7,7 @@ import SignIn from './Components/SignIn';
 import SignUp from './Components/SignUp';
 import Home from './Components/Home';
 import Navigation from './Components/Navigation';
-import Feed from './Components/Feed';
+import Posts from './Components/Posts';
 import Profile from './Components/Profile';
 import UpdatePassword from './Components/UpdatePassword';
 import UpdateInfo from './Components/UpdateInfo';
@@ -23,11 +23,10 @@ function App() {
             <Route path='/home' element={<Home />} />
             <Route path='/login' element={<SignIn />} />
             <Route path='/register' element={<SignUp />} />
-            <Route path='/feed' element={<Feed />} />
+            <Route path='/posts' element={<Posts />} />
             <Route path='/profile' element={<Profile />} />
             <Route path='/update_password' element={<UpdatePassword />} />
             <Route path='/update_infos' element={<UpdateInfo />} />
-
           </Routes>
         </div>
       </div>
