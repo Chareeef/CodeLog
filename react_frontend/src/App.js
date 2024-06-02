@@ -27,7 +27,6 @@ function App() {
             <Route path='/profile' element={<Profile />} />
             <Route path='/update_password' element={<UpdatePassword />} />
             <Route path='/update_infos' element={<UpdateInfo />} />
-
           </Routes>
         </div>
       </div>
