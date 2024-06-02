@@ -13,8 +13,8 @@ import { checkAuth } from '../utils';
 import apiClient from '../apiClient';
 
 const Navigation = ({ publicComp }) => {
-  const [longStreaks, setLongStreaks] = useState(0);
-  const [currStreaks, setCurrStreaks] = useState(0);
+  const [longStreak, setLongStreak] = useState(0);
+  const [currentStreak, setCurrentStreak] = useState(0);
   const [expireTime, setExpireTime] = useState(0);
   const [remainingTime, setRemainingTime] = useState(0);
   const navigate = useNavigate();
@@ -30,8 +30,8 @@ const Navigation = ({ publicComp }) => {
       try {
         const res = await apiClient.get('/me/streaks');
 
-        setCurrStreaks(res.data.current_streak);
-        setLongStreaks(res.data.longest_streak);
+        setCurrentStreak(res.data.current_streak);
+        setLongStreak(res.data.longest_streak);
 
         const ttl = res.data.ttl;
         if (ttl > 0) {
@@ -104,11 +104,13 @@ const Navigation = ({ publicComp }) => {
                 </Link>
               </li>
               <li>
-                <FontAwesomeIcon icon={faFireFlameCurved} /> {longStreaks}
+                <FontAwesomeIcon icon={faFireFlameCurved} /> {longStreak}
               </li>
               <li>
-                <FontAwesomeIcon icon={faFireFlameSimple} /> {currStreaks}{' '}
-                {remainingTime > 0 && `(${formatTime(remainingTime)})`}
+                <FontAwesomeIcon icon={faFireFlameSimple} />{' '}
+                {remainingTime > 0
+                  ? `${currentStreak} (${formatTime(remainingTime)})`
+                  : '0'}
               </li>
               <li>
                 <Link to='/home'>Home</Link>
