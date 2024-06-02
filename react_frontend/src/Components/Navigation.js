@@ -1,17 +1,57 @@
 import { useEffect, useState } from 'react';
-import { faBars, faFire } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faFireFlameSimple,
+  faFireFlameCurved,
+} from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom';
 
 import '../Assets/Navstyle.css';
+import { formatTime } from '../utils';
 import apiClient from '../apiClient';
 
 const Navigation = () => {
-  const [showMenu, setShowMenu] = useState(false);
   const [longStreaks, setLongStreaks] = useState(0);
   const [currStreaks, setCurrStreaks] = useState(0);
-
+  const [expireTime, setExpireTime] = useState(0);
+  const [remainingTime, setRemainingTime] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const getStreaks = async () => {
+      try {
+        const res = await apiClient.get('/me/streaks');
+
+        setCurrStreaks(res.data.current_streak);
+        setLongStreaks(res.data.longest_streak);
+
+        const ttl = res.data.ttl;
+        if (ttl > 0) {
+          const expirationTimestamp = new Date().getTime() + ttl * 1000;
+          setExpireTime(expirationTimestamp);
+          setRemainingTime(expirationTimestamp - new Date().getTime());
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getStreaks();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const currentTime = new Date().getTime();
+      const timeLeft = expireTime - currentTime;
+      setRemainingTime(timeLeft);
+
+      if (timeLeft <= 0) {
+        clearInterval(interval);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [expireTime]);
 
   const handleLogOut = async (event) => {
     event.preventDefault();
@@ -30,27 +70,13 @@ const Navigation = () => {
     alert('Successfully Logged Out');
   };
 
-  useEffect(() => {
-    const get_streaks = async () => {
-      try {
-        const res = await apiClient.get('/me/streaks');
-        setCurrStreaks(res.data.current_streak);
-        setLongStreaks(res.data.longest_streak);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    get_streaks();
-  }, []);
-
   return (
     <nav className='nav'>
       <a href='/' className='site-title '>
         CodeLog
       </a>
       <div className='navbar-links-container'>
-        <ul className={showMenu ? 'open' : ''}>
+        <ul>
           {localStorage.getItem('jwt_access_token') ? (
             <>
               <li>
@@ -70,10 +96,11 @@ const Navigation = () => {
                 </Link>
               </li>
               <li>
-                <FontAwesomeIcon icon={faFire} /> (Longest {longStreaks})
+                <FontAwesomeIcon icon={faFireFlameCurved} /> {longStreaks}
               </li>
               <li>
-                <FontAwesomeIcon icon={faFire} /> (Current {currStreaks})
+                <FontAwesomeIcon icon={faFireFlameSimple} /> {currStreaks} (
+                {remainingTime > 0 && formatTime(remainingTime)})
               </li>
               <li>
                 <Link to='/home'>Home</Link>
@@ -96,13 +123,6 @@ const Navigation = () => {
           )}
         </ul>
       </div>
-      <FontAwesomeIcon
-        className='menu'
-        onClick={() => {
-          setShowMenu(!showMenu);
-        }}
-        icon={faBars}
-      />
     </nav>
   );
 };

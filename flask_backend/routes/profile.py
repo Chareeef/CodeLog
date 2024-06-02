@@ -54,12 +54,16 @@ def get_streaks():
 
     if not current_streak:
         current_streak = 0
+        ttl = 0
     else:
         current_streak = int(current_streak.decode('utf-8'))
+        ttl = rc.ttl(cs_key)
 
     # Return response
     response = {'longest_streak': longest_streak,
-                'current_streak': current_streak}
+                'current_streak': current_streak,
+                'ttl': ttl}
+
     return jsonify(response)
 
 
