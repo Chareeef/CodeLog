@@ -126,7 +126,7 @@ This project is licensed under the MIT License.
 
 ## Conclusion
 
-Code-Log is more than just a journaling app; it's a tool designed to help software engineers stay organized, track their progress, and connect with their peers through shared experiences. From robust backend solutions to a sleek, user-friendly frontend, this project showcases the power of collaboration and modern web development technologies. We're proud of what we've built and excited to see how it can benefit the developers community!
+CodeLog is more than just a journaling app; it's a tool designed to help software engineers stay organized, track their progress, and connect with their peers through shared experiences. From robust backend solutions to a sleek, user-friendly frontend, this project showcases the power of collaboration and modern web development technologies. We're proud of what we've built and excited to see how it can benefit the developers community!
 
 ## Contributors
 - **Youssef Charif Hamidi**
