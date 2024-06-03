@@ -59,6 +59,12 @@ function UpdateInfo() {
       <Navigation />
       <div className='d-flex flex-column min-vh-100'>
         <div className='bg-beige flex-1 flex-grow-1 d-flex flex-column justify-content-center'>
+          <div className='sm:mx-auto sm:w-full sm:max-w-sm'>
+            <h2 className='mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-black	text-900'>
+              Update Your Informations
+            </h2>
+          </div>
+
           <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
             {message && (
               <div className='alert alert-danger mb-2' role='alert'>
