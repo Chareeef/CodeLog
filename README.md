@@ -146,5 +146,5 @@ Code-Log is more than just a journaling app; it's a tool designed to help softwa
 
 - **Harriet M Mugendi**
   - *GitHub:* [MwendeHarriet](https://github.com/MwendeHarriet)
-  - *LinkedIn:* [harriet-m-mugendi](]https://www.linkedin.com/in/harriet-m-mugendi-149a006b)
+  - *LinkedIn:* [harriet-m-mugendi](https://www.linkedin.com/in/harriet-m-mugendi-149a006b)
   - *Email:* [mwendeharriet@gmail.com](mailto:mwendeharriet@gmail.com)
