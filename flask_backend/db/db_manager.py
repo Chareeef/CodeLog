@@ -160,12 +160,24 @@ class DBStorage:
         """ update and return a user document. """
         users = self._db['users']
         update_fields.pop('password', None)
+
         try:
+            # Update the user
             updated_user = users.find_one_and_update(
                 {'_id': ObjectId(user_id)},
                 {'$set': update_fields},
                 return_document=ReturnDocument.AFTER
             )
+
+            # If the username was updated, update it also in user's posts
+            new_username = update_fields.get('username')
+            if new_username:
+                posts = self._db['posts']
+                posts.update_many(
+                    {'user_id': user_id},
+                    {'$set': {'username': new_username}},
+                )
+
             return list(map(serialize_ObjectId, updated_user))[0]
 
         except Exception as e:

@@ -8,8 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import '../Assets/Navstyle.css';
-import { formatTime } from '../utils';
-import { checkAuth } from '../utils';
+import { checkAuth, formatTime } from '../utils';
 import apiClient from '../apiClient';
 
 const Navigation = ({ publicComp }) => {
