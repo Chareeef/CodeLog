@@ -132,6 +132,8 @@ function Posts() {
       <div className='d-flex flex-column min-vh-100'>
         {/* Display posts */}
         <div className='bg-beige flex-1 flex-grow-1 d-flex flex-column justify-content-center p-3'>
+          <h1 className='text-3xl font-semibold mb-4 mt-2'>Feed</h1>
+
           {posts.map((post) => (
             <div
               key={post._id}

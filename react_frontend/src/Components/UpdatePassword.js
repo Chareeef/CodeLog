@@ -17,7 +17,7 @@ function UpdatePassword() {
     event.preventDefault();
 
     if (confirmPassword !== newPassword) {
-      setMessage('New password and confirm password do not match');
+      setMessage('New password and Confirm password do not match');
     } else {
       // conditions
       const Data = {
@@ -30,13 +30,20 @@ function UpdatePassword() {
         const response = await apiClient.put('/me/update_password', Data);
 
         if (response.status == 201) {
-          alert('Your password has been updated successfully !');
-          navigate('/profile');
+          navigate('/profile', {
+            state: {
+              successMessage: 'Your password was updated successfully !',
+            },
+          });
         } else {
           alert('Something went wrong');
         }
       } catch (error) {
-        console.error('Error:', error);
+        if (error.response) {
+          setMessage(`${error.response.data.error}`);
+        } else {
+          setMessage('An error occurred. Please try again later.');
+        }
       }
     }
   };
@@ -48,7 +55,7 @@ function UpdatePassword() {
         <div className='bg-beige flex-1 flex-grow-1 d-flex flex-column justify-content-center'>
           <div className='sm:mx-auto sm:w-full sm:max-w-sm'>
             <h2 className='mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-black	text-900'>
-              Update your Password
+              Update Your Password
             </h2>
           </div>
           <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
@@ -126,7 +133,7 @@ function UpdatePassword() {
                 </div>
               </div>
               <button
-                className='inline-block bg-green hover:bg-glight text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-2'
+                className='flex w-full justify-center rounded-md bg-green px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-glight hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
                 type='submit'
               >
                 Update Password

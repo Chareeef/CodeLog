@@ -1,6 +1,6 @@
 // create home page to let user share a post
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import '../index.css';
 import apiClient from '../apiClient';
@@ -12,9 +12,18 @@ function Home() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [isPublic, setIsPublic] = useState(false);
-  const [message, setMessage] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const navigate = useNavigate();
+  const locate = useLocation();
+
+  useEffect(() => {
+    const successMessage = locate.state?.successMessage;
+    if (successMessage) {
+      setSuccessMessage(successMessage);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchStreaks = async () => {
@@ -33,10 +42,10 @@ function Home() {
             remainingTime -= 1000;
             if (remainingTime <= 0) {
               clearInterval(countdownInterval);
-              setMessage('');
+              setAlertMessage('');
             } else {
               const timeString = formatTime(remainingTime);
-              setMessage(`You must wait ${timeString} to post again.`);
+              setAlertMessage(`You must wait ${timeString} to post again.`);
             }
           }, 1000);
 
@@ -63,8 +72,9 @@ function Home() {
       const response = await apiClient.post('/log', data);
 
       if (response.status == 201) {
-        alert('Posted successfully!');
-        navigate('/profile');
+        navigate('/profile', {
+          state: { successMessage: 'Posted successfully!' },
+        });
       } else {
         alert('Something went wrong');
       }
@@ -77,6 +87,12 @@ function Home() {
     <>
       <Navigation />
       <div className='bg-beige flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 post-log'>
+        {successMessage && (
+          <div className='alert alert-success mb-2' role='alert'>
+            {successMessage}
+          </div>
+        )}
+
         <h2 className='mt-10 text-center text-3xl font-bold leading-9 tracking-wide text-black'>
           Behind the Code: Your Journey Matters
         </h2>
@@ -93,7 +109,6 @@ function Home() {
               id='title'
               type='text'
               placeholder='Enter title'
-              minLength='6'
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -104,7 +119,6 @@ function Home() {
               className='w-full p-4 text-base text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500'
               id='journey'
               rows='10'
-              minLength='150'
               placeholder='Write your journey here...'
               required
               value={content}
@@ -131,9 +145,9 @@ function Home() {
             Submit
           </button>
         </form>
-        {message && (
+        {alertMessage && (
           <div className='alert alert-danger mb-2' role='alert'>
-            {message}
+            {alertMessage}
           </div>
         )}
       </div>

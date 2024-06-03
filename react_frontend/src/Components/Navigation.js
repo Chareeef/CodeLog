@@ -8,8 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import '../Assets/Navstyle.css';
-import { formatTime } from '../utils';
-import { checkAuth } from '../utils';
+import { checkAuth, formatTime } from '../utils';
 import apiClient from '../apiClient';
 
 const Navigation = ({ publicComp }) => {
@@ -74,8 +73,9 @@ const Navigation = ({ publicComp }) => {
     localStorage.removeItem('jwt_access_token');
     localStorage.removeItem('jwt_refresh_token');
 
-    navigate('/login');
-    alert('Successfully Logged Out');
+    navigate('/login', {
+      state: { successMessage: 'Successfully Logged Out' },
+    });
   };
 
   return (
