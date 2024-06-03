@@ -2,9 +2,8 @@ import axios from 'axios';
 
 // Create the backend client
 let host = process.env.REACT_APP_HOST || 'http://127.0.0.1:5000';
-if (process.env.REACT_APP_ENV === 'TEST' && process.env.REACT_APP_IP) {
+if (process.env.REACT_APP_ENV === 'DEV' && process.env.REACT_APP_IP) {
   host = `http://${process.env.REACT_APP_IP}:5000`;
-  console.log('TESTING MODE');
 }
 
 const apiClient = axios.create({

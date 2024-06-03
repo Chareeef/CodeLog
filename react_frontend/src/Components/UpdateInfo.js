@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import apiClient from '../apiClient';
+import Navigation from './Navigation';
 import Footer from './Footer';
 
 function UpdateInfo() {
@@ -53,6 +55,7 @@ function UpdateInfo() {
   };
 
   return (
+    
     <div className='d-flex flex-column min-vh-100'>
       <div className='bg-beige flex-1 flex-grow-1 d-flex flex-column justify-content-center'>
         <div className='sm:mx-auto sm:w-full sm:max-w-sm'>
@@ -126,7 +129,7 @@ function UpdateInfo() {
         </div>
       </div>
       <Footer />
-    </div>
+    </>
   );
 }
 

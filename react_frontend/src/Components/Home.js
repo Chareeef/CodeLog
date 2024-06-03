@@ -6,6 +6,7 @@ import '../index.css';
 import apiClient from '../apiClient';
 import { formatTime } from '../utils';
 import Footer from './Footer';
+import Navigation from './Navigation';
 
 function Home() {
   const [title, setTitle] = useState('');
@@ -16,31 +17,16 @@ function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const check_auth = async () => {
-      try {
-        await apiClient.get('/');
-      } catch (error) {
-        console.error(error);
-        navigate('/login');
-        alert(
-          'Sorry, it seems your Authentication was lost or corrupted. Please log in again.'
-        );
-        localStorage.removeItem('jwt_access_token');
-        localStorage.removeItem('jwt_refresh_token');
-      }
-    };
-
-    check_auth();
-  }, []);
-
-  useEffect(() => {
     const fetchStreaks = async () => {
       try {
         const response = await apiClient.get('/me/streaks');
         const ttl = response.data.ttl;
+        const postsInterval =
+          process.env.REACT_APP_ENV === 'DEV' ? 60 : 8 * 3600;
 
-        if (ttl > 8 * 3600) {
-          const expirationTimestamp = new Date().getTime() + (ttl - 8 * 3600) * 1000;
+        if (ttl > postsInterval) {
+          const expirationTimestamp =
+            new Date().getTime() + (ttl - postsInterval) * 1000;
           let remainingTime = expirationTimestamp - new Date().getTime();
 
           const countdownInterval = setInterval(() => {
@@ -78,17 +64,18 @@ function Home() {
 
       if (response.status == 201) {
         alert('Posted successfully!');
+        navigate('/profile');
       } else {
         alert('Something went wrong');
       }
-
-      navigate('/profile');
     } catch (error) {
       alert(error.response.data.error);
     }
   };
+
   return (
     <>
+      <Navigation />
       <div className='bg-beige flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 post-log'>
         <h2 className='mt-10 text-center text-3xl font-bold leading-9 tracking-wide text-black'>
           Behind the Code: Your Journey Matters
