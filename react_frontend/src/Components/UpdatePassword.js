@@ -17,7 +17,7 @@ function UpdatePassword() {
     event.preventDefault();
 
     if (confirmPassword !== newPassword) {
-      setMessage('New password and confirm password do not match');
+      setMessage('New password and Confirm password do not match');
     } else {
       // conditions
       const Data = {
@@ -30,13 +30,20 @@ function UpdatePassword() {
         const response = await apiClient.put('/me/update_password', Data);
 
         if (response.status == 201) {
-          alert('Your password has been updated successfully !');
-          navigate('/profile');
+          navigate('/profile', {
+            state: {
+              successMessage: 'Your password was updated successfully !',
+            },
+          });
         } else {
           alert('Something went wrong');
         }
       } catch (error) {
-        console.error('Error:', error);
+        if (error.response) {
+          setMessage(`${error.response.data.error}`);
+        } else {
+          setMessage('An error occurred. Please try again later.');
+        }
       }
     }
   };

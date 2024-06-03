@@ -83,11 +83,11 @@ function Profile() {
                 <p>Username: {userInfo.username}</p>
 
                 <button className='inline-block bg-orange hover:bg-olight text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-2 mt-3'>
-                  <a href='/update_password'>Update Password</a>
+                  <a href='/update_infos'>Update Information</a>
                 </button>
 
                 <button className='inline-block bg-orange hover:bg-olight text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-2 ml-4'>
-                  <a href='/update_infos'>Update Information</a>
+                  <a href='/update_password'>Update Password</a>
                 </button>
 
                 <button
@@ -102,14 +102,14 @@ function Profile() {
             )}
           </div>
 
-          <div className='bg-white rounded-lg shadow-lg p-6'>
-            <h2 className='text-xl font-semibold'>User Posts</h2>
+          {message && (
+            <div className='alert alert-success mb-2' role='alert'>
+              {message}
+            </div>
+          )}
 
-            {message && (
-              <div className='alert alert-success mb-2' role='alert'>
-                {message}
-              </div>
-            )}
+          <div className='bg-white rounded-lg shadow-lg p-6'>
+            <h2 className='text-xl font-semibold'>User Posts:</h2>
 
             {userPosts.length > 0 ? (
               <ul>

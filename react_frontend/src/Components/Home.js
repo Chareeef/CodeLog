@@ -109,7 +109,6 @@ function Home() {
               id='title'
               type='text'
               placeholder='Enter title'
-              minLength='6'
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -120,7 +119,6 @@ function Home() {
               className='w-full p-4 text-base text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500'
               id='journey'
               rows='10'
-              minLength='150'
               placeholder='Write your journey here...'
               required
               value={content}
