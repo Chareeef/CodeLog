@@ -3,6 +3,8 @@
 ## Overview
 CodeLog is a web application designed to help software engineers maintain a daily journaling habit. Users can log their daily progress, track their streaks, and interact with posts through comments and likes.
 
+![20240603_123108](https://github.com/Chareeef/CodeLog/assets/100241289/2866077d-8a05-4af3-9cdc-610828c2ac28)
+
 ## Table of Contents
 - [Features](#features)
 - [Technologies Used](#technologies-used)
@@ -13,11 +15,21 @@ CodeLog is a web application designed to help software engineers maintain a dail
 
 ## Features
 - **User Authentication**: Secure user registration and login with JWT authentication.
+
+![20240603_123139](https://github.com/Chareeef/CodeLog/assets/100241289/f7198700-0eff-45ec-8243-96658e361ccf)
+
 - **Journaling**: Log daily entries and edit or delete past entries.
+
+![20240603_123335](https://github.com/Chareeef/CodeLog/assets/100241289/c8f331ed-9f57-419b-a626-730a85bd87f8)
+
 - **Streak Tracking**: Track current and longest streaks with time-based logic.
+
+![20240603_123420](https://github.com/Chareeef/CodeLog/assets/100241289/4ecbe55a-b4c2-49ae-82a3-05e732d73ad1)
+
 - **Comments and Likes**: Interact with posts through comments and likes.
-- **Responsive Design**: User-friendly interface optimized for various devices.
-- **Dynamic Feedback**: Real-time countdowns and success messages for user actions.
+
+![20240603_123516](https://github.com/Chareeef/CodeLog/assets/100241289/191d6044-514d-45ff-8f6c-836210a87190)
+
 
 ## Technologies Used
 - **Frontend**: React.js
