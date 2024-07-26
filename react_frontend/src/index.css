@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.community-img {
+  width: 95vw;
+  height: 80vh;
+}
