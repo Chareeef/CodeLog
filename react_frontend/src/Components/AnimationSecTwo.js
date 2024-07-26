@@ -1,5 +1,5 @@
 import React from 'react';
-import Community from '../Assets/images/com.jpg';
+import Community from '../Assets/images/community.jpg';
 import '../index.css';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
